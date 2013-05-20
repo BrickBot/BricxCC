@@ -16,23 +16,32 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef CODATEX_H
 #define CODATEX_H
 
+#include "codatex_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_codatex.h" }
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// Codatex API ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+/** @addtogroup ThirdPartyDevices
+ * @{
+ */
 
 /** @addtogroup CodatexAPI
  * @{
@@ -128,5 +137,7 @@ inline bool RFIDReadContinuous(const byte & port, byte & output[]);
 #endif
 
 /** @} */ // end of CodatexAPI group
+
+/** @} */ // end of ThirdPartyDevices group
 
 #endif // CODATEX_H

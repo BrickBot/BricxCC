@@ -1,1 +1,6 @@
-byte streamstatus = BTConnectionStreamStatus(1);
+#include "comm.h"
+
+task main()
+{
+  byte streamstatus = BTConnectionStreamStatus(CONN_BT1);
+}

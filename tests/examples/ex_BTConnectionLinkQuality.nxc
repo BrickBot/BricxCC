@@ -1,1 +1,7 @@
-byte linkquality = BTConnectionLinkQuality(1);
+#include "comm.h"
+
+task main()
+{
+  byte linkquality = BTConnectionLinkQuality(CONN_BT0);
+}
+

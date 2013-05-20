@@ -16,18 +16,24 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-03-03
+ * \version 3
  */
 
 #ifndef OUTPUT_H
 #define OUTPUT_H
+
+#include "output_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_output.h" }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// OUTPUT MODULE ////////////////////////////////
@@ -80,6 +86,7 @@ struct OutputStateType {
  * Set motor regulation frequency.
  * Set the motor regulation frequency in milliseconds. By default this is set
  * to 100ms.
+ * \deprecated Use SetMotorRegulationTime() instead.
  * \param n The motor regulation frequency.
  */
 inline void SetMotorPwnFreq(byte n);
@@ -89,7 +96,6 @@ inline void SetMotorPwnFreq(byte n);
  * Set the motor regulation time in milliseconds. By default this is set
  * to 100ms.
  *
- * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
  *
  * \param n The motor regulation time.
  */
@@ -515,6 +521,20 @@ inline void OnRevSyncEx(byte outputs, char pwr, char turnpct, const byte reset);
 /**
  * Rotate motor.
  * Run the specified outputs forward for the specified number of degrees.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
  *
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
@@ -529,6 +549,20 @@ inline void RotateMotor(byte outputs, char pwr, long angle);
  * Rotate motor with PID factors.
  * Run the specified outputs forward for the specified number of degrees.
  * Specify proportional, integral, and derivative factors.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
  *
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
@@ -546,8 +580,24 @@ inline void RotateMotor(byte outputs, char pwr, long angle);
 inline void RotateMotorPID(byte outputs, char pwr, long angle, byte p, byte i, byte d);
 
 /**
- * Rotate motor.
- * Run the specified outputs forward for the specified number of degrees.
+ * Rotate motor Ex.
+ * Run the specified outputs forward for the specified number of degrees. Also specify
+ * synchronization, turn percentage, and braking options.  Use this function primarily
+ * with more than one motor specified via the outputs parameter.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
  *
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
@@ -565,10 +615,26 @@ inline void RotateMotorPID(byte outputs, char pwr, long angle, byte p, byte i, b
 inline void RotateMotorEx(byte outputs, char pwr, long angle, char turnpct, bool sync, bool stop);
 
 /**
- * Rotate motor.
+ * Rotate motor Ex with PID factors.
  * Run the specified outputs forward for the specified number of degrees.
- * Specify proportional, integral, and derivative factors.
- *
+ * Specify proportional, integral, and derivative factors. Also specify
+ * synchronization, turn percentage, and braking options.  Use this function primarily
+ * with more than one motor specified via the outputs parameter.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
+ * 
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
  * outputs in a single call you need to use a byte array rather than a byte and
@@ -865,6 +931,7 @@ inline byte MotorMaxAcceleration(byte output);
 /**
  * Get motor regulation frequency.
  * Get the current motor regulation frequency in milliseconds.
+ * \deprecated Use MotorRegulationTime() instead.
  * \return The motor regulation frequency.
  */
 inline byte MotorPwnFreq();
@@ -872,6 +939,9 @@ inline byte MotorPwnFreq();
 /**
  * Get motor regulation time.
  * Get the current motor regulation time in milliseconds.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
  * \return The motor regulation time.
  */
 inline byte MotorRegulationTime();
@@ -879,11 +949,35 @@ inline byte MotorRegulationTime();
 /**
  * Get motor regulation options.
  * Get the current motor regulation options.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
  * \return The motor regulation options.
  */
 inline byte MotorRegulationOptions();
 
 #else
+
+enum OutputFieldNames {
+  UpdateFlags,
+  OutputMode,
+  Power,
+  ActualSpeed,
+  TachoCount,
+  TachoLimit,
+  RunState,
+  TurnRatio,
+  RegMode,
+  Overload,
+  RegPValue,
+  RegIValue,
+  RegDValue,
+  BlockTachoCount,
+  RotationCount,
+  OutputOptions,
+  MaxSpeed,
+  MaxAcceleration
+};
 
 // output fields
 #define MotorMode(_p) GetOutput(_p, OutputMode)
@@ -919,104 +1013,5 @@ inline byte MotorRegulationOptions();
 /** @} */ // end of OutputModuleFunctions group
 /** @} */ // end of OutputModule group
 /** @} */ // end of NXTFirmwareModules group
-
-#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-/** @addtogroup NXTFirmwareModules
- * @{
- */
-/** @addtogroup OutputModule
- * @{
- */
-/** @addtogroup OutputModuleFunctions
- * @{
- */
-
-/**
- * Enable absolute position regulation with PID factors.
- * Enable absolute position regulation on the specified output.  Motor is kept
- * regulated as long as this is enabled.
- * Optionally specify proportional, integral, and derivative factors.
- *
- * \param output Desired output port. Can be a constant or a variable, see
- * \ref OutputPortConstants.
- * \param p Proportional factor used by the firmware's PID motor control
- * algorithm. See \ref PIDConstants. Default value is \ref PID_3.
- * \param i Integral factor used by the firmware's PID motor control
- * algorithm. See \ref PIDConstants. Default value is \ref PID_1.
- * \param d Derivative factor used by the firmware's PID motor control
- * algorithm. See \ref PIDConstants. Default value is \ref PID_1.
- */
-inline void PosRegEnable(byte output, byte p = PID_3, byte i = PID_1, byte d = PID_1)
-{
-    SetOutput(output,
-	       OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED,
-	       RegModeField, OUT_REGMODE_POS,
-	       RunStateField, OUT_RUNSTATE_RUNNING,
-	       PowerField, 0,
-	       TurnRatioField, 0,
-	       RegPValueField, p, RegIValueField, i, RegDValueField, d,
-	       UpdateFlagsField, UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+UF_UPDATE_RESET_COUNT);
-    Wait(MS_2);
-}
-
-/**
- * Change the current value for set angle.
- * Make the absolute position regulation going toward the new provided angle.
- * Returns immediately, but keep regulating.
- *
- * \param output Desired output port. Can be a constant or a variable, see
- * \ref OutputPortConstants.
- * \param angle New set position, in degree. The 0 angle corresponds to the
- * position of the motor when absolute position regulation was first enabled.
- * Can be negative. Can be greater than 360 degree to make several turns.
- */
-inline void PosRegSetAngle(byte output, long angle)
-{
-    SetOutput(output,
-	       TachoLimitField, angle,
-	       UpdateFlagsField, UF_UPDATE_TACHO_LIMIT);
-}
-
-/**
- * Add to the current value for set angle.
- * Add an offset to the current set position. Returns immediately, but keep
- * regulating.
- *
- * \param output Desired output port. Can be a constant or a variable, see
- * \ref OutputPortConstants.
- * \param angle_add Value to add to the current set position, in degree. Can
- * be negative. Can be greater than 360 degree to make several turns.
- */
-inline void PosRegAddAngle(byte output, long angle_add)
-{
-    long current_angle = GetOutput(output, TachoLimitField);
-    SetOutput(output,
-	       TachoLimitField, current_angle + angle_add,
-	       UpdateFlagsField, UF_UPDATE_TACHO_LIMIT);
-}
-
-/**
- * Set maximum limits.
- * Set maximum speed and acceleration.
- *
- * \param output Desired output port. Can be a constant or a variable, see
- * \ref OutputPortConstants.
- * \param max_speed Maximum speed, or 0 to disable speed limiting.
- * \param max_acceleration Maximum acceleration, or 0 to disable acceleration
- * limiting. The max_speed parameter should not be 0 if this is not 0.
- */
-inline void PosRegSetMax(byte output, byte max_speed, byte max_acceleration)
-{
-    SetOutput(output,
-	       MaxSpeedField, max_speed,
-	       MaxAccelerationField, max_acceleration,
-	       UpdateFlagsField, UF_UPDATE_PID_VALUES);
-    Wait(MS_2);
-}
-
-/** @} */ // end of OutputModuleFunctions group
-/** @} */ // end of OutputModule group
-/** @} */ // end of NXTFirmwareModules group
-#endif
 
 #endif // OUTPUT_H

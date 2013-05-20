@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-10-18
- * \version 108
+ * \date 2012-12-31
+ * \version 109
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -10007,6 +10007,59 @@ inline void SysListFiles(ListFilesType & args);
  */
 
 /**
+ * Set sensor as HiTechnic Gyro.
+ * Configure the sensor on the specified port as a HiTechnic Gyro sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ */
+inline void SetSensorHTGyro(const byte & port) {
+  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
+  SetSensorMode(port, SENSOR_MODE_RAW);
+  ResetSensor(port);
+}
+
+/**
+ * Set sensor as HiTechnic Magnet.
+ * Configure the sensor on the specified port as a HiTechnic Magnet sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ */
+inline void SetSensorHTMagnet(const byte & port) {
+  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
+  SetSensorMode(port, SENSOR_MODE_RAW);
+  ResetSensor(port);
+}
+
+/**
+ * Set sensor as HiTechnic EOPD.
+ * Configure the sensor on the specified port as a HiTechnic EOPD sensor in either
+ * standard range or long range mode. As with all third party sensors, consult
+ * the documentation provided by the manufacturer for additional details
+ * regarding how to use their device.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param bStandard Configure in standard range or long range mode,
+ * default = standard range mode.
+ */
+inline void SetSensorHTEOPD(const byte & port, bool bStandard = true) {
+  SetSensorType(port, bStandard ? SENSOR_TYPE_LIGHT_INACTIVE : SENSOR_TYPE_LIGHT_ACTIVE);
+  SetSensorMode(port, SENSOR_MODE_RAW);
+  ResetSensor(port);
+}
+
+/**
+ * Set sensor as HiTechnic Force.
+ * Configure the sensor on the specified port as a HiTechnic Force sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ */
+inline void SetSensorHTForce(const byte & port) {
+  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
+  SetSensorMode(port, SENSOR_MODE_RAW);
+  ResetSensor(port);
+}
+
+/**
  * Read HiTechnic Gyro sensor.
  * Read the HiTechnic Gyro sensor on the specified port. The offset value
  * should be calculated by averaging several readings with an offset of zero
@@ -10057,40 +10110,16 @@ inline int SensorHTEOPD(const byte & port) {
 }
 
 /**
- * Set sensor as HiTechnic EOPD.
- * Configure the sensor on the specified port as a HiTechnic EOPD sensor.
+ * Read HiTechnic Force sensor.
+ * Read the HiTechnic Force sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param bStandard Configure in standard or long-range mode.
+ * \return The Force sensor reading.
  */
-inline void SetSensorHTEOPD(const byte & port, bool bStandard) {
-  SetSensorType(port, bStandard ? SENSOR_TYPE_LIGHT_INACTIVE : SENSOR_TYPE_LIGHT_ACTIVE);
-  SetSensorMode(port, SENSOR_MODE_RAW);
-  ResetSensor(port);
-}
-
-/**
- * Set sensor as HiTechnic Gyro.
- * Configure the sensor on the specified port as a HiTechnic Gyro sensor.
- *
- * \param port The sensor port. See \ref InPorts.
- */
-inline void SetSensorHTGyro(const byte & port) {
-  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
-  SetSensorMode(port, SENSOR_MODE_RAW);
-  ResetSensor(port);
-}
-
-/**
- * Set sensor as HiTechnic Magnet.
- * Configure the sensor on the specified port as a HiTechnic Magnet sensor.
- *
- * \param port The sensor port. See \ref InPorts.
- */
-inline void SetSensorHTMagnet(const byte & port) {
-  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
-  SetSensorMode(port, SENSOR_MODE_RAW);
-  ResetSensor(port);
+inline int SensorHTForce(const byte & port) {
+  asm {
+    getin __RETVAL__, port, RawValueField
+  }
 }
 
 #ifdef __DOXYGEN_DOCS
@@ -10702,6 +10731,30 @@ inline bool SetSensorHTSuperProAnalogOut(const byte port, const byte dac, byte m
  * \return The function call result.
  */
 inline bool ReadSensorHTSuperProAnalogOut(const byte port, const byte dac, byte & mode, int & freq, int & volt);
+
+/**
+ * Set HiTechnic PIR deadband value.
+ * Set the HiTechnic PIR deadband value.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function. The deadband value must be between 0 and 47.  It defines the
+ * half width of the deadband. The sensor has a default deadband value of 12.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The PIR deadband value. Valid values are between 0 and 47.
+ * \return The function call result.
+ */
+inline bool SetSensorHTPIRDeadband(const byte port, byte value);
+
+/**
+ * Read HiTechnic PIR measurement value.
+ * Read the HiTechnic PIR measurement value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The passive infrared reading.  A signed byte (-128..127).
+ */
+inline char SensorHTPIR(const byte port);
 
 /**
  * Read HiTechnic touch multiplexer.
@@ -11505,6 +11558,9 @@ inline void HTScoutUnmuteSound(void);
 #define SensorHTSuperProProgramControl(_port) asm { __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_CTRL, 1, __RETVAL__, __TMPBYTE__) }
 #define SetSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt) asm { __SetSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt, __RETVAL__) }
 #define ReadSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt) asm { __ReadSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt, __RETVAL__) }
+
+#define SensorHTPIR(_port) asm { __MSReadValue(_port, HT_ADDR_PIR, HTPIR_REG_READING, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTPIRDeadband(_port, _value) asm { __SetSensorHTPIRDeadband(_port, _value, __RETVAL__) }
 
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }
 #define HTPFComboDirect(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }

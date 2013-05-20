@@ -1,3 +1,7 @@
+#include "cmath.h"
+#include "cstring.h"
+#include "display.h"
+
 // ex_asind.nxc
 // Display values of the asind API call.
 // This program runs indefinitely -- press gray button to exit.

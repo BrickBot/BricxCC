@@ -1,7 +1,7 @@
 task main()
 {
   int x;
-  Timer0 = 10000;
+  Timer0 = SEC_10;
   while (true)
   {
     x = Timer0;

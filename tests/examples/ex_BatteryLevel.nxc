@@ -1,1 +1,7 @@
-x = BatteryLevel();
+#include "ui.h"
+
+task main()
+{
+  int x = BatteryLevel();
+  x++;
+}

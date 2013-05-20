@@ -1,1 +1,7 @@
-result = CloseFile(handle);
+#include "loader.h"
+
+task main()
+{
+  byte handle;
+  byte result = CloseFile(handle);
+}

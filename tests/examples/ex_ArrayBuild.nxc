@@ -1,3 +1,6 @@
+#include "command.h"
+#include "display.h"
+
 task main()
 {
   byte myArray[];

@@ -1,3 +1,7 @@
+#include "cmath.h"
+#include "cstring.h"
+#include "display.h"
+
 // ex_atan.nxc
 // Display values of the atan API call.
 // This program runs indefinitely -- press gray button to exit.

@@ -134,7 +134,7 @@ uses
 {$ENDIF}
 
 const
-  K_RCXINFO = '(RCX = 0, Cybermaster = 1, Scout = 2, RCX2 = 3, Spybot = 4, Swan = 5, NXT = 6, and Something = 7)';
+  K_RCXINFO = '(RCX = 0, Cybermaster = 1, Scout = 2, RCX2 = 3, Spybot = 4, Swan = 5, NXT = 6, SPRO = 7, and EV3 = 8)';
 
 begin
   TheMenuItemType := TOfficeMenuItem;

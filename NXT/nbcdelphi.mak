@@ -6,7 +6,9 @@ DEFAULT_INCLUDE_DIR=.
 all:: $(DOBJECTS) $(PROGRAMS)
 
 clean::
-	rm -f *.o *.ppu *.rst *.compiled *.dcu ../*.dcu ../bricktools/*.dcu nbc_preproc.inc
+	rm -f *.o *.ppu *.rst *.compiled *.dcu ../*.dcu ../bricktools/*.dcu ../pbr/*.dcu nbc_preproc.inc
+	rm -f ../*.o ../*.ppu ../*.rst ../bricktools/*.o ../bricktools/*.ppu ../pbr/*.o ../pbr/*.ppu
+	rm -f ../*.o ../*.ppu ../*.rst ../bricktools/*.o ../bricktools/*.ppu
 
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
@@ -17,11 +19,11 @@ DELPHI=$(TOOLPREFIX)dcc32.exe
 
 # how to link executable
 %.exe: %.dpr nbc_preproc.inc
-	$(DELPHI) $< -U.. -U../bricktools -U../png -DCAN_DOWNLOAD -DFAST_MM
+	$(DELPHI) $< -U.. -U../bricktools -U../png -U../pbr -DCAN_DOWNLOAD -DFAST_MM
 
 # how to compile pas source
 %.dcu: %.pas mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
-	$(DELPHI) $< -U.. -U../bricktools -U../png -DCAN_DOWNLOAD -DFAST_MM
+	$(DELPHI) $< -U.. -U../bricktools -U../png -U../pbr -DCAN_DOWNLOAD -DFAST_MM
 
 # how to create the include file
 nbc_preproc.inc:

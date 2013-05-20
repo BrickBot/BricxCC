@@ -1,8 +1,22 @@
-float a = ceil(3.01);
-// a == 4.0
-float b = ceil(3.14);
-// b == 4.0
-float c = ceil(3.99);
-// c == 4.0
-float d = ceil(4.0);
-// d == 4.0
+#include "cmath.h"
+
+task main()
+{
+  float x;
+  x = 3.01;
+  float a = ceil(x);
+  // a == 4.0
+  a++;
+  x = 3.14;
+  float b = ceil(x);
+  // b == 4.0
+  b++;
+  x = 3.99;
+  float c = ceil(x);
+  // c == 4.0
+  c++;
+  x = 4.0;
+  float d = ceil(x);
+  // d == 4.0
+  d++;
+}

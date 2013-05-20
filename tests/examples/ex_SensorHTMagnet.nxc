@@ -1,1 +1,13 @@
-int value = SensorHTMagnet(S1);
+task main()
+{
+  int offset = 0;
+  SetSensorHTMagnet(S1);
+  while (true)
+  {
+    ClearLine(LCD_LINE1);
+    int value = SensorHTMagnet(S1, offset);
+    NumOut(0, LCD_LINE1, value);
+    Wait(MS_250);
+  }
+}
+

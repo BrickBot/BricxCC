@@ -16,18 +16,21 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef IOCTRL_H
 #define IOCTRL_H
+
+#include "ioctrl_constants.h"
+#include "command.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// IOCTRL MODULE ////////////////////////////////
@@ -37,14 +40,17 @@
 /** @addtogroup NXTFirmwareModules
  * @{
  */
+
 /** @addtogroup IOCtrlModule
  * @{
  */
+
 /** @defgroup IOCtrlModuleTypes IOCtrl module types
  * Types used by various IOCtrl module functions.
  * @{
  */
 /** @} */ // end of IOCtrlModuleTypes group
+
 /** @defgroup IOCtrlModuleFunctions IOCtrl module functions
  * Functions for accessing and modifying IOCtrl module features.
  * @{

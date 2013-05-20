@@ -66,7 +66,7 @@ const
   rtSwan        = 5;
   rtNXT         = 6;
   rtSPro        = 7;
-  rtFoo         = 8;
+  rtEv3         = 8;
 
 const
   SU_RCX         = rtRCX;
@@ -77,7 +77,7 @@ const
   SU_SWAN        = rtSwan;
   SU_NXT         = rtNXT;
   SU_SPRO        = rtSPro;
-  SU_FOO         = rtFoo;
+  SU_EV3         = rtEv3;
 
 var
   UserDataLocalPath : string;
@@ -97,7 +97,7 @@ function IsRCX : boolean;
 function IsScout : boolean;
 function IsSpybotic : boolean;
 function IsSuperPro : boolean;
-function IsFoo : boolean;
+function IsEv3 : boolean;
 
 {$IFNDEF FPC}
 function GetSpecialFolderPath(folder : integer) : string;
@@ -147,9 +147,9 @@ begin
   result := (LocalBrickType = SU_SPRO);
 end;
 
-function IsFoo : boolean;
+function IsEv3 : boolean;
 begin
-  result := (LocalBrickType = SU_FOO);
+  result := (LocalBrickType = SU_EV3);
 end;
 
 {$IFNDEF FPC}

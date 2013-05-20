@@ -1,1 +1,10 @@
-ArrayInit(myArray, 0, 10); // 10 elements == zero
+#include "command.h"
+#include "display.h"
+
+task main()
+{
+  byte myArray[];
+  ArrayInit(myArray, 0, 10); // 10 elements == zero
+  NumOut(0, LCD_LINE1, ArrayLen(myArray));
+  while(true);
+}

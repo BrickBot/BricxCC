@@ -1,0 +1,28 @@
+#include "display.h"
+#include "command.h"
+#include "cstring.h"
+#include "cstdlib.h"
+
+string current = "x", character = "A";
+
+task main()
+{
+  while(true)
+  {
+    repeat(16)
+    {
+      // change to byte and re-run this code
+      int iAsciiVal = 32 + Random(95);
+      character = FlattenVar(iAsciiVal);
+      NumOut(0, LCD_LINE1, ArrayLen(character));
+      for (int i=0; i < ArrayLen(character); i++)
+        NumOut(0, LCD_LINE2-8*i, character[i]);
+
+      TextOut(0, LCD_LINE8, current);
+      Wait(SEC_1);
+      ClearScreen();
+      current = current + character;
+    }
+    current = "x";
+  }
+}

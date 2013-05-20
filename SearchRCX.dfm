@@ -180,7 +180,7 @@ object SearchRCXForm: TSearchRCXForm
         'Swan'
         'NXT'
         'SuperPro'
-        'Foo')
+        'EV3')
     end
   end
 end

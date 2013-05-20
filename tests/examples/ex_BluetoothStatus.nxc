@@ -1,1 +1,9 @@
-x = BluetoothStatus(1);
+#include "comm.h"
+
+task main()
+{
+  int x = BluetoothStatus(1);
+  x++;
+}
+
+

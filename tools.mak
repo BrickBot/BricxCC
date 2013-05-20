@@ -10,7 +10,11 @@ ROOT=c:
 LAZROOT=~/program/lazarus-svn
 PSROOT=~/program/pascalscript-svn
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
-LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fugrep -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/components/synedit/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(LAZROOT)/packager/units/$(FPC_TARGET)/ -Fu$(PSROOT)/Source/lib/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY -dCAN_DOWNLOAD $(EXTRAFLAGS)
+LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fugrep \
+ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/components/synedit/units/$(FPC_TARGET)/$(WIDGETSET)/ \
+ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ \
+ -Fu$(LAZROOT)/packager/units/$(FPC_TARGET)/ -Fu$(PSROOT)/Source/lib/$(FPC_TARGET)/ \
+ -Fu$(LAZROOT)/components/lazutils/lib/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY -dCAN_DOWNLOAD $(EXTRAFLAGS)
 
 FORMS=uToolPalette.lrs uPortPrompt.lrs Controller.lrs Diagnose.lrs JoystickUnit.lrs \
  MessageUnit.lrs Piano.lrs RemoteUnit.lrs uNXTImage.lrs Watch.lrs uMIDIConversion.lrs \

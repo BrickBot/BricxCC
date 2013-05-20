@@ -1,7 +1,7 @@
 /** \file loader_constants.h
- * \brief NXC loader module constants
+ * \brief NXC Loader module constants
  *
- * loader_constants.h contains NXC loader module constants
+ * loader_constants.h contains NXC Loader module constants
  *
  * License:
  *
@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef LOADER_CONSTANTS_H

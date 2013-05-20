@@ -16,18 +16,24 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef COMM_H
 #define COMM_H
+
+#include "comm_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_comm.h" }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// COMM MODULE /////////////////////////////////
@@ -96,6 +102,38 @@ struct CommBTWriteType {
   byte Buffer[];     /*!< The data to write to the connection. */
 };
 
+/**
+ * The JoystickMessageType structure.
+ * This structure is used to contain Joystick values read via the
+ * \ref JoystickMessageRead API function.
+ */
+struct JoystickMessageType {
+  byte JoystickDir;      /*!< The joystick direction or position. Ranges from 1 to 9, with the values representing numeric keypad buttons.  8 is up, 2 is down, 5 is center, etc. */
+  byte LeftMotor;        /*!< The left motor. See \ref RCXOutputConstants for possible values. */
+  byte RightMotor;       /*!< The right motor. See \ref RCXOutputConstants for possible values. */
+  byte BothMotors;       /*!< The left and right motors. See \ref RCXOutputConstants for possible values. */
+  char LeftSpeed;        /*!< The left motor speed (-100 to 100). */
+  char RightSpeed;       /*!< The right motor speed (-100 to 100). */
+  unsigned long Buttons; /*!< The joystick buttons pressed state. */
+};
+
+/**
+ * The JoystickExMessageType structure.
+ * This structure is used to contain Joystick values read via the
+ * \ref JoystickExMessageRead API function.
+ */
+struct JoystickExMessageType {
+  unsigned long Xpos;          /*!< The x position */
+  unsigned long Ypos;          /*!< The y position */
+  unsigned long Zpos;          /*!< The z position */
+  unsigned long Rpos;         /*!< The rudder/4th axis position */
+  unsigned long Upos;         /*!< The 5th axis position */
+  unsigned long Vpos;         /*!< The 6th axis position */
+  unsigned long Buttons;       /*!< The button states */
+  unsigned long ButtonNumber; /*!< The current button number pressed */
+  unsigned long POV;          /*!< The point of view state */
+};
+
 #ifdef __ENHANCED_FIRMWARE
 /**
  * Parameters for the CommExecuteFunction system call.
@@ -151,14 +189,14 @@ struct CommBTWriteType {
  */
 struct CommExecuteFunctionType {
   unsigned int Result;   /*!< The function call result. Possible values
-                           include \ref LoaderErrors. */
+                              include \ref LoaderErrors. */
   byte Cmd;              /*!< The command to execute. */
   byte Param1;           /*!< The first parameter, see table. */
   byte Param2;           /*!< The second parameter, see table. */
   byte Param3;           /*!< The third parameter, see table. */
   string Name;           /*!< The name parameter, see table. */
   unsigned int RetVal;   /*!< The function call return value. Possible values
-                           include \ref LoaderErrors. */
+                              include \ref LoaderErrors. */
 };
 
 /**
@@ -186,8 +224,8 @@ struct CommHSControlType {
  * \sa SysCommHSCheckStatus()
  */
 struct CommHSCheckStatusType {
- bool SendingData;     /*!< Is data currently being sent? */
- bool DataAvailable;   /*!< Is data available for reading? */
+ byte SendingData;     /*!< Number of bytes of data currently being sent. */
+ byte DataAvailable;   /*!< Number of bytes of data available for reading. */
 };
 
 /**
@@ -200,6 +238,12 @@ struct CommHSReadWriteType {
  char Status;    /*!< The result of the function call. */
  byte Buffer[];  /*!< The buffer of data to write or to contain the data read
                       from the hi-speed port. */
+#if __FIRMWARE_VERSION > 107
+ byte BufferLen; /*!< The size of the output buffer on input.  Determines the
+                      maximum number of bytes read from the hi-speed port.
+                      This field is not updated during the function call and
+                      it is only used for the Read operation. */
+#endif
 };
 #endif
 
@@ -244,6 +288,28 @@ struct CommBTConnectionType {
  */
 
 #ifdef __DOXYGEN_DOCS
+
+/**
+ * Read a joystick message from a queue/mailbox.
+ * Read a joystick message from a queue/mailbox.
+ *
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param msg The joystick message that is read from the mailbox. See
+ * \ref JoystickMessageType for details.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char JoystickMessageRead(byte queue, JoystickMessageType & msg);
+
+/**
+ * Read an extended joystick message from a queue/mailbox.
+ * Read an extended joystick message from a queue/mailbox.
+ *
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param msg The extended joystick message that is read from the mailbox. See
+ * \ref JoystickExMessageType for details.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char JoystickExMessageRead(byte queue, JoystickExMessageType & msg);
 
 /**
  * Send a message to a queue/mailbox.
@@ -1291,11 +1357,11 @@ inline char RS485Control(byte cmd, byte baud, unsigned int mode);
  * Check for RS485 available data.
  * Check the RS485 hi-speed port for available data.
  *
- * \return A value indicating whether data is available or not.
+ * \return The number of bytes of data available for reading.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline bool RS485DataAvailable(void);
+inline byte RS485DataAvailable(void);
 
 /**
  * Initialize RS485 port.
@@ -1343,31 +1409,43 @@ inline char RS485Enable(void);
 inline char RS485Read(byte & buffer[]);
 
 /**
+ * Read limited RS485 data.
+ * Read a limited number of bytes of data from the RS485 hi-speed port.
+ *
+ * \param buffer A byte array that will contain the data read from the RS485 port.
+ * \param buflen The number of bytes you want to read.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+.
+ */
+inline char RS485ReadEx(byte & buffer[], byte buflen);
+
+/**
  * Is RS485 sending data.
  * Check whether the RS485 is actively sending data.
- * 
- * \return A value indicating whether data is being sent or not.
+ *
+ * \return The number of bytes of data being sent.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline bool RS485SendingData(void);
+inline byte RS485SendingData(void);
 
 /**
  * Check RS485 status.
  * Check the status of the RS485 hi-speed port.
- * 
- * \param sendingData A boolean value set to true on output if data is being sent.
- * \param dataAvail A boolean value set to true on output if data is available to be read.
+ *
+ * \param sendingData The number of bytes of data being sent.
+ * \param dataAvail The number of bytes of data available for reading.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline void RS485Status(bool & sendingData, bool & dataAvail);
+inline void RS485Status(byte & sendingData, byte & dataAvail);
 
 /**
  * Configure RS485 UART.
  * Configure the RS485 UART parameters, including baud rate, data bits,
  * stop bits, and parity.
- * 
+ *
  * \param baud The baud rate for the RS485 port. See \ref CommHiSpeedBaudConstants.
  * \param mode The RS485 port mode (data bits, stop bits, parity).  See \ref
  * CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants, \ref
@@ -1381,7 +1459,7 @@ inline char RS485Uart(byte baud, unsigned int mode);
 /**
  * Write RS485 data.
  * Write data to the RS485 hi-speed port.
- * 
+ *
  * \param buffer A byte array containing the data to write to the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -1392,7 +1470,7 @@ inline char RS485Write(byte buffer[]);
 /**
  * Write RS485 boolean.
  * Write a boolean value to the RS485 hi-speed port.
- * 
+ *
  * \param bval A boolean value to write over the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -1403,7 +1481,7 @@ inline char SendRS485Bool(bool bval);
 /**
  * Write RS485 numeric.
  * Write a numeric value to the RS485 hi-speed port.
- * 
+ *
  * \param val A numeric value to write over the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -1414,7 +1492,7 @@ inline char SendRS485Number(long val);
 /**
  * Write RS485 string.
  * Write a string value to the RS485 hi-speed port.
- * 
+ *
  * \param str A string value to write over the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -1428,7 +1506,7 @@ inline char SendRS485String(string str);
  * Get bluetooth input buffer data.
  * This method reads count bytes of data from the Bluetooth input buffer and
  * writes it to the buffer provided.
- * 
+ *
  * \param offset A constant offset into the bluetooth input buffer.
  * \param cnt The number of bytes to read.
  * \param data The byte array reference which will contain the data read from
@@ -1799,6 +1877,13 @@ inline byte HSSpeed(void);
  */
 inline byte HSState(void);
 
+/**
+ * Get hi-speed port address.
+ * This method returns the value of the hi-speed port address.
+ * \return The hi-speed port address. See \ref CommHiSpeedAddressConstants.
+ */
+inline byte HSAddress(void);
+
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
 /**
@@ -2021,6 +2106,13 @@ inline void SetHSSpeed(byte hsSpeed);
  */
 inline void SetHSState(byte hsState);
 
+/**
+ * Set hi-speed port address.
+ * This method sets the value of the hi-speed port address.
+ * \param hsAddress The hi-speed port address. See \ref CommHiSpeedAddressConstants.
+ */
+inline void SetHSAddress(byte hsAddress);
+
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
 /**
@@ -2213,6 +2305,28 @@ inline void SetBTDeviceNameCount(byte count);
 
 #else
 
+#define __DoReadJoystick(_queue, _arg) \
+  acquire __MRMutex \
+  mov __MRArgs.QueueID, _queue \
+  set __MRArgs.Remove, TRUE \
+  syscall MessageRead, __MRArgs \
+  brtst NEQ, __RRM_Err##__I__, __MRArgs.Result \
+  unflatten _arg, __RRNErr, __MRArgs.Message, _arg \
+  __RRM_Err##__I__: \
+  __IncI__ \
+  mov __RETVAL__, __MRArgs.Result \
+  release __MRMutex
+
+#define JoystickMessageRead(_queue, _jmt) asm { \
+  compchktype _jmt, JoystickMessageType \
+  __DoReadJoystick(_queue, _jmt) \
+}
+
+#define JoystickExMessageRead(_queue, _jemt) asm { \
+  compchktype _jemt, JoystickExMessageType \
+  __DoReadJoystick(_queue, _jemt) \
+}
+
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }
 #define ReceiveMessage(_queue, _clear, _msg) asm { __receiveMessage(_queue, _clear, _msg, __RETVAL__) }
 
@@ -2237,11 +2351,11 @@ inline void SetBTDeviceNameCount(byte count);
 #define RemoteMessageRead(_conn, _queue) asm { __remoteMessageRead(_conn, _queue, __RETVAL__) }
 #define RemoteMessageWrite(_conn, _queue, _msg) asm { __sendRemoteString(_conn, _queue, _msg, __RETVAL__) }
 #define RemoteStartProgram(_conn, _filename) asm { __remoteStartProgram(_conn, _filename, __RETVAL__) }
-#define RemoteStopProgram(_conn) asm { __connectionWrite(_conn, __DCStopProgramPacket, __RETVAL__) }
+#define RemoteStopProgram(_conn) asm { __connectionSCDCWrite(_conn, __DCStopProgramPacket, __RETVAL__) }
 #define RemotePlaySoundFile(_conn, _filename, _bloop) asm { __remotePlaySoundFile(_conn, _filename, _bloop, __RETVAL__) }
 #define RemotePlayTone(_conn, _frequency, _duration) asm { __remotePlayTone(_conn, _frequency, _duration, __RETVAL__) }
-#define RemoteStopSound(_conn) asm { __connectionWrite(_conn, __DCStopSoundPacket, __RETVAL__) }
-#define RemoteKeepAlive(_conn) asm { __connectionWrite(_conn, __DCKeepAlivePacket, __RETVAL__) }
+#define RemoteStopSound(_conn) asm { __connectionSCDCWrite(_conn, __DCStopSoundPacket, __RETVAL__) }
+#define RemoteKeepAlive(_conn) asm { __connectionSCDCWrite(_conn, __DCKeepAlivePacket, __RETVAL__) }
 #define RemoteResetScaledValue(_conn, _port) asm { __remoteResetScaledValue(_conn, _port, __RETVAL__) }
 #define RemoteResetMotorPosition(_conn, _port, _brelative) asm { __remoteResetMotorPosition(_conn, _port, _brelative, __RETVAL__) }
 #define RemoteSetInputMode(_conn, _port, _type, _mode) asm { __remoteSetInputMode(_conn, _port, _type, _mode, __RETVAL__) }
@@ -2320,22 +2434,22 @@ inline void SetBTDeviceNameCount(byte count);
 #define RemoteWrite(_conn, _handle, _data) asm { __remoteWrite(_conn, _handle, _data, __RETVAL__) }
 #define RemoteCloseFile(_conn, _handle) asm { __remoteCloseFile(_conn, _handle, __RETVAL__) }
 #define RemoteDeleteFile(_conn, _filename) asm { __remoteDeleteFile(_conn, _filename, __RETVAL__) }
-#define RemoteDeleteUserFlash(_conn) asm { __connectionWrite(_conn, __SCDeleteUserFlashPacket, __RETVAL__) }
+#define RemoteDeleteUserFlash(_conn) asm { __connectionSCDCWrite(_conn, __SCDeleteUserFlashPacket, __RETVAL__) }
 #define RemoteFindFirstFile(_conn, _mask) asm { __remoteFindFirstFile(_conn, _mask, __RETVAL__) }
 #define RemoteFindNextFile(_conn, _handle) asm { __remoteFindNextFile(_conn, _handle, __RETVAL__) }
-#define RemoteGetFirmwareVersion(_conn) asm { __connectionWrite(_conn, __SCGetFirmwareVerPacket, __RETVAL__) }
+#define RemoteGetFirmwareVersion(_conn) asm { __connectionSCDCWrite(_conn, __SCGetFirmwareVerPacket, __RETVAL__) }
 #define RemoteOpenWriteLinear(_conn, _filename, _size) asm { __remoteOpenWriteLinear(_conn, _filename, _size, __RETVAL__) }
 #define RemoteOpenWriteData(_conn, _filename, _size) asm { __remoteOpenWriteData(_conn, _filename, _size, __RETVAL__) }
 #define RemoteOpenAppendData(_conn, _filename) asm { __remoteOpenAppendData(_conn, _filename, __RETVAL__) }
-#define RemoteGetDeviceInfo(_conn) asm { __connectionWrite(_conn, __SCGetDeviceInfoPacket, __RETVAL__) }
+#define RemoteGetDeviceInfo(_conn) asm { __connectionSCDCWrite(_conn, __SCGetDeviceInfoPacket, __RETVAL__) }
 #define RemotePollCommandLength(_conn, _bufnum) asm { __remotePollCommandLength(_conn, _bufnum, __RETVAL__) }
 #define RemotePollCommand(_conn, _bufnum, _len) asm { __remotePollCommand(_conn, _bufnum, _len, __RETVAL__) }
 #define RemoteIOMapRead(_conn, _id, _offset, _numbytes) asm { __remoteIOMapRead(_conn, _id, _offset, _numbytes, __RETVAL__) }
-#define RemoteGetBluetoothAddress(_conn) asm { __connectionWrite(_conn, __SCBTGetAddressPacket, __RETVAL__) }
+#define RemoteGetBluetoothAddress(_conn) asm { __connectionSCDCWrite(_conn, __SCBTGetAddressPacket, __RETVAL__) }
 
 #endif
 
-#define RemoteBluetoothFactoryReset(_conn) asm { __connectionWrite(_conn, __SCBTFactoryResetPacket, __RETVAL__) }
+#define RemoteBluetoothFactoryReset(_conn) asm { __connectionSCDCWrite(_conn, __SCBTFactoryResetPacket, __RETVAL__) }
 #define RemoteIOMapWriteValue(_conn, _id, _offset, _value) asm { __remoteIOMapWriteValue(_conn, _id, _offset, _value, __RETVAL__) }
 #define RemoteIOMapWriteBytes(_conn, _id, _offset, _data) asm { __remoteIOMapWriteBytes(_conn, _id, _offset, _data, __RETVAL__) }
 #define RemoteSetBrickName(_conn, _name) asm { __remoteSetBrickName(_conn, _name, __RETVAL__) }
@@ -2352,6 +2466,7 @@ inline void SetBTDeviceNameCount(byte count);
 
 #if __FIRMWARE_VERSION > 107
 
+#define RS485ReadEx(_buffer, _buflen) asm { __RS485ReadEx(_buffer, _buflen, __RETVAL__) }
 #define RS485Control(_cmd, _baud, _mode) asm { __RS485Control(_cmd, _baud, _mode, __RETVAL__) }
 #define RS485Uart(_baud, _mode) asm { __RS485Control(HS_CTRL_UART, _baud, _mode, __RETVAL__) }
 #define RS485Initialize() asm { __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, __RETVAL__) }
@@ -2421,6 +2536,7 @@ inline void SetBTDeviceNameCount(byte count);
 #define HSSpeed() asm { GetHSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define HSState() asm { GetHSState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define USBState() asm { GetUSBState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define HSAddress() asm { GetHSAddress(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 #define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
@@ -2489,6 +2605,7 @@ inline void SetBTDeviceNameCount(byte count);
 #define SetHSSpeed(_n) asm { __setHSSpeed(_n) }
 #define SetHSState(_n) asm { __setHSState(_n) }
 #define SetUSBState(_n) asm { __setUSBState(_n) }
+#define SetHSAddress(_n) asm { __setHSAddress(_n) }
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 #define SetBTDataMode(_n) asm { __setBTDataMode(_n) }

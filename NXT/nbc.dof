@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..;..\bricktools;..\png
+SearchPath=..;..\bricktools;..\png;..\pbr
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;vcldb;soaprtl;VclSmp;inetdb;bdertl;vcldbx;adortl;vclactnband;SynEdit_D7;BricxCCSyn_D7;M103_r70;S201DR70;cxExportVCLD7;vcl7cr10;TCSComp_65
 Conditionals=FAST_MM, CAN_DOWNLOAD
 DebugSourceDirs=d:\nxt\nxt\BricxCC\source\bricktools\;d:\nxt\nxt\BricxCC\source\
@@ -128,7 +128,7 @@ CompanyName=JoCar Consulting
 FileDescription=Next Byte Codes Compiler
 FileVersion=1.2.1.5
 InternalName=NBC
-LegalCopyright=Copyright (c) 2006-2012, John Hansen
+LegalCopyright=Copyright (c) 2006-2013, John Hansen
 LegalTrademarks=
 OriginalFilename=
 ProductName=Next Byte Codes Compiler
@@ -148,11 +148,12 @@ Item2=FAST_MM, WITHTINY
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=4
-Item0=..;..\bricktools;..\png
-Item1=..;..\bricktools
-Item2=..;..\bricktool
-Item3=..
+Count=5
+Item0=..;..\bricktools;..\png;..\pbr
+Item1=..;..\bricktools;..\png
+Item2=..;..\bricktools
+Item3=..;..\bricktool
+Item4=..
 [HistoryLists\hlBPLOutput]
 Count=1
 Item0=..

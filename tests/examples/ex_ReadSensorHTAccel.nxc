@@ -1,1 +1,18 @@
-bVal = ReadSensorHTAccel(S1, x, y, z);
+#ifndef DRAW_OPT_CLEAR_EOL
+#define DRAW_OPT_CLEAR_EOL DRAW_OPT_NORMAL
+#endif
+
+task main() {
+  int x, y, z;
+  SetSensorLowspeed(S2);
+  while (true) {
+    if (ReadSensorHTAccel(S2, x, y, z)) {
+#if DRAW_OPT_CLEAR_EOL == DRAW_OPT_NORMAL
+      ClearScreen();
+#endif
+      NumOut(0, LCD_LINE1, x, DRAW_OPT_CLEAR_EOL);
+      NumOut(0, LCD_LINE2, y, DRAW_OPT_CLEAR_EOL);
+      NumOut(0, LCD_LINE3, z, DRAW_OPT_CLEAR_EOL);
+    }
+  }
+}

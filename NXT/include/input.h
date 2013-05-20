@@ -16,18 +16,24 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef INPUT_H
 #define INPUT_H
+
+#include "input_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_input.h" }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// INPUT MODULE ////////////////////////////////
@@ -189,6 +195,32 @@ struct InputType {
   bool InvalidData;
 };
 */
+
+/**
+ * Parameters for the InputPinFunction system call.
+ * This structure is used when calling the \ref SysInputPinFunction system call
+ * function.
+ * \sa SysInputPinFunction()
+ */
+struct InputPinFunctionType {
+  unsigned int Result; /*!< The function call result. Possible return values are
+                            ERR_INVALID_PORT or NO_ERR. */
+  byte Cmd;            /*!< The command to execute. See \ref InputPinFuncConstants.
+                            You can add a microsecond wait after the command by
+                            ORing INPUT_PINCMD_WAIT(usec) with the command value.
+                            Wait times can range from 1 to 63 microseconds. */
+  byte Port;           /*!< The input port. See \ref InPorts. */
+  byte Pin;            /*!< The digital pin(s). See \ref InputDigiPinConstants.
+                            When setting pin direction you must OR the desired
+                            direction constant into this field.  See
+                            INPUT_PINDIR_INPUT and INPUT_PINDIR_OUTPUT
+                            from the \ref InputPinFuncConstants group. You
+                            can OR together the digital pin constants to
+                            operate on both in a single call. */
+  byte Data;           /*!< The pin value(s). This field is only used by the
+                            INPUT_PINCMD_READ command. */
+};
+
 
 #endif
 
@@ -788,6 +820,19 @@ inline unsigned int ColorSensorRaw(byte port, byte color);
  */
 inline unsigned int ColorSensorValue(byte port, byte color);
 
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Execute the Input module pin function.
+ * This function lets you execute the Input module's pin function using the
+ * values specified via the \ref InputPinFunctionType structure.
+ *
+ * \param args The InputPinFunctionType structure containing the required parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline void SysInputPinFunction(InputPinFunctionType & args);
+#endif
+
 #endif
 
 #else
@@ -799,27 +844,6 @@ enum InputFieldNames {
   NormalizedValue,
   ScaledValue,
   InvalidData
-};
-
-enum OutputFieldNames {
-  UpdateFlags,
-  OutputMode,
-  Power,
-  ActualSpeed,
-  TachoCount,
-  TachoLimit,
-  RunState,
-  TurnRatio,
-  RegMode,
-  Overload,
-  RegPValue,
-  RegIValue,
-  RegDValue,
-  BlockTachoCount,
-  RotationCount,
-  OutputOptions,
-  MaxSpeed,
-  MaxAcceleration
 };
 
 // input fields
@@ -868,6 +892,13 @@ enum OutputFieldNames {
 #define ColorSensorValue(_p, _nc) asm { GetInColorSensorValue(_p, _nc, __TMPWORD__) __RETURN__ __TMPWORD__ }
 #define ColorBoolean(_p, _nc) asm { GetInColorBoolean(_p, _nc, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define ColorCalibrationState(_p) asm { GetInColorCalibrationState(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
+
+#ifdef __ENHANCED_FIRMWARE
+#define SysInputPinFunction(_args) asm { \
+  compchktype _args, InputPinFunctionType \
+  syscall InputPinFunction, _args \
+}
+#endif
 
 #endif
 

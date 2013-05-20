@@ -1,1 +1,9 @@
-int x = BrickDataTimeoutValue();
+#include "comm.h"
+
+task main()
+{
+  int x = BrickDataTimeoutValue();
+  x += 3;
+}
+
+

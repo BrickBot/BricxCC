@@ -417,7 +417,6 @@ type
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
     procedure AllocateHelper(aName, aVal, Val, tname: string; dt: char);
-    function  AlreadyDecorated(n : string) : boolean;
     function  GetDecoratedValue: string;
     function  GetDecoratedIdent(const val: string): string;
     procedure PopCmpHelper(const cc: string);
@@ -469,7 +468,7 @@ type
     procedure CheckForTypedef(var bUnsigned, bConst, bStatic, bInline, bSafeCall : boolean);
     function  IsUserDefinedType(const name : string) : boolean;
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
-    procedure LoadSystemFile(S : TStream);
+    procedure LoadSourceStream(Src, Dest : TStream);
     procedure CheckForMain;
     function ProcessArrayDimensions(var lenexpr : string) : string;
     procedure CheckForCast;
@@ -1209,35 +1208,6 @@ begin
     Result := fGlobals[i].UseSafeCall;
 end;
 
-function TNXCComp.AlreadyDecorated(n: string): boolean;
-var
-  i : integer;
-  tmp : string;
-begin
-  // a variable is considered to be already decorated if it
-  // starts with "__" followed by a task name followed by DECOR_SEP
-  // OR it starts with "__signed_stack_"
-  // OR it starts with "__unsigned_stack_"
-  // OR it starts with "__float_stack_"
-  // OR it starts with %%CALLER%%_
-  Result := False;
-  i := Pos('__', n);
-  if i = 1 then
-  begin
-    System.Delete(n, 1, 2); // remove the '__' at the beginning
-    Result := Pos('%%CALLER%%_', n) = 1;
-    if Result then Exit;
-    i := Pos(DECOR_SEP, n);
-    if i > 1 then
-    begin
-      tmp := Copy(n, 1, i-1);
-      i := fThreadNames.IndexOf(tmp);
-      Result := (i <> -1) or (tmp = 'signed_stack') or
-                (tmp = 'unsigned_stack') or (tmp = 'float_stack');
-    end;
-  end;
-end;
-
 {--------------------------------------------------------------}
 { Look for Symbol in Parameter Table }
 
@@ -1307,7 +1277,7 @@ end;
 function TNXCComp.ParamIdx(n: string): integer;
 begin
   n := RootOf(n);
-  if AlreadyDecorated(n) then
+  if AlreadyDecorated(n, fThreadNames) then
     Result := fParams.IndexOfName(n)
   else
     Result := fParams.IndexOfName(ApplyDecoration(fCurrentThreadName, n, 0));
@@ -1379,7 +1349,7 @@ var
   i : integer;
 begin
   n := RootOf(n);
-  if AlreadyDecorated(n) then
+  if AlreadyDecorated(n, fThreadNames) then
     Result := fLocals.IndexOfName(n)
   else
   begin
@@ -3053,7 +3023,7 @@ var
   i : integer;
 begin
   Result := val;
-  if not AlreadyDecorated(val) then
+  if not AlreadyDecorated(val, fThreadNames) then
   begin
     case WhatIs(val) of
       stParam :
@@ -6795,20 +6765,22 @@ begin
 end;
 
 procedure TNXCComp.Parse(aStrings: TStrings);
+var
+  Stream : TMemoryStream;
 begin
-  Clear;
-  if not IgnoreSystemFile then
-    LoadSystemFile(fMS);
-  aStrings.SaveToStream(fMS);
-  InternalParseStream;
+  Stream := TMemoryStream.Create;
+  try
+    aStrings.SaveToStream(Stream);
+    Parse(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TNXCComp.Parse(aStream: TStream);
 begin
   Clear;
-  if not IgnoreSystemFile then
-    LoadSystemFile(fMS);
-  fMS.CopyFrom(aStream, 0);
+  LoadSourceStream(aStream, fMS);
   InternalParseStream;
 end;
 
@@ -6816,16 +6788,12 @@ procedure TNXCComp.Parse(const aFilename: string);
 var
   Stream : TFileStream;
 begin
-  Clear;
-  if not IgnoreSystemFile then
-    LoadSystemFile(fMS);
   Stream := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyWrite);
   try
-    fMS.CopyFrom(Stream, 0);
+    Parse(Stream);
   finally
     Stream.Free;
   end;
-  InternalParseStream;
 end;
 
 procedure TNXCComp.Clear;
@@ -9811,19 +9779,23 @@ begin
   end;
 end;
 
-procedure TNXCComp.LoadSystemFile(S : TStream);
+procedure TNXCComp.LoadSourceStream(Src, Dest : TStream);
 var
   tmp : string;
 begin
-  // load fMS with the contents of NBCCommon.h followed by NXCDefs.h
-  tmp := '#line 0 "NXCDefs.h"'#13#10;
-  S.Write(PChar(tmp)^, Length(tmp));
+  if not IgnoreSystemFile then
+  begin
+    // load fMS with the contents of NBCCommon.h followed by NXCDefs.h
+    tmp := '#line 0 "NXCDefs.h"'#13#10;
+    Dest.Write(PChar(tmp)^, Length(tmp));
 
-  S.Write(nbc_common_data, High(nbc_common_data)+1);
-  S.Write(nxc_defs_data, High(nxc_defs_data)+1);
-//  tmp := Format('#line 0 "%s"'#13#10, [CurrentFile]);
-  tmp := #13#10'#reset'#13#10;
-  S.Write(PChar(tmp)^, Length(tmp));
+    Dest.Write(nbc_common_data, High(nbc_common_data)+1);
+    Dest.Write(nxc_defs_data, High(nxc_defs_data)+1);
+  //  tmp := Format('#line 0 "%s"'#13#10, [CurrentFile]);
+    tmp := #13#10'#reset'#13#10;
+    Dest.Write(PChar(tmp)^, Length(tmp));
+  end;
+  Dest.CopyFrom(Src, 0);
 end;
 
 procedure TNXCComp.CheckSemicolon;
@@ -10360,6 +10332,16 @@ begin
     Value := StrRetValName
   else if Value = '__GENRETVAL__' then
     Value := RegisterName
+  else if Value = '__LINE__' then
+    Value := IntToStr(linenumber)
+  else if Value = '__FILE__' then
+    Value := Format('"%s"', [CurrentFile])
+  else if Value = '__FUNCTION__' then
+    Value := Format('"%s"', [fCurrentThreadName])
+  else if Value = '__DATE__' then
+    Value := FormatDateTime('"mmm dd yyyy"', Date)
+  else if Value = '__TIME__' then
+    Value := FormatDateTime('"hh:nn:ss"', Now)
   else if Value = 'false' then
   begin
     Value := '0';

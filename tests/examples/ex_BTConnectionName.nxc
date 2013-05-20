@@ -1,1 +1,6 @@
-string name = BTConnectionName(0);
+#include "comm.h"
+
+task main()
+{
+  string name = BTConnectionName(CONN_BT0);
+}

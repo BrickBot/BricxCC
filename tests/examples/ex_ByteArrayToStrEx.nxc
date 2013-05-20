@@ -1,1 +1,8 @@
-ByteArrayToStrEx(myArray, myStr);
+#include "cstring.h"
+
+task main()
+{
+  string myStr;
+  byte myArray[] = {32, 36, 38};
+  ByteArrayToStrEx(myArray, myStr);
+}

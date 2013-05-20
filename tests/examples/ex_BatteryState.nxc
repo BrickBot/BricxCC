@@ -1,1 +1,8 @@
-x = BatteryState();
+#include "ui.h"
+
+task main()
+{
+  int x = BatteryState();
+  x++;
+}
+

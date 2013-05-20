@@ -1,1 +1,9 @@
-long class = BTConnectionClass(1);
+#include "comm.h"
+
+task main()
+{
+  long class = BTConnectionClass(CONN_BT1);
+  class += 3;
+}
+
+

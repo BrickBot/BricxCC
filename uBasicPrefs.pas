@@ -610,12 +610,12 @@ begin
           3 : Result := 'Next Byte Codes';
           4 : Result := 'NXC';
           5 : Result := 'SPC';
-          6 : Result := 'FOO';
+          6 : Result := 'EVC';
         else
           if LocalBrickType = SU_NXT then
             Result := 'NXC'
-          else if LocalBrickType = SU_FOO then
-            Result := 'FOO'
+          else if LocalBrickType = SU_EV3 then
+            Result := 'EVC'
           else
             Result := 'NQC';
         end;

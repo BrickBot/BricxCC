@@ -16,23 +16,30 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-03-03
+ * \version 3
  */
 
 #ifndef CSTRING_H
 #define CSTRING_H
 
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_cstring.h" }
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// cstring API //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+/** @addtogroup StandardCAPIFunctions
+ * @{
+ */
 
 /** @defgroup cstringAPI cstring API
  * Standard C cstring API functions.
@@ -149,6 +156,20 @@ inline string StrReplace(string str, unsigned int idx, string strnew);
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline string FormatNum(string fmt, variant num);
+
+/**
+ * Format a value.
+ * Return the formatted string using the format and value. Use a standard
+ * numeric sprintf format specifier within the format string. The input string
+ * parameter may be a variable, constant, or expression.
+ *
+ * \param fmt The string format containing a sprintf format specifier.
+ * \param val Any numeric or string value.
+ * \return A string containing the formatted value.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline string FormatVal(string fmt, variant val);
 
 /**
  * Flatten any data to a string.
@@ -529,5 +550,8 @@ void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (s
 
 
 /** @} */ // end of cstringAPI group
+
+
+/** @} */ // end of StandardCAPIFunctions group
 
 #endif // CSTRING_H

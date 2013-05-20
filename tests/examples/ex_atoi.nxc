@@ -1,3 +1,7 @@
+#include "cstdlib.h"
+#include "command.h"
+#include "display.h"
+
 task main()
 {
   NumOut(0, LCD_LINE1, atoi("3.14159"));

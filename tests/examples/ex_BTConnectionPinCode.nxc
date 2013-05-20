@@ -1,1 +1,7 @@
-string pincode = BTConnectionPinCode(0);
+#include "comm.h"
+
+task main()
+{
+  string pincode = BTConnectionPinCode(CONN_BT0);
+}
+

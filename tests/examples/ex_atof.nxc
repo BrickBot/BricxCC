@@ -1,3 +1,7 @@
+#include "cstdlib.h"
+#include "command.h"
+#include "display.h"
+
 task main()
 {
   float f = atof("3.14159e2");

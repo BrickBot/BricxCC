@@ -1,1 +1,6 @@
-x = CommandFlags();
+#include "ui.h"
+
+task main()
+{
+  byte x = CommandFlags();
+}

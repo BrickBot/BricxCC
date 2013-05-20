@@ -1,1 +1,11 @@
-x = BluetoothWrite(1, data);
+#include "comm.h"
+
+task main()
+{
+  byte data[] = {0, 1, 2, 3};
+  int x = BluetoothWrite(CONN_BT1, data);
+  x++;
+}
+
+
+

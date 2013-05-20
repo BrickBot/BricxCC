@@ -16,26 +16,44 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-16
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 #ifndef CMATH_H
 #define CMATH_H
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_cmath.h" }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// cmath API //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-/** @defgroup cmathAPI cmath API
- * Standard C cmath API functions and constants.
+/** @addtogroup StandardCAPIFunctions
  * @{
  */
+
+/** @defgroup cmathAPI cmath API
+ * Standard C cmath API functions, types, and constants.
+ * @{
+ */
+
+/**
+ * This structure is used for storing three axis values in a single object.
+ */
+struct VectorType {
+  float X;    /*!< The X axis value. */
+  float Y;    /*!< The Y axis value. */
+  float Z;    /*!< The Z axis value. */
+};
+
 
 #if __FIRMWARE_VERSION > 107
 
@@ -805,12 +823,46 @@ inline bool isNAN(float value);
  */
 inline char sign(variant num);
 
+/**
+ * VectorCross function.
+ * Calculate the cross-product of two vectors.
+ *
+ * \param a A variable of type VectorType
+ * \param b A variable of type VectorType
+ * \param out The cross-product vector.
+ */
+inline void VectorCross(VectorType a, VectorType b, VectorType & out);
+
+/**
+ * VectorDot function.
+ * Calculate the dot-product of two vectors.
+ *
+ * \param a A variable of type VectorType
+ * \param b A variable of type VectorType
+ * \return The dot product of the two vectors.
+ */
+inline float VectorDot(VectorType a, VectorType b);
+
+/**
+ * VectorNormalize function.
+ * Normalize the vector.
+ *
+ * \param a A variable of type VectorType
+ */
+inline void VectorNormalize(VectorType & a);
+
 #else
 
 #define isNAN(_x) ((_x) != (_x))
 
+#define VectorCross(_a, _b, _out) asm { __VectorCross(_a, _b, _out) }
+#define VectorDot(_a, _b) asm { __VectorDot(_a, _b, __FLTRETVAL__) }
+#define VectorNormalize(_a) asm { __VectorNormalize(_a) }
+
 #endif
+
 /** @} */ // end of cmathAPI group
 
+/** @} */ // end of StandardCAPIFunctions group
 
 #endif // CMATH_H

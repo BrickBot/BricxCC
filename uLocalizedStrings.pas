@@ -349,30 +349,30 @@ resourcestring
 // uNXTExplorer unit
 resourcestring
   sConfirmDel     = 'Delete all the selected files?';
-  sConfirmDefrag  = 'Defragment the NXT filesystem.'#13#10 +
-    'This operation attempts to a) upload all files from the NXT ' +
-    'to your computer, b) erase the NXT flash memory, and c) download ' +
-    'all the files back to the NXT. It is possible that the defragment ' +
+  sConfirmDefrag  = 'Defragment the PBrick filesystem.'#13#10 +
+    'This operation attempts to a) upload all files from the PBrick ' +
+    'to your computer, b) erase the PBrick flash memory, and c) download ' +
+    'all the files back to the PBrick. It is possible that the defragment ' +
     'operation may not complete successfully and files may be lost.'#13#10 +
     'Do you want to go ahead with the defragmentation operation?';
-  sConfirmErase   = 'Erase all files on the NXT?';
+  sConfirmErase   = 'Erase all files on the PBrick?';
   sLowBattery     = 'Battery level is too low to complete this operation';
   sDefragError    = 'Defragmentation failed!';
   sDefragSuccess  = 'Defragmentation complete!';
   sTooBig         = 'File size (%d) of "%s" is too large.';
   sDownloadFailed = 'Download failed';
   sExit           = 'E&xit';
-  sNXTViewStyleMenu = 'NXT View Style';
+  sNXTViewStyleMenu = 'PBrick View Style';
   sPCViewStyleMenu  = 'PC View Style';
   sAbout          = '&About';
 
 // uNXTImage unit
 resourcestring
   sBTResetConfirm   = 'Are you sure you want to reset Bluetooth to factory defaults?';
-  sBootSAMBAConfirm = 'Are you sure you want to boot the NXT in SAMBA mode?';
+  sBootSAMBAConfirm = 'Are you sure you want to boot the PBrick in SAMBA mode?';
   sUtilitiesMenu  = 'Utilities';
-  sSetNXTName     = 'Set NXT Name';
-  sBootSAMBA      = 'Boot NXT into SAMBA mode';
+  sSetNXTName     = 'Set PBrick Name';
+  sBootSAMBA      = 'Boot PBrick into SAMBA mode';
   sResetBluetooth = 'Reset Bluetooth to factory defaults';
   sRefreshRate    = '&Refresh Rate';
   sScale          = 'Sca&le';

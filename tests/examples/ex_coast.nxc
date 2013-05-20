@@ -1,1 +1,6 @@
-Coast(OUT_A); // coast output A
+#include "output.h"
+
+task main()
+{
+  Coast(OUT_A); // coast output A
+}

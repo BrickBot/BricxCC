@@ -32,7 +32,9 @@ procedure WriteCardinal(aStream : TStream; value : Cardinal; bLittleEndian : Boo
 procedure WriteInteger(aStream : TStream; value : Integer; bLittleEndian : Boolean = True);
 procedure WriteString(aStream : TStream; aString : string; bWriteLength : Boolean = False);
 procedure WriteSingle(aStream : TStream; value : single; bLittleEndian : Boolean = True);
-procedure WriteBytes(aStream : TStream; value : TBytes);
+procedure WriteBytes(aStream : TStream; value : TJCHBytes);
+
+procedure CopyStream(aIn : TStream; sourceIndex : Integer; aOut : TStream; destinationIndex : integer; length : integer);
 
 implementation
 
@@ -217,9 +219,24 @@ begin
   aStream.Write(value, SizeOf(value));
 end;
 
-procedure WriteBytes(aStream : TStream; value : TBytes);
+procedure WriteBytes(aStream : TStream; value : TJCHBytes);
 begin
   aStream.Write(value, Length(value));
+end;
+
+procedure CopyStream(aIn : TStream; sourceIndex : Integer; aOut : TStream; destinationIndex : integer; length : integer);
+var
+  buff : Pointer;
+begin
+  GetMem(buff, length);
+  try
+    aIn.Position := sourceIndex;
+    aIn.Read(buff^, length);
+    aOut.Position := destinationIndex;
+    aOut.Write(buff^, length);
+  finally
+    FreeMem(buff);
+  end;
 end;
 
 end.

@@ -4,7 +4,7 @@ object frmNXTWatchList: TfrmNXTWatchList
   Width = 496
   Height = 197
   BorderStyle = bsSizeToolWin
-  Caption = 'NXT Watch List'
+  Caption = 'Watch List'
   Color = clBtnFace
   DragKind = dkDock
   DragMode = dmAutomatic
@@ -22,8 +22,8 @@ object frmNXTWatchList: TfrmNXTWatchList
   TextHeight = 13
   object tabMain: TTabSet
     Left = 0
-    Top = 142
-    Width = 488
+    Top = 138
+    Width = 480
     Height = 21
     Align = alBottom
     Font.Charset = DEFAULT_CHARSET
@@ -39,8 +39,8 @@ object frmNXTWatchList: TfrmNXTWatchList
   object lstWatches: TListView
     Left = 0
     Top = 0
-    Width = 488
-    Height = 142
+    Width = 480
+    Height = 138
     Align = alClient
     BevelInner = bvNone
     BevelKind = bkTile

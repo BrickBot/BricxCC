@@ -16,23 +16,28 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef CSTDIO_H
 #define CSTDIO_H
 
+#include "loader.h"
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// cstdio API //////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+/** @addtogroup StandardCAPIFunctions
+ * @{
+ */
 
 /** @defgroup cstdioAPI cstdio API
  * Standard C cstdio API functions.
@@ -253,6 +258,35 @@ inline int fputs(string str, byte handle) {
     return EOF;
 }
 
+/**
+ * Get character from stdin.
+ * Returns the next character from the standard input (stdin).
+ * It is equivalent to getc with stdin as its argument. On the NXT this means
+ * wait for a button press and return the value of the button pressed.
+ *
+ * \return The pressed button. See \ref ButtonNameConstants.
+ *
+ */
+inline int getchar() {
+  int result = -1;
+  while (true) {
+    if (ButtonPressed(BTN1, false))
+      result = BTN1;
+    else if (ButtonPressed(BTN2, false))
+      result = BTN2;
+    else if (ButtonPressed(BTN3, false))
+      result = BTN3;
+    else if (ButtonPressed(BTN4, false))
+      result = BTN4;
+    if (result != -1)
+      break;
+    else
+      Yield();
+  }
+  while(ButtonPressed(result, false));
+  return result;
+}
+
 #ifdef __ENHANCED_FIRMWARE
 
 #ifdef __DOXYGEN_DOCS
@@ -301,14 +335,14 @@ inline void sprintf(string & str, string format, variant value);
 #else
 
 #define printf(_format, _value) { \
-  string msg = FormatNum(_format, _value); \
+  string msg = FormatVal(_format, _value); \
   TextOut(0, LCD_LINE1, msg); \
 }
 #define fprintf(_handle, _format, _value) { \
-  int cnt = fputs(FormatNum(_format, _value), _handle); \
+  int cnt = fputs(FormatVal(_format, _value), _handle); \
 }
 #define sprintf(_str, _format, _value) { \
-  _str = FormatNum(_format, _value); \
+  _str = FormatVal(_format, _value); \
 }
 
 #endif
@@ -358,36 +392,6 @@ inline int fseek(byte handle, long offset, int origin) {
  */
 inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 
-/**
- * Get character from stdin.
- * Returns the next character from the standard input (stdin).
- * It is equivalent to getc with stdin as its argument. On the NXT this means
- * wait for a button press and return the value of the button pressed.
- *
- * \return The pressed button. See \ref ButtonNameConstants.
- *
- */
-inline int getchar() {
-  int result = -1;
-  while (true) {
-    if (ButtonPressed(BTN1, false))
-      result = BTN1;
-    else if (ButtonPressed(BTN2, false))
-      result = BTN2;
-    else if (ButtonPressed(BTN3, false))
-      result = BTN3;
-    else if (ButtonPressed(BTN4, false))
-      result = BTN4;
-    if (result != -1)
-      break;
-    else
-      Yield();
-  }
-  while(ButtonPressed(result, false));
-  return result;
-}
-
-
 #endif
 #endif
 
@@ -397,6 +401,10 @@ inline int getchar() {
   int putchar(int character); // write character to stdout
 */
 
+
+
 /** @} */ // end of cstdioAPI group
+
+/** @} */ // end of StandardCAPIFunctions group
 
 #endif // CSTDIO_H

@@ -1,3 +1,6 @@
+#include "display.h"
+#include "command.h"
+
 task main()
 {
   ClearScreen();

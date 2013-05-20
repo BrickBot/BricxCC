@@ -1201,8 +1201,10 @@ function StripInline(const name: string): string;
 function InlineThreadName(const name: string): string;
 function IsInlined(const name: string) : boolean;
 function StripAllInlineDecoration(const name: string): string;
+function StripGlobalDecoration(const name : string) : string;
 function StripDecoration(const name : string) : string;
 function PrettyNameStrip(const name : string) : string;
+function ApplyGlobalDecoration(const val: string): string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
 function NBCStrToFloat(const AValue: string): Double;
@@ -1215,6 +1217,7 @@ function ValueToDataType(const value : integer) : char;
 function DataTypeToTypeName(const dt : char) : string;
 function BoolToString(aValue : boolean) : string;
 function RootOf(const name: string): string;
+function AlreadyDecorated(n : string; aThreadNames : TStrings) : boolean;
 
 const
   REGVARS_ARRAY : array[0..11] of string = (
@@ -1265,6 +1268,37 @@ uses
   uCommonUtils,
   uCompTokens;
 
+
+function AlreadyDecorated(n : string; aThreadNames : TStrings) : boolean;
+var
+  i : integer;
+  tmp : string;
+begin
+  // a variable is considered to be already decorated if it
+  // starts with "__" followed by a task name followed by DECOR_SEP
+  // OR it starts with "__signed_stack_"
+  // OR it starts with "__unsigned_stack_"
+  // OR it starts with "__float_stack_"
+  // OR it starts with %%CALLER%%_
+  // OR it starts with "__g__" (i.e., a global variable)
+  Result := Pos('__g__', n) = 1;
+  if Result then Exit;
+  i := Pos('__', n);
+  if i = 1 then
+  begin
+    System.Delete(n, 1, 2); // remove the '__' at the beginning
+    Result := Pos('%%CALLER%%_', n) = 1;
+    if Result then Exit;
+    i := Pos(DECOR_SEP, n);
+    if i > 1 then
+    begin
+      tmp := Copy(n, 1, i-1);
+      i := aThreadNames.IndexOf(tmp);
+      Result := (i <> -1) or (tmp = 'signed_stack') or
+                (tmp = 'unsigned_stack') or (tmp = 'float_stack');
+    end;
+  end;
+end;
 
 function RootOf(const name: string): string;
 var
@@ -1345,6 +1379,13 @@ begin
     Result := Copy(Result, 1, i-1);
 end;
 
+function StripGlobalDecoration(const name : string) : string;
+begin
+  Result := name;
+  if Pos('__g__', Result) = 1 then
+    System.Delete(Result, 1, 5);
+end;
+
 function StripDecoration(const name : string) : string;
 var
   i : integer;
@@ -1380,6 +1421,11 @@ begin
     System.Delete(Result, 1, 2); // drop the underscores
     Result := Replace(Result, DECOR_SEP, '.');
   end;
+end;
+
+function ApplyGlobalDecoration(const val: string): string;
+begin
+  Result := '__g__' + val;
 end;
 
 function ApplyDecoration(const pre, val: string; const level : integer): string;

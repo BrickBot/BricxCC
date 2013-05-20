@@ -1,1 +1,11 @@
-x = ArrayLen(myArray); 
+#include "command.h"
+
+task main()
+{
+  byte myArray[];
+  ArrayInit(myArray, 0, 10); // 10 elements == zero
+  int x = ArrayLen(myArray);
+  while(true)
+    x++;
+}
+

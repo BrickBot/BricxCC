@@ -1,1 +1,6 @@
-long class = BTDeviceClass(1);
+#include "comm.h"
+
+task main()
+{
+  long class = BTDeviceClass(1);
+}

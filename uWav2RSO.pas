@@ -108,16 +108,17 @@ end;
 procedure TfrmWave2RSO.btnConvertClick(Sender: TObject);
 var
   i : integer;
-  filename : string;
+  filename, ext : string;
 begin
   mmoMessages.Clear;
   for i := 0 to lstWavFiles.Items.Count - 1 do
   begin
     filename := lstWavFiles.Items[i];
-    if LowerCase(ExtractFileExt(filename)) = '.rso' then
+    ext := LowerCase(ExtractFileExt(filename));
+    if (ext = '.rso') or (ext = '.rsf') then
       ConvertRSO2Wave(filename, edtPath.Text, mmoMessages.Lines)
     else
-      ConvertWave2RSO(filename, edtPath.Text, SampleRate, ResampleMethod, UseCompression, mmoMessages.Lines);
+      ConvertWave2RSO(filename, edtPath.Text, SampleRate, ResampleMethod, UseCompression, ext, mmoMessages.Lines);
     Application.ProcessMessages;
   end;
 end;
@@ -125,6 +126,7 @@ end;
 procedure TfrmWave2RSO.FormCreate(Sender: TObject);
 begin
   CreateDirectoryEdit;
+  dlgOpen.Filter := 'WAV files (*.wav)|*.wav|RSO/RSF files (*.rso;*.rsf)|*.rso;*.rsf|All files (*.*)|*.*';
 {$IFDEF FPC}
   edtPath.Text := ExpandFilename('~/Documents/');
 {$ELSE}  

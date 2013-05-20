@@ -1,1 +1,8 @@
-x = BluetoothState();
+#include "ui.h"
+
+task main()
+{
+  int x = BluetoothState();
+  x++;
+}
+

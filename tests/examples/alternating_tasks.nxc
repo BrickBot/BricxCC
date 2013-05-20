@@ -1,3 +1,5 @@
+#include "command.h"
+#include "sound.h"
 // When run, this program alternates between task A and task B until halted
 // by pressing the gray button.
 

@@ -2130,7 +2130,8 @@ object PrefForm: TPrefForm
                 'Spybot'
                 'Swan'
                 'NXT'
-                'SPC')
+                'SPC'
+                'EV3')
             end
           end
           object grpPorts: TGroupBox

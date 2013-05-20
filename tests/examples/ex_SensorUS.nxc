@@ -1,1 +1,19 @@
-x = SensorUS(S4); // read sensor 4
+#include "input.h"
+#include "lowspeed.h"
+#include "display.h"
+#include "command.h"
+
+task main()
+{
+  SetSensorLowspeed(S4);
+  while (true)
+  {
+    ClearScreen();
+    NumOut(0, LCD_LINE1, SensorUS0(S4));
+    int x = SensorUS(S4); // read sensor 4 with 15ms wait
+    NumOut(0, LCD_LINE2, x);
+    Wait(MS_5);
+    NumOut(0, LCD_LINE3, SensorUSWait(S4, MS_10));
+    Wait(MS_250);
+  }
+}

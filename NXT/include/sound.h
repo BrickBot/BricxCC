@@ -16,18 +16,24 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-03-03
+ * \version 3
  */
 
 #ifndef SOUND_H
 #define SOUND_H
+
+#include "sound_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_sound.h" }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// SOUND MODULE ////////////////////////////////
@@ -138,8 +144,10 @@ inline char PlayFile(string filename);
  * \param filename The name of the sound or melody file to play.
  * \param volume The desired tone volume.
  * \param loop A boolean flag indicating whether to play the file repeatedly.
+ * \param sr An optional sample rate at which to play the sound file. A value
+ * of zero means to use the sample rate specified in the sound file header.
  */
-inline char PlayFileEx(string filename, byte volume, bool loop);
+inline char PlayFileEx(string filename, byte volume, bool loop, unsigned int sr = 0);
 
 /**
  * Play a tone.

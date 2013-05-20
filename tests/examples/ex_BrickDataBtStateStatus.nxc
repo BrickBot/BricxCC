@@ -1,1 +1,8 @@
-int x = BrickDataBtStateStatus();
+#include "comm.h"
+
+task main()
+{
+  int x = BrickDataBtStateStatus();
+  x++;
+}
+

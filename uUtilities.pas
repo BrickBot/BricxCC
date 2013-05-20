@@ -6,8 +6,8 @@ uses
   Classes;
 
 type
-  TBytes = array of byte;
-  TBytesArray = array of TBytes;
+  TJCHBytes = array of byte;
+  TJCHBytesArray = array of TJCHBytes;
   TIntegers = array of integer;
 
 function HiWord(L: Cardinal): Word;

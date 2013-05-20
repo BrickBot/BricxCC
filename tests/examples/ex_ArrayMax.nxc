@@ -1,3 +1,7 @@
+#include "command.h"
+#include "display.h"
+#include "cstdlib.h"
+
 task main()
 {
   int data[40];

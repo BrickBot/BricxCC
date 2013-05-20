@@ -63,6 +63,8 @@ var
   hid_get_indexed_string : function(device : PHidDeviceHandle; str_index : integer; str : PWideChar; maxlen : cardinal) : integer; cdecl;
   hid_error : function(device : PHidDeviceHandle) : PWideChar; cdecl;
 
+function InvalidHidDeviceHandle(device : PHidDeviceHandle) : boolean;
+
 var
   HidAPILoaded: Boolean = False;
 
@@ -72,6 +74,13 @@ implementation
 
 uses
   Windows;
+
+function InvalidHidDeviceHandle(device : PHidDeviceHandle) : boolean;
+begin
+  Result := device = nil;
+  if not Result then
+    Result := device^ = INVALID_HANDLE_VALUE;
+end;
 
 var
   DLLHandle: THandle;
@@ -146,5 +155,5 @@ initialization
 
 finalization
   UnloadHidAPI;
-  
+
 end.
