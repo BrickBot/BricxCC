@@ -16,6 +16,9 @@
 library nxtspirit;
 
 uses
+{$IFDEF FPC}
+  cmem,
+{$ENDIF}
   FantomSpirit in 'bricktools\FantomSpirit.pas',
   brick_common in 'bricktools\brick_common.pas',
   fantomspiritlib in 'bricktools\fantomspiritlib.pas',

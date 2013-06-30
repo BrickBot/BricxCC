@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -19,7 +19,7 @@ unit FakeSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_link, rcx_constants, uSpirit, FantomDefs;
+  Classes, SysUtils, rcx_link, rcx_constants, uSpirit, FantomDefs, uCompCommon;
 
 type
   EMessageInvalid = class(Exception)

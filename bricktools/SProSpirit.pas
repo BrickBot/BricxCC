@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs,
-  uUtilities, uSerial;
+  uUtilities, uSerial, uCompCommon;
 
 type
   TSProSpirit = class(TBrickComm)

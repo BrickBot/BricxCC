@@ -19,6 +19,7 @@ library fantom;
 {$H+}
 
 uses
+  cmem,
   fantomfpc;
 
 exports

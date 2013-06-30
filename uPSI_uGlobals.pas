@@ -92,6 +92,7 @@ begin
  CL.AddConstantN('K_SWAN','String').SetString( 'Swan');
  CL.AddConstantN('K_NXT','String').SetString( 'NXT');
  CL.AddConstantN('K_SPRO','String').SetString( 'SuperPro');
+ CL.AddConstantN('K_EV3','String').SetString( 'EV3');
  CL.AddConstantN('rtRCX','LongInt').SetInt( 0);
  CL.AddConstantN('rtCybermaster','LongInt').SetInt( 1);
  CL.AddConstantN('rtScout','LongInt').SetInt( 2);
@@ -100,6 +101,7 @@ begin
  CL.AddConstantN('rtSwan','LongInt').SetInt( 5);
  CL.AddConstantN('rtNXT','LongInt').SetInt( 6);
  CL.AddConstantN('rtSPro','LongInt').SetInt( 7);
+ CL.AddConstantN('rtEV3','LongInt').SetInt( 8);
  CL.AddConstantN('SU_RCX','byte').SetUInt( rtRCX);
  CL.AddConstantN('SU_CYBERMASTER','byte').SetUInt( rtCybermaster);
  CL.AddConstantN('SU_SCOUT','byte').SetUInt( rtScout);
@@ -108,6 +110,7 @@ begin
  CL.AddConstantN('SU_SWAN','byte').SetUInt( rtSwan);
  CL.AddConstantN('SU_NXT','byte').SetUInt( rtNXT);
  CL.AddConstantN('SU_SPRO','byte').SetUInt( rtSPro);
+ CL.AddConstantN('SU_EV3','byte').SetUInt( rtEV3);
  CL.AddDelphiFunction('Function IsNXT : boolean');
  CL.AddDelphiFunction('Function IsSwan : boolean');
  CL.AddDelphiFunction('Function IsRCX2 : boolean');
@@ -115,6 +118,7 @@ begin
  CL.AddDelphiFunction('Function IsScout : boolean');
  CL.AddDelphiFunction('Function IsSpybotic : boolean');
  CL.AddDelphiFunction('Function IsSuperPro : boolean');
+ CL.AddDelphiFunction('Function IsEV3 : boolean');
 {$IFNDEF FPC}
  CL.AddDelphiFunction('Function GetSpecialFolderPath( folder : integer) : string');
 {$ENDIF}

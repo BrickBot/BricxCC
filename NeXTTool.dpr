@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -289,7 +289,7 @@ begin
   VerFileDescription  := '';
   VerFileVersion      := '1.2.1.r5';
   VerInternalName     := 'nexttool';
-  VerLegalCopyright   := 'Copyright (c) 2006-2012, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2013, John Hansen';
   VerOriginalFileName := 'nexttool';
   VerProductName      := 'nexttool';
   VerProductVersion   := '1.2';

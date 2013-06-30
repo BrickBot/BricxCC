@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -33,12 +33,12 @@ resourcestring
 
 // MainUnit unit
 resourcestring
-  sNoRCX           = 'No connection to the programmable brick. Certain options will be unavailable.';
+  sNoBrick         = 'No connection to the programmable brick. Certain options will be unavailable.';
   sNoPort          = 'no port';
   sNoRobot         = 'no robot';
   sHideCodeError   = 'Hide Code/Error|Warning Listing';
   sShowCodeError   = 'Show Code/Error|Warning Listing';
-  sFirmDwnldFailed = 'Firmware download failed. Put the RCX closer and try again.';
+  sFirmDwnldFailed = 'Firmware download failed. Please try again after checking configuration.';
   sWrongNum        = 'wrong download number';
   sWarnCancelFD    = 'Firmware download cancelled.';
   sBrickCommError  = 'Unable to communicate with your brick';
@@ -146,7 +146,7 @@ resourcestring
 
 // SearchRCX unit
 resourcestring
-  S_CANNOT_FIND_RCX = 'Cannot find brick. Switch it on or move it closer and press OK.';
+  S_CANNOT_FIND_BRICK = 'Cannot find brick. Switch it on or move it closer and press OK.';
   S_SEARCHING_NXT   = 'Searching for NXTs';
   S_SEARCHING_BRICK = 'Searching for a brick';
 
@@ -431,11 +431,10 @@ resourcestring
 // uPreprocess unit
 resourcestring
   sInvalidPreprocDirective  = 'Invalid preprocessor directive';
-  sImportRICNotFound        = 'Unable to find RIC import file: "%s"';
-  sImportRICMissingQuotes   = '#importric directive requires a filename (e.g., #importric "foo.ric")';
-  sImportRICInvalid         = '#importric directive filename must end in ".ric"';
+  sImportNotFound           = 'Unable to find import file: "%s"';
+  sImportMissingQuotes      = '#import directive requires a filename (e.g., #import "foo.txt")';
   sDownloadNotFound         = 'Unable to find download file: "%s"';
-  sDownloadMissingQuotes    = '#download directive requires a filename (e.g., #download "foo.ric")';
+  sDownloadMissingQuotes    = '#download directive requires a filename (e.g., #download "foo.ext")';
   sIncludeNotFound          = 'Unable to find include file: "%s"';
   sIncludeMissingQuotes     = '#include directive requires a filename (e.g., #include "foo.h")';
   sMacroMismatch            = 'Preprocessor macro function does not match instance (%s)';
@@ -623,6 +622,10 @@ resourcestring
   sInvalidDeref            = 'Invalid dereference syntax';
   sInvalidAddressOf        = 'Invalid address of syntax';
   sInvalidPointerSyntax    = 'Invalid pointer syntax';
+
+// evc.dpr
+resourcestring
+  UsageEV3FirmVer = '   -v=n: set the targeted firmware version (default == 105)';
 
 // nbc.dpr
 resourcestring

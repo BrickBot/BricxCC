@@ -1,11 +1,11 @@
-object SearchRCXForm: TSearchRCXForm
+object SearchBrickForm: TSearchBrickForm
   Left = 196
   Top = 153
   HelpContext = 3
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Find Brick'
-  ClientHeight = 181
+  ClientHeight = 209
   ClientWidth = 330
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -33,7 +33,7 @@ object SearchRCXForm: TSearchRCXForm
   end
   object OKBtn: TButton
     Left = 36
-    Top = 148
+    Top = 178
     Width = 81
     Height = 25
     HelpContext = 3002
@@ -44,7 +44,7 @@ object SearchRCXForm: TSearchRCXForm
   end
   object CancelBtn: TButton
     Left = 124
-    Top = 148
+    Top = 178
     Width = 81
     Height = 25
     HelpContext = 3003
@@ -57,7 +57,7 @@ object SearchRCXForm: TSearchRCXForm
     Left = 6
     Top = 102
     Width = 319
-    Height = 41
+    Height = 67
     Caption = 'Firmware'
     TabOrder = 4
     object radStandard: TRadioButton
@@ -73,7 +73,7 @@ object SearchRCXForm: TSearchRCXForm
       OnClick = FirmwareClick
     end
     object radBrickOS: TRadioButton
-      Left = 77
+      Left = 117
       Top = 16
       Width = 64
       Height = 17
@@ -83,7 +83,7 @@ object SearchRCXForm: TSearchRCXForm
       OnClick = FirmwareClick
     end
     object radPBForth: TRadioButton
-      Left = 142
+      Left = 227
       Top = 16
       Width = 62
       Height = 17
@@ -93,8 +93,8 @@ object SearchRCXForm: TSearchRCXForm
       OnClick = FirmwareClick
     end
     object radLejos: TRadioButton
-      Left = 205
-      Top = 16
+      Left = 8
+      Top = 40
       Width = 54
       Height = 17
       HelpContext = 3008
@@ -103,8 +103,8 @@ object SearchRCXForm: TSearchRCXForm
       OnClick = FirmwareClick
     end
     object radOtherFirmware: TRadioButton
-      Left = 261
-      Top = 16
+      Left = 227
+      Top = 40
       Width = 52
       Height = 17
       HelpContext = 3009
@@ -112,10 +112,20 @@ object SearchRCXForm: TSearchRCXForm
       TabOrder = 4
       OnClick = FirmwareClick
     end
+    object radLinux: TRadioButton
+      Left = 117
+      Top = 40
+      Width = 54
+      Height = 17
+      HelpContext = 3008
+      Caption = 'Linux'
+      TabOrder = 5
+      OnClick = FirmwareClick
+    end
   end
   object btnHelp: TButton
     Left = 212
-    Top = 148
+    Top = 178
     Width = 81
     Height = 25
     HelpContext = 3033

@@ -22,8 +22,8 @@ object EditorForm: TEditorForm
   TextHeight = 13
   object splErrors: TSplitter
     Left = 0
-    Top = 285
-    Width = 464
+    Top = 281
+    Width = 456
     Height = 3
     Cursor = crVSplit
     Align = alBottom
@@ -31,8 +31,8 @@ object EditorForm: TEditorForm
   end
   object TheErrors: TListBox
     Left = 0
-    Top = 288
-    Width = 464
+    Top = 284
+    Width = 456
     Height = 63
     Align = alBottom
     Color = clBtnFace

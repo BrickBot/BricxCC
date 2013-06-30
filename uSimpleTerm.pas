@@ -9,7 +9,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * Copyright (C) 2011-2012 John Hansen.
+ * Copyright (C) 2011-2013 John Hansen.
  * All Rights Reserved.
  *
  *)

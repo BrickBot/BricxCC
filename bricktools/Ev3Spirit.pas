@@ -19,7 +19,7 @@ unit Ev3Spirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs;
+  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs, uCompCommon;
 
 type
   TEv3Spirit = class(TBrickComm)

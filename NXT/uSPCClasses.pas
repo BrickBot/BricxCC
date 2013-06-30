@@ -26,7 +26,7 @@ interface
 
 uses
   Classes, Contnrs, SysUtils, uNXTConstants, uPreprocess,
-  uNBCCommon, uNXTClasses;
+  uNBCCommon, uNXTClasses, uCompCommon;
 
 type
   TSProOpCode = Word;

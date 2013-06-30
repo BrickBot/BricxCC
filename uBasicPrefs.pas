@@ -182,6 +182,35 @@ var
   gsReplaceText: string;
   gsReplaceTextHistory: string;
 
+const
+  K_EV3_MAKE_TEMPLATE =
+    'PROGRAM=%PROGRAM%' + #13#10 +
+    'DOBJECTS=%DOBJECTS%' + #13#10 +
+    'TOOLPREFIX=%TOOLPREFIX%' + #13#10 +
+    #13#10 +
+    'all:: realclean $(DOBJECTS) $(PROGRAM)' + #13#10 +
+    #13#10 +
+    'clean::' + #13#10 +
+    #9'rm -f *.o *.ppu *.rst' + #13#10 +
+    #13#10 +
+    'realclean:: clean' + #13#10 +
+    #9'rm -f $(PROGRAM)' + #13#10 +
+    #13#10 +
+    'FLAGS=%FLAGS%' + #13#10 +
+    #13#10 +
+    'CC=$(TOOLPREFIX)%CCNAME%' + #13#10 +
+    #13#10 +
+    '# how to link executable' + #13#10 +
+    '%PROGRAM%: %MAINSRC%' + #13#10 +
+    #9'$(CC) $(FLAGS) $< -o$@ %LINKOBJS%' + #13#10 +
+    #13#10 +
+    '# how to compile source' + #13#10 +
+    '%.o: %%EXT%' + #13#10 +
+    #9'$(CC) $(FLAGS) %LINKONLY% $< -o$@' + #13#10 +
+    #13#10;
+  K_EV3_FPC_FLAGS = '-Tlinux -Parm -XX -S2cdghi -dRELEASE -vewnhi -l -Fu. ';
+  K_EV3_GCC_PREXIX = 'arm-none-linux-gnueabi-';
+
 var
   CurrentProgramSlot : Integer = 0;
   CurrentLNPAddress : Integer = 0;
@@ -206,8 +235,7 @@ var
   BrickOSMakefileTemplate : string;
   PascalCompilerPrefix : string;
   LeJOSMakefileTemplate : string;
-  KeepBrickOSMakefile : Boolean;
-  KeepLeJOSMakefile : Boolean;
+  KeepMakefiles : Boolean;
   IgnoreSysFiles : Boolean;
   IncludeSrcInList : Boolean;
   SaveBinaryOutput : Boolean;
@@ -216,7 +244,11 @@ var
   ShowRecent:boolean;        // Whether to show recent files
 //  ShowRecentChanged:boolean; // Whether ShowRecent was changed
   MaxRecent : Byte = 4;
-  
+  EV3MakefileTemplate : string = K_EV3_MAKE_TEMPLATE;
+  EV3FPCFlags : string = K_EV3_FPC_FLAGS;
+  EV3FPCPrefix : string = '';
+  EV3GCCFlags : string = '';
+  EV3GCCPrefix : string = K_EV3_GCC_PREXIX;
 
 var
   NQCExePath : string;
@@ -627,6 +659,7 @@ begin
     ftBrickOS : Result := 'C++';
     ftPBForth : Result := 'Forth';
     ftLeJOS   : Result := 'Java';
+    ftLinux   : Result := 'C++';
   end;
 end;
 

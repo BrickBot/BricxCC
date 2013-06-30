@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -20,15 +20,17 @@ interface
 
 uses
   Classes, StdCtrls, SynEdit, SynEditMiscClasses, uNBCCommon, uBasicPrefs,
-  uPSComponent, uProgram;
+  uPSComponent, uProgram, uCompCommon;
 
 type
   TDisplayErrorsProc = procedure(aShow : boolean) of object;
   TExecTransferProc = procedure(TI: TTransferItem) of object;
 
 function GetLineNumber(const aY : integer) : integer;
-procedure GenerateMakefile(aPath : string; run : Boolean; node : Integer = -1);
-function ProcessMakeCommand(const sFilename, sTempDir, commandstr : string) : string;
+procedure GenerateEV3Makefile(aPath : string);
+procedure GenerateRCXMakefile(aPath : string; run : Boolean; node : Integer = -1);
+function ProcessEV3MakeCommand(const sFilename, sTempDir, commandstr : string) : string;
+function ProcessRCXMakeCommand(const sFilename, sTempDir, commandstr : string) : string;
 function GetTarget : string;
 function DoExecuteCommand(const aCmd : string; const aParams : string;
   aTimeOut : integer; const aDir : string; const bWait : boolean) : integer;
@@ -37,7 +39,7 @@ procedure ShowSearchReplaceDialog(aEditor : TSynEdit; AReplace: boolean);
 procedure DoSearchReplaceText(aEditor : TSynEdit; AReplace, ABackwards: boolean);
 
 function CompileIt(DisplayErrorsProc : TDisplayErrorsProc; theCode : TStrings;
-  lstErrors : TListBox; const fName, fCaption : string;
+  lstErrors : TStrings; const fName, fCaption : string;
   download : Boolean; run : Boolean; sceHandler : TCompilerStatusChangeEvent;
   osHandler : TNotifyEvent): boolean;
 procedure ReadSymbolFile(aProg : TProgram; const sFilename : string);
@@ -289,7 +291,7 @@ begin
     Result := Result + ' ' + NQCSwitches
   else if FileIsMindScriptOrLASM then
     Result := Result + ' ' + LCCSwitches
-  else if UsesNBCCompiler then
+  else if UseNBCCompiler then
     Result := Result + ' ' + NBCSwitches
   else if FileIsJava then
     Result := Result + ' ' + JavaSwitches
@@ -297,7 +299,30 @@ begin
     Result := Result + ' ' + CPPSwitches;
 end;
 
-function ProcessMakeCommand(const sFilename, sTempDir, commandstr : string) : string;
+function ProcessEV3MakeCommand(const sFilename, sTempDir, commandstr : string) : string;
+var
+  cmdFile : string;
+  redir : string;
+begin
+  Result := commandstr;
+  redir := ' > ';
+  if FileIsCPP then
+    redir := ' 2> ';
+  if sTempDir <> '' then
+    Result := Result + redir + '"' + sTempdir + 'temp.log"';
+  cmdFile := ChangeFileExt(sFilename, '.bat');
+  if FileExists(cmdFile) then
+    DeleteFile(cmdFile);
+  with TFileStream.Create(cmdFile, fmCreate) do
+  try
+    Write(PChar(Result)^, Length(Result));
+  finally
+    Free;
+  end;
+  Result := '"' + cmdFile + '"';
+end;
+
+function ProcessRCXMakeCommand(const sFilename, sTempDir, commandstr : string) : string;
 var
   cmdFile : string;
 begin
@@ -357,16 +382,23 @@ begin
   // default compiler is NQC.
   if FileIsMindScriptOrLASM(H) then
     commandstr := LCCPath
-  else if UsesNBCCompiler(H) then
+  else if UseNBCCompiler(H) then
     commandstr := NBCPath
   else if FileIsCPPOrPascalOrJava(H) then
-    commandstr := '/bin/make'
+  begin
+    if IsRCX then
+      commandstr := '/bin/make'
+    else if IsNXT then
+      commandstr := 'make'
+    else if IsEV3 then
+      commandstr := 'make';
+  end
   else if FileIsNQC(H) then
     commandstr := NQCPath
   else
     commandstr := DefaultPath;
 
-  if UsesNBCCompiler(H) then
+  if UseNBCCompiler(H) then
   begin
     commandstr := commandstr + ' -Y="' + ChangeFileExt(sFilename, '.sym') + '"';
     commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
@@ -423,7 +455,7 @@ begin
   if not FileIsCPPOrPascalOrJava(H) then
     commandstr := commandstr + ' -T' + OE + GetTarget;
 
-  if (FileIsNQC(H) or UsesNBCCompiler(H)) and SaveBinaryOutput then
+  if (FileIsNQC(H) or UseNBCCompiler(H)) and SaveBinaryOutput then
   begin
     extbin := '.rcx';
     if FileIsNBC(H) or FileIsNXC(H) then
@@ -443,12 +475,12 @@ begin
     begin
       commandstr := commandstr + ' -d';
       // the internal NBC compiler does not need the port
-      if not (UsesNBCCompiler(H) and UseInternalNBC) then
+      if not (UseNBCCompiler(H) and UseInternalNBC) then
         commandstr := commandstr + ' -S' + OptionalEquals + LocalPort;
-      if UsesNBCCompiler(H) then
+      if UseNBCCompiler(H) then
       begin
-        if BrickComm.UseBluetooth then
-          commandstr := commandstr + ' -BT';
+//        if BrickComm.UseBluetooth then
+//          commandstr := commandstr + ' -BT';
         commandstr := commandstr + ' -N="' + sFilename{ExtractFileName(sFilename)} + '"';
       end;
     end
@@ -462,7 +494,19 @@ begin
     commandstr := commandstr + ' -f"' + ChangeFileExt(sFilename, '.mak') + '" -s';
 
   if FileIsCPPOrPascalOrJava(H) then
-    commandstr := ProcessMakeCommand(sFilename, sTempdir, commandstr);
+  begin
+    if IsRCX then
+    begin
+      commandstr := ProcessRCXMakeCommand(sFilename, sTempdir, commandstr);
+    end
+    else if IsNXT then
+    begin
+    end
+    else if IsEV3 then
+    begin
+      commandstr := ProcessEV3MakeCommand(sFilename, sTempdir, commandstr);
+    end;
+  end;
 
   result := commandstr;
 end;
@@ -487,7 +531,7 @@ begin
     else
       Result := IncludeTrailingPathDelimiter(sSaveDir);
   end
-  else if UsesNBCCompiler(H) then
+  else if UseNBCCompiler(H) then
   begin
     if NBCIncludePath <> '' then
       Result := NBCIncludePath + ';' + sSaveDir
@@ -516,7 +560,56 @@ begin
   end;
 end;
 
-procedure GenerateMakefile(aPath : string; run : Boolean; node : Integer);
+procedure GenerateEV3Makefile(aPath : string);
+var
+  SL : TStringList;
+  H : TSynCustomHighlighter;
+  MainSource, ext, mfStr, dobjects : string;
+begin
+  MainSource := ExtractFileName(aPath);
+  ext := ExtractFileExt(MainSource);
+  dobjects := GetProjectFiles(aPath, '.o');
+  H := GetActiveEditorHighlighter;
+  SL := TStringList.Create;
+  try
+    if not FileIsCPP(H) then
+    begin
+      // FPC makefile for EV3
+      mfStr := StringReplace(EV3MakefileTemplate, '%PROGRAM%', ChangeFileExt(MainSource, ''), [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%DOBJECTS%', dobjects, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%TOOLPREFIX%', EV3FPCPrefix, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%FLAGS%', EV3FPCFlags, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%CCNAME%', 'fpc', [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%MAINSRC%', MainSource, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%LINKONLY%', '', [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%LINKOBJS%', '', [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%EXT%', '.pas', [rfReplaceAll]);
+    end
+    else
+    begin
+      // is this a C file or a CPP file?
+      // GCC makefile for EV3
+      mfStr := StringReplace(EV3MakefileTemplate, '%PROGRAM%', ChangeFileExt(MainSource, ''), [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%DOBJECTS%', dobjects, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%TOOLPREFIX%', EV3GCCPrefix, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%FLAGS%', EV3GCCFlags, [rfReplaceAll]);
+      if ext = '.cpp' then
+        mfStr := StringReplace(mfStr, '%CCNAME%', 'g++', [rfReplaceAll])
+      else
+        mfStr := StringReplace(mfStr, '%CCNAME%', 'gcc', [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%MAINSRC%', MainSource, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%LINKONLY%', '-c', [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%LINKOBJS%', dobjects, [rfReplaceAll]);
+      mfStr := StringReplace(mfStr, '%EXT%', ext, [rfReplaceAll]);
+    end;
+    SL.Text := mfStr;
+    SL.SaveToFile(ChangeFileExt(aPath, '.mak'));
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure GenerateRCXMakefile(aPath : string; run : Boolean; node : Integer);
 var
   SL : TStringList;
   mfStr, tower, prog, exec, addr, port, set_addr : string;
@@ -568,11 +661,224 @@ begin
   end;
 end;
 
+function HandleROPSErrors(fname : string; tmpSL : TStrings; lstErrors : TStrings) : boolean;
+var
+  i, p, lineNo : integer;
+  tmpStr, errMsg : string;
+begin
+  Result := True;
+  for i := 0 to tmpSL.Count - 1 do
+  begin
+    if Pos('[Error]', tmpSL[i]) <> 0 then
+    begin
+      tmpStr := tmpSL[i];
+      System.Delete(tmpStr, 1, 8);
+      p := Pos('(', tmpStr);
+      if p <> 0 then begin
+        errMsg := Copy(tmpStr, 1, p-1);
+        if Pos(fname, errMsg) <> 0 then
+        begin
+          System.Delete(tmpStr, 1, p);
+          errMsg := Copy(tmpStr, 1, Pos(':', tmpStr)-1);
+          lineNo := StrToIntDef(errMsg, -1);
+          if lineNo <> -1 then
+          begin
+            lineNo := GetLineNumber(lineNo);
+            errMsg := 'line ' + IntToStr(lineNo) + ': ';
+            p := Pos('):', tmpStr);
+            if p <> 0 then begin
+              System.Delete(tmpStr, 1, p+1);
+              errMsg := errMsg + Trim(tmpStr);
+              if lstErrors.IndexOf(errMsg) = -1 then
+                lstErrors.Append(errMsg);
+              Result := False; // errors exist
+            end;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function HandleGCCErrors(fname : string; tmpSL : TStrings; lstErrors : TStrings) : boolean;
+var
+  i, p, j, lineNo : integer;
+  tmpstr, errMsg : string;
+begin
+  Result := True;
+  for i := 0 to tmpSL.Count - 1 do
+  begin
+    // cpp and java
+    if Pos('warning:', tmpSL[i]) = 0 then
+    begin
+      // not a warning.
+      p := Pos(':', tmpSL[i]);
+      tmpstr := Copy(tmpSL[i], 1, p-1);
+      if (Pos(tmpstr, fname) <> 0) or
+         (Pos(ChangeFileExt(ExtractFileName(fname), '.o'), tmpstr) <> 0) then
+      begin
+        tmpstr := Copy(tmpSL[i], p+1, Length(tmpSL[i]));
+        j := i;
+        while (j < tmpSL.Count-1) do begin
+          p := Pos(':', tmpSL[j+1]);
+          if Pos(Copy(tmpSL[j+1], 1, p-1), ChangeFileExt(fname, '.o')) = 0 then
+          begin
+            // linker error
+            Break;
+          end
+          else if Pos(Copy(tmpSL[j+1], 1, p-1), fname) = 0 then
+          begin
+            // the line following the current line is not a new error message
+            // but, rather, a continuation of this error message
+            // unless - that is - it starts with the word "make"
+            if Pos('make', LowerCase(tmpSL[j+1])) <> 1 then
+              tmpstr := tmpstr + ' ' + tmpSL[j+1];
+          end
+          else begin
+            // the next line is a new error message so break
+            Break;
+          end;
+          Inc(j);
+        end;
+        // tmpstr should be ###: error message
+        // if it doesn't start with a number then ignore the line
+        errMsg := Copy(tmpstr, 1, Pos(':', tmpstr)-1);
+        Delete(tmpstr, 1, Length(errMsg));
+        lineNo := StrToIntDef(errMsg, -1);
+        if lineNo <> -1 then
+        begin
+          lineNo := GetLineNumber(lineNo);
+          errMsg := 'line ' + IntToStr(lineNo) + tmpstr;
+          if lstErrors.IndexOf(errMsg) = -1 then
+            lstErrors.Append(errMsg);
+          Result := False;
+        end
+        else begin
+          // is this a linker error?
+          p := Pos(':', tmpstr);
+          if (Pos(Copy(tmpstr, 1, p-1), fName) <> 0) then
+          begin
+            errMsg := 'linker error:' + Copy(tmpstr, p+1, Length(tmpstr));
+            if lstErrors.IndexOf(errMsg) = -1 then
+              lstErrors.Append(errMsg);
+            Result := False;
+          end;
+        end;
+      end;
+    end;
+  end;
+end;
+
+function HandleLMSErrors(fname : string; tmpSL : TStrings;
+  lstErrors : TStrings; ext : string) : boolean;
+var
+  i, p, q, lineNo : integer;
+  tmpstr, testStr, errMsg, tmpName : string;
+begin
+  Result := True;
+  // NQC, LASM, MindScript, NBC, & NXC
+  for i := 0 to tmpSL.Count - 1 do
+  begin
+    // NQC, LASM, MindScript, NBC, & NXC
+    if (Pos('# Error:',tmpSL[i])>0) or
+       (Pos('# Warning:',tmpSL[i])>0) then
+    begin
+      tmpstr := Copy(tmpSL[i], 2, MaxInt);
+      // show error with line number of following line matches either temp.ext
+      // or the filename of the active editor form
+      errMsg := tmpstr;
+      if i < (tmpSL.Count - 1) then
+      begin
+        testStr := tmpSL[i+1];
+        // modified approach to error/warning output (2009-03-14 JCH)
+        tmpName := '';
+        // pattern is File "filaname" ; line NNNN
+        // (optionally followed by , position NNNN)
+        p := Pos('File "', testStr);
+        if p > 0 then
+        begin
+          Delete(testStr, 1, p+5);
+          p := Pos('"', testStr);
+          if p > 0 then
+          begin
+            tmpName := Copy(testStr, 1, p-1);
+            Delete(testStr, 1, p);
+          end;
+        end;
+        p := Pos('temp'+ext, tmpName);
+        if p > 0 then
+        begin
+          // replace temporary filename with actual filename
+          tmpName := fName;
+        end;
+        p := Pos('; line ', testStr);
+{
+        tmpName := 'temp' + ext;
+        p := Pos(tmpName+'" ; line', testStr);
+        if p = 0 then
+        begin
+          p := Pos(fName+'" ; line', testStr);
+          if p > 0 then
+            tmpName := fName;
+        end;
+}
+        if p > 0 then
+        begin
+          // get the line number
+          p := p + 7;
+//          p := p + Length(tmpName) + 4 + 5;
+          q := Pos(', position ', testStr);
+          if q > 0 then
+            errMsg := Copy(testStr, p, q-p)
+          else
+            errMsg := Copy(testStr, p, MaxInt);
+          lineNo := StrToIntDef(errMsg, -1);
+//          linePos := -1;
+          if q > 0 then
+          begin
+            System.Delete(testStr, 1, q+10);
+//            linePos := StrToIntDef(testStr, -1);
+          end;
+          if lineNo <> -1 then
+          begin
+            lineNo := GetLineNumber(lineNo);
+            errMsg := 'line ' + IntToStr(lineNo);
+//            if linePos <> -1 then
+//              errMsg := errMsg + ', position ' + IntToStr(linePos);
+            if AnsiUppercase(tmpName) = AnsiUppercase(fName) then
+              errMsg := errMsg + ':' + tmpstr
+            else
+              errMsg := errMsg + ', file "' + tmpName + '":' + tmpstr;
+          end;
+        end;
+      end;
+      Result := Result and (Pos(': Error:', errMsg) = 0);
+      if lstErrors.IndexOf(errMsg) = -1 then
+        lstErrors.Append(errMsg);
+    end;
+  end;
+end;
+
+function HandleFPCErrors(fname : string; tmpSL : TStrings; lstErrors : TStrings) : boolean;
+begin
+  Result := HandleGCCErrors(fname, tmpSL, lstErrors);
+end;
+
+function HandleGPPErrors(fname : string; tmpSL : TStrings; lstErrors : TStrings) : boolean;
+begin
+  Result := HandleGCCErrors(fname, tmpSL, lstErrors);
+end;
+
+function HandleJavaErrors(fname : string; tmpSL : TStrings; lstErrors : TStrings) : boolean;
+begin
+  Result := HandleGCCErrors(fname, tmpSL, lstErrors);
+end;
+
 function ReadAndShowErrorFile(DisplayErrorsProc : TDisplayErrorsProc;
-  lstErrors : TListBox; const fName, aCaption, tempDir, ext : string) : boolean;
+  lstErrors : TStrings; const fName, aCaption, tempDir, ext : string) : boolean;
 var
   tmpSL : TStrings;
-  i, j, p, q, lineNo{, linePos} : integer;
+  i : integer;
   tmpstr, errMsg, tmpName, testStr : string;
   bErrorsOrWarnings : boolean;
 begin
@@ -594,181 +900,32 @@ begin
           CodeForm.Caption := sFullErrors + ' ' + aCaption;
         end;
         {Show the short errors}
-        lstErrors.Items.Clear;
-        for i := 0 to tmpSL.Count - 1 do
+        lstErrors.Clear;
+        if FileIsROPS then
         begin
-          if FileIsROPS then begin
-            if Pos('[Error]', tmpSL[i]) <> 0 then
-            begin
-              tmpStr := tmpSL[i];
-              System.Delete(tmpStr, 1, 8);
-              p := Pos('(', tmpStr);
-              if p <> 0 then begin
-                errMsg := Copy(tmpStr, 1, p-1);
-                if Pos(fname, errMsg) <> 0 then
-                begin
-                  System.Delete(tmpStr, 1, p);
-                  errMsg := Copy(tmpStr, 1, Pos(':', tmpStr)-1);
-                  lineNo := StrToIntDef(errMsg, -1);
-                  if lineNo <> -1 then
-                  begin
-                    lineNo := GetLineNumber(lineNo);
-                    errMsg := 'line ' + IntToStr(lineNo) + ': ';
-                    p := Pos('):', tmpStr);
-                    if p <> 0 then begin
-                      System.Delete(tmpStr, 1, p+1);
-                      errMsg := errMsg + Trim(tmpStr);
-                      if lstErrors.Items.IndexOf(errMsg) = -1 then
-                        lstErrors.Items.Append(errMsg);
-                      Result := False; // errors exist
-                    end;
-                  end;
-                end;
-              end;
-            end;
-          end
-          else if FileIsCPPOrPascalOrJava then begin
-            // pascal, cpp, and java
-            if Pos('warning:', tmpSL[i]) = 0 then
-            begin
-              // not a warning.
-              p := Pos(':', tmpSL[i]);
-              tmpstr := Copy(tmpSL[i], 1, p-1);
-              if (Pos(tmpstr, fName) <> 0) or
-                 (Pos(ChangeFileExt(ExtractFileName(fName), '.o'), tmpstr) <> 0) then
-              begin
-                tmpstr := Copy(tmpSL[i], p+1, Length(tmpSL[i]));
-                j := i;
-                while (j < tmpSL.Count-1) do begin
-                  p := Pos(':', tmpSL[j+1]);
-                  if Pos(Copy(tmpSL[j+1], 1, p-1), ChangeFileExt(fName, '.o')) = 0 then
-                  begin
-                    // linker error
-                    Break;
-                  end
-                  else if Pos(Copy(tmpSL[j+1], 1, p-1), fName) = 0 then
-                  begin
-                    // the line following the current line is not a new error message
-                    // but, rather, a continuation of this error message
-                    // unless - that is - it starts with the word "make"
-                    if Pos('make', LowerCase(tmpSL[j+1])) <> 1 then
-                      tmpstr := tmpstr + ' ' + tmpSL[j+1];
-                  end
-                  else begin
-                    // the next line is a new error message so break
-                    Break;
-                  end;
-                  Inc(j);
-                end;
-                // tmpstr should be ###: error message
-                // if it doesn't start with a number then ignore the line
-                errMsg := Copy(tmpstr, 1, Pos(':', tmpstr)-1);
-                Delete(tmpstr, 1, Length(errMsg));
-                lineNo := StrToIntDef(errMsg, -1);
-                if lineNo <> -1 then
-                begin
-                  lineNo := GetLineNumber(lineNo);
-                  errMsg := 'line ' + IntToStr(lineNo) + tmpstr;
-                  if lstErrors.Items.IndexOf(errMsg) = -1 then
-                    lstErrors.Items.Append(errMsg);
-                  Result := False;
-                end
-                else begin
-                  // is this a linker error?
-                  p := Pos(':', tmpstr);
-                  if (Pos(Copy(tmpstr, 1, p-1), fName) <> 0) then
-                  begin
-                    errMsg := 'linker error:' + Copy(tmpstr, p+1, Length(tmpstr));
-                    if lstErrors.Items.IndexOf(errMsg) = -1 then
-                      lstErrors.Items.Append(errMsg);
-                    Result := False;
-                  end;
-                end;
-              end;
-            end;
-          end
-          else begin
-            // NQC, LASM, MindScript, NBC, & NXC
-            if (Pos('# Error:',tmpSL[i])>0) or
-               (Pos('# Warning:',tmpSL[i])>0) then
-            begin
-              tmpstr := Copy(tmpSL[i], 2, MaxInt);
-              // show error with line number of following line matches either temp.ext
-              // or the filename of the active editor form
-              errMsg := tmpstr;
-              if i < (tmpSL.Count - 1) then
-              begin
-                testStr := tmpSL[i+1];
-                // modified approach to error/warning output (2009-03-14 JCH)
-                tmpName := '';
-                // pattern is File "filaname" ; line NNNN
-                // (optionally followed by , position NNNN)
-                p := Pos('File "', testStr);
-                if p > 0 then
-                begin
-                  Delete(testStr, 1, p+5);
-                  p := Pos('"', testStr);
-                  if p > 0 then
-                  begin
-                    tmpName := Copy(testStr, 1, p-1);
-                    Delete(testStr, 1, p);
-                  end;
-                end;
-                p := Pos('temp'+ext, tmpName);
-                if p > 0 then
-                begin
-                  // replace temporary filename with actual filename
-                  tmpName := fName;
-                end;
-                p := Pos('; line ', testStr);
-{
-                tmpName := 'temp' + ext;
-                p := Pos(tmpName+'" ; line', testStr);
-                if p = 0 then
-                begin
-                  p := Pos(fName+'" ; line', testStr);
-                  if p > 0 then
-                    tmpName := fName;
-                end;
-}
-                if p > 0 then
-                begin
-                  // get the line number
-                  p := p + 7;
-//                  p := p + Length(tmpName) + 4 + 5;
-                  q := Pos(', position ', testStr);
-                  if q > 0 then
-                    errMsg := Copy(testStr, p, q-p)
-                  else
-                    errMsg := Copy(testStr, p, MaxInt);
-                  lineNo := StrToIntDef(errMsg, -1);
-//                  linePos := -1;
-                  if q > 0 then
-                  begin
-                    System.Delete(testStr, 1, q+10);
-//                    linePos := StrToIntDef(testStr, -1);
-                  end;
-                  if lineNo <> -1 then
-                  begin
-                    lineNo := GetLineNumber(lineNo);
-                    errMsg := 'line ' + IntToStr(lineNo);
-//                    if linePos <> -1 then
-//                      errMsg := errMsg + ', position ' + IntToStr(linePos);
-                    if AnsiUppercase(tmpName) = AnsiUppercase(fName) then
-                      errMsg := errMsg + ':' + tmpstr
-                    else
-                      errMsg := errMsg + ', file "' + tmpName + '":' + tmpstr;
-                  end;
-                end;
-              end;
-              Result := Result and (Pos(': Error:', errMsg) = 0);
-              if lstErrors.Items.IndexOf(errMsg) = -1 then
-                lstErrors.Items.Append(errMsg);
-            end;
-          end;
+          Result := HandleROPSErrors(fname, tmpSL, lstErrors);
+        end
+        else if FileIsPascal then
+        begin
+          if IsEV3 then
+            Result := HandleFPCErrors(fname, tmpSL, lstErrors)
+          else
+            Result := HandleGPPErrors(fname, tmpSL, lstErrors);
+        end
+        else if FileIsCPP then
+        begin
+          Result := HandleGCCErrors(fname, tmpSL, lstErrors);
+        end
+        else if FileIsJava then
+        begin
+          Result := HandleJavaErrors(fname, tmpSL, lstErrors);
+        end
+        else
+        begin
+          Result := HandleLMSErrors(fname, tmpSL, lstErrors, ext);
         end;
         {show the errors}
-        Result := Result or (lstErrors.Items.Count = 0);
+        Result := Result or (lstErrors.Count = 0);
         DisplayErrorsProc(true);
       end;
     end;
@@ -903,12 +1060,12 @@ begin
 end;
 
 function CompileIt(DisplayErrorsProc : TDisplayErrorsProc;
-  theCode : TStrings; lstErrors : TListBox; const fName, fCaption : string;
+  theCode : TStrings; lstErrors : TStrings; const fName, fCaption : string;
   download : Boolean; run : Boolean; sceHandler : TCompilerStatusChangeEvent;
   osHandler : TNotifyEvent): boolean;
 var
   ext, SaveDir, tempDir, newDir, commandstr : string;
-  wd, statusStr, outStr : string;
+  wd, statusStr, outStr, cmdname : string;
   i : Integer;
   NQC_Result : Longint;
   execError : Boolean;
@@ -939,9 +1096,22 @@ begin
   try
     if FileIsCPPOrPascalOrJava(H) then
     begin
-      // generate the Makefile
-      GenerateMakefile(fName, run);
-      DebugLog('CompileIt: GenerateMakefile called');
+      if IsRCX then
+      begin
+        // generate the Makefile
+        GenerateRCXMakefile(fName, run);
+        DebugLog('CompileIt: GenerateRCXMakefile called');
+      end
+      else if IsNXT then
+      begin
+        // support leJOS with the NXT
+      end
+      else if IsEV3 then
+      begin
+        // support native Linux ARM applications for the EV3
+        GenerateEV3Makefile(fName);
+        DebugLog('CompileIt: GenerateEV3Makefile called');
+      end;
     end
     else if not FileIsROPS(H) then
     begin
@@ -1006,7 +1176,7 @@ begin
         end;
       end;
     end
-    else if UsesNBCCompiler(H) and UseInternalNBC then
+    else if UseNBCCompiler(H) and UseInternalNBC then
     begin
       DebugLog('CompileIt: launching internal NBC compiler');
       NQC_Result := InternalNBCCompile(commandstr, sceHandler);
@@ -1078,7 +1248,7 @@ begin
 {$ENDIF}
       if FileIsMindScriptOrLASM(H) then
         outStr := outStr + GetLASMErrorString(NQC_Result)
-      else if UsesNBCCompiler(H) or FileIsROPS(H) then
+      else if UseNBCCompiler(H) or FileIsROPS(H) then
         outStr := outStr + GetNBCErrorString(NQC_Result)
       else
         outStr := outStr + GetGNUErrorString(NQC_Result);
@@ -1089,9 +1259,14 @@ begin
     end;
   finally
     {Clean up}
-    if not KeepBrickOSMakefile then
+    if not KeepMakefiles then
       DeleteFile(ChangeFileExt(fName, '.mak'));
-    DeleteFile(ChangeFileExt(fName, '.cmd'));
+    cmdname := ChangeFileExt(fName, '.cmd');
+    if FileExists(cmdname) then
+      DeleteFile(cmdname);
+    cmdname := ChangeFileExt(fName, '.bat');
+    if FileExists(cmdname) then
+      DeleteFile(cmdname);
     DeleteFile(tempDir + 'temp.log');
     DeleteFile(tempDir + 'temp.lst');
     DeleteFile(tempDir + 'temp' + ext);

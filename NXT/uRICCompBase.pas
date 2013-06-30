@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -19,7 +19,7 @@ unit uRICCompBase;
 interface
 
 uses
-  Classes, Contnrs, {uNBCCommon, }uRIC, Parser10, uCompTokens;
+  Classes, Contnrs, uRIC, uCompCommon, uCompTokens;
 
 type
   TImgPoint = IMG_PT;
@@ -295,7 +295,7 @@ type
     fEnhancedFirmware: boolean;
     fMessages: TStrings;
     fOnCompMSg: TOnCompilerMessage;
-    fCalc : TExpParser;
+    fCalc : TCCExpParser;
     fMaxErrors: word;
     fFirmwareVersion: word;
     procedure InternalParseStream;
@@ -937,7 +937,7 @@ begin
   fCurFile    := '';
   fOptimize   := False;
   fMaxErrors  := 0;
-  fCalc := TExpParser.Create(nil);
+  fCalc := TCCExpParser.Create(nil);
   fCalc.CaseSensitive := True;
   fFirmwareVersion  := 128; // 1.28 NXT 2.0 firmware 
 end;

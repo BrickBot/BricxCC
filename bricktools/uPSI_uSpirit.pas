@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -534,7 +534,6 @@ begin T := Self.EEPROM[t1]; end;
 (*----------------------------------------------------------------------------*)
 procedure RIRegister_uSpirit_Routines(S: TPSExec);
 begin
- S.RegisterDelphiFunction(@NameToNXTFileType, 'NameToNXTFileType', cdRegister);
  S.RegisterDelphiFunction(@MakeValidNXTFilename, 'MakeValidNXTFilename', cdRegister);
  S.RegisterDelphiFunction(@GetInitFilename, 'GetInitFilename', cdRegister);
  S.RegisterDelphiFunction(@FantomAPIAvailable, 'FantomAPIAvailable', cdRegister);

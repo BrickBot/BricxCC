@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -21,10 +21,6 @@ unit uCompTokens;
 {$ENDIF}
 
 interface
-
-type
-  TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnSPC, lnUnknown);
-  TOnCompilerMessage = procedure(const msg : string; var stop : boolean) of object;
 
 const
   TOK_SEMICOLON     = ';';

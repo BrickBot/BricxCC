@@ -231,7 +231,7 @@ begin
   VerFileDescription  := '';
   VerFileVersion      := '1.2.1.r5';
   VerInternalName     := 'spirittest';
-  VerLegalCopyright   := 'Copyright (c) 2006-2012, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2013, John Hansen';
   VerOriginalFileName := 'spirittest';
   VerProductName      := 'spirittest';
   VerProductVersion   := '1.2';

@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -19,50 +19,16 @@ unit uPreprocess;
 interface
 
 uses
-  Classes, Contnrs, SysUtils, mwGenericLex, uGenLexer, uCompTokens,
-  uNBCCommon;
+  Classes, Contnrs, SysUtils, mwGenericLex, uGenLexer, uCompCommon;
 
 type
-  EPreprocessorException = class(Exception)
-  private
-    fLineNo : integer;
-    fLinePos : integer;
-  public
-    constructor Create(const msg : string; const lineno : integer);
-    property LineNo : integer read fLineNo;
-    property LinePos : integer read fLinePos;
-  end;
-
-  { TMapList }
-
-  TMapList = class(TStringList)
-  private
-    fConsiderCase: boolean;
-    function GetMapValue(index: integer): string;
-    procedure SetConsiderCase(const AValue: boolean);
-    procedure SetMapValue(index: integer; const Value: string);
-  protected
-{$IFDEF FPC}
-    function DoCompareText(const s1,s2 : string) : PtrInt; override;
-{$ENDIF}
-  public
-    constructor Create;
-    function  AddEntry(const aName, aValue : string) : integer;
-    procedure AddDefines(aValue : TStrings);
-    procedure Define(const aName : string);
-    procedure Clear; override;
-    procedure Delete(Index: Integer); override;
-    property MapValue[index : integer] : string read GetMapValue write SetMapValue;
-    property ConsiderCase : boolean read fConsiderCase write SetConsiderCase;
-  end;
-
   TPreprocessorStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string) of object;
 
   TLangPreprocessor = class
   private
     fLangName : TLangName;
     fWarnings : TStrings;
-    fCalc : TNBCExpParser;
+    fCalc : TCCExpParser;
     fIncludeFilesToSkip : TStrings;
     IncludeDirs : TStringList;
     MacroDefs : TMapList;
@@ -103,14 +69,18 @@ type
     procedure AddOneOrMoreLines(OutStrings: TStrings; const S,
       name: string; var lineNo: integer);
     function IgnoringAtLowerLevel(const lineno: integer): boolean;
-    function ImportRIC(const fname, varname : string) : string;
-    function ImportFile(const fname : string; varname : string) : string;
+    function DoImportFile(const fname : string; varname : string) : string;
     function GetPreprocPath(const fname : string; const path : string) : string;
     procedure DoPreprocessorStatusChange(const Status: string);
+  protected
+    function ImportFile(const fname : string; varname : string) : string; virtual;
   public
-    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word) : string;
-    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string; aLN : TLangName; MaxDepth : word) : string;
-    constructor Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName; MaxDepth : word);
+    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string;
+      aStrings : TStrings; aLN : TLangName; MaxDepth : word; aCalc : TCCExpParser) : string;
+    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string;
+      aLN : TLangName; MaxDepth : word; aCalc : TCCExpParser) : string;
+    constructor Create(GLType : TGenLexerClass; const defIncDir : string;
+      aLN : TLangName; MaxDepth : word; aCalc : TCCExpParser);
     destructor Destroy; override;
     procedure SkipIncludeFile(const fname : string);
     function Preprocess(const fname: string; aStrings: TStrings) : string; overload;
@@ -119,13 +89,15 @@ type
     property Defines : TMapList read GetDefines;
     property AddPoundLineToMultiLineMacros : boolean read fAddPoundLine write fAddPoundLine;
     property Warnings : TStrings read fWarnings;
+    property Calc : TCCExpParser read fCalc;
+    property LanguageName : TLangName read fLangName;
     property OnPreprocessorStatusChange : TPreprocessorStatusChangeEvent read fOnPreprocessorStatusChange write fOnPreprocessorStatusChange;
   end;
 
 implementation
 
 uses
-  Math, uVersionInfo, uLocalizedStrings, uRICCompBase;
+  Math, uVersionInfo, uLocalizedStrings, uCommonUtils;
 
 type
   TPreprocLevel = class
@@ -161,11 +133,12 @@ end;
 { TLangPreprocessor }
 
 class function TLangPreprocessor.PreprocessStrings(GLType : TGenLexerClass;
-  const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word) : string;
+  const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word;
+  aCalc : TCCExpParser) : string;
 var
   P : TLangPreprocessor;
 begin
-  P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname), aLN, MaxDepth);
+  P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname), aLN, MaxDepth, aCalc);
   try
     Result := P.Preprocess(fname, aStrings);
   finally
@@ -174,14 +147,14 @@ begin
 end;
 
 class function TLangPreprocessor.PreprocessFile(GLType : TGenLexerClass;
-  const fin, fout : string; aLN : TLangName; MaxDepth : word) : string;
+  const fin, fout : string; aLN : TLangName; MaxDepth : word; aCalc : TCCExpParser) : string;
 var
   SL : TStringList;
 begin
   SL := TStringList.Create;
   try
     SL.LoadFromFile(fin);
-    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL, aLN, MaxDepth);
+    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL, aLN, MaxDepth, aCalc);
     SL.SaveToFile(fout);
   finally
     SL.Free;
@@ -804,24 +777,16 @@ begin
                     if i > 0 then
                       System.Delete(dirText, i, MaxInt); // delete the rest of the line
                     // import the file
-                    if LowerCase(ExtractFileExt(usepath+tmpName)) = '.ric' then
-                    begin
-                      S := ImportRIC(usePath+tmpName, dirText);
-//                      AddOneOrMoreLines(OutStrings, S, name, lineNo);
-//                      S := '';
-                    end
-                    else
-                      S := ImportFile(usePath+tmpName, dirText);
-//                      raise EPreprocessorException.Create(sImportRICInvalid, lineNo);
+                    ImportFile(usePath+tmpName, dirText);
                   end
                   else
-                    raise EPreprocessorException.Create(Format(sImportRICNotFound, [tmpName]), lineNo);
+                    raise EPreprocessorException.Create(Format(sImportNotFound, [tmpName]), lineNo);
                 end
                 else
-                  raise EPreprocessorException.Create(sImportRICMissingQuotes, lineNo);
+                  raise EPreprocessorException.Create(sImportMissingQuotes, lineNo);
               end
               else
-                raise EPreprocessorException.Create(sImportRICMissingQuotes, lineNo);
+                raise EPreprocessorException.Create(sImportMissingQuotes, lineNo);
             end
             else
               OutStrings.Add('');
@@ -1137,7 +1102,8 @@ begin
   end;
 end;
 
-constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName; MaxDepth : word);
+constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string;
+  aLN : TLangName; MaxDepth : word; aCalc : TCCExpParser);
 begin
   inherited Create;
   fLangName := aLN;
@@ -1158,10 +1124,7 @@ begin
     Sorted := True;
     Duplicates := dupIgnore;
   end;
-  fCalc := TNBCExpParser.Create(nil);
-  fCalc.CaseSensitive := True;
-  fCalc.StandardDefines := True;
-  fCalc.ExtraDefines := True;
+  fCalc := aCalc;
   fLexers := TObjectList.Create;
   InitializeLexers(MaxDepth);
 //  fCalc.OnParserError := HandleCalcParserError;
@@ -1180,7 +1143,7 @@ begin
   FreeAndNil(MacroFuncArgs);
   FreeAndNil(fLevelIgnore);
   FreeAndNil(fIncludeFilesToSkip);
-  FreeAndNil(fCalc);
+//  FreeAndNil(fCalc);
   FreeAndNil(fLexers);
   FreeAndNil(fWarnings);
   inherited;
@@ -1202,11 +1165,14 @@ end;
 function TLangPreprocessor.EvaluateIdentifier(const ident: string): string;
 begin
   Result := ident;
-  // try to evaluate Result
-  fCalc.SilentExpression := Result;
-  if not fCalc.ParserError then
+  if Assigned(fCalc) then
   begin
-    Result := NBCFloatToStr(fCalc.Value);
+    // try to evaluate Result
+    fCalc.SilentExpression := Result;
+    if not fCalc.ParserError then
+    begin
+      Result := CCFloatToStr(fCalc.Value);
+    end;
   end;
 end;
 
@@ -1220,13 +1186,17 @@ begin
   // try to evaluate Result
   while Pos(' ', expr) > 0 do
     expr := Replace(expr, ' ', '');
-  fCalc.SilentExpression := expr;
-  if not fCalc.ParserError then
+  Result := False;
+  if Assigned(fCalc) then
   begin
-    Result := fCalc.Value <> 0;
-  end
-  else
-    raise EPreprocessorException.Create(Format(sInvalidPreprocExpression, [fCalc.ErrorMessage]), lineno);
+    fCalc.SilentExpression := expr;
+    if not fCalc.ParserError then
+    begin
+      Result := fCalc.Value <> 0;
+    end
+    else
+      raise EPreprocessorException.Create(Format(sInvalidPreprocExpression, [fCalc.ErrorMessage]), lineno);
+  end;
 end;
 
 function TLangPreprocessor.ProcessDefinedFunction(expr: string): string;
@@ -1290,20 +1260,7 @@ begin
     fLexers.Add(fGLC.CreateLexer);
 end;
 
-function TLangPreprocessor.ImportRIC(const fname, varname: string): string;
-var
-  RC : TRICCompBase;
-begin
-  RC := TRICCompBase.Create;
-  try
-    RC.LoadFromFile(fname);
-    Result := RC.SaveAsDataArray(fLangName, varname);
-  finally
-    RC.Free;
-  end;
-end;
-
-function TLangPreprocessor.ImportFile(const fname : string; varname: string): string;
+function TLangPreprocessor.DoImportFile(const fname : string; varname: string): string;
 var
   tmp : string;
   i, cnt : integer;
@@ -1348,6 +1305,11 @@ begin
     Result := '// unable to import "' + ExtractFileName(fname) + '"';
 end;
 
+function TLangPreprocessor.ImportFile(const fname : string; varname: string): string;
+begin
+  Result := DoImportFile(fname, varname);
+end;
+
 function TLangPreprocessor.GetPreprocPath(const fname,
   path: string): string;
 begin
@@ -1363,103 +1325,6 @@ procedure TLangPreprocessor.DoPreprocessorStatusChange(const Status: string);
 begin
   if Assigned(fOnPreprocessorStatusChange) then
     fOnPreprocessorStatusChange(Self, Status);
-end;
-
-{ EPreprocessorException }
-
-constructor EPreprocessorException.Create(const msg: string;
-  const lineno: integer);
-begin
-  inherited Create(msg);
-  fLineNo := lineno;
-  fLinePos := 0;
-end;
-
-{ TMapList }
-
-type
-  TStrObj = class(TObject)
-  public
-    Value : string;
-  end;
-
-function TMapList.AddEntry(const aName, aValue: string): integer;
-var
-  obj : TStrObj;
-begin
-  Result := IndexOf(aName);
-  if Result = -1 then
-  begin
-    obj := TStrObj.Create;
-    Result := AddObject(aName, obj);
-    obj.Value := aValue;
-  end;
-end;
-
-procedure TMapList.Clear;
-var
-  i : integer;
-begin
-  for i := 0 to Count - 1 do
-    Objects[i].Free;
-  inherited;
-end;
-
-constructor TMapList.Create;
-begin
-  inherited;
-  CaseSensitive := True;
-  ConsiderCase  := True;
-  Sorted := True;
-  Duplicates := dupIgnore;
-end;
-
-procedure TMapList.Delete(Index: Integer);
-begin
-  Objects[Index].Free;
-  Objects[Index] := nil;
-  inherited;
-end;
-
-function TMapList.GetMapValue(index: integer): string;
-begin
-  Result := TStrObj(Objects[index]).Value;
-end;
-
-procedure TMapList.SetMapValue(index: integer; const Value: string);
-begin
-  TStrObj(Objects[index]).Value := Value;
-end;
-
-procedure TMapList.SetConsiderCase(const AValue: boolean);
-begin
-  if fConsiderCase=AValue then exit;
-  fConsiderCase:=AValue;
-  if Sorted then
-    Sort;
-end;
-
-{$IFDEF FPC}
-function TMapList.DoCompareText(const s1, s2: string): PtrInt;
-begin
-  if CaseSensitive or ConsiderCase then
-    result := AnsiCompareStr(s1,s2)
-  else
-    result := AnsiCompareText(s1,s2);
-end;
-{$ENDIF}
-
-procedure TMapList.AddDefines(aValue: TStrings);
-var
-  i : integer;
-begin
-  for i := 0 to aValue.Count - 1 do
-    AddEntry(aValue.Names[i], aValue.ValueFromIndex[i]);
-end;
-
-procedure TMapList.Define(const aName: string);
-begin
-  AddEntry(aName, '1');
 end;
 
 { TPreprocLevel }

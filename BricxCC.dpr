@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -21,10 +21,8 @@ program BricxCC;
 {$R 'VistaManifest.res' 'VistaManifest.rc'}
 
 uses
-{$IFNDEF FPC}
   FastMM4,
   FastMove,
-{$ENDIF}
   Forms,
   SysUtils,
   Dialogs,
@@ -36,7 +34,7 @@ uses
   uNewWatch in 'uNewWatch.pas' {frmNewWatch},
   About in 'About.pas' {AboutBox},
   GotoLine in 'GotoLine.pas' {GotoForm},
-  SearchRCX in 'SearchRCX.pas' {SearchRCXForm},
+  SearchRCX in 'SearchRCX.pas' {SearchBrickForm},
   Piano in 'Piano.pas' {PianoForm},
   ExecProgram in 'ExecProgram.pas',
   Preferences in 'Preferences.pas' {PrefForm},
@@ -161,7 +159,7 @@ begin
   if ParamSwitch('/PTO') then
     PingTimeout := StrToIntDef(ParamValue('/PTO'), K_DEFAULT_PING_TIMEOUT);
     
-  //must be read before creating the SearchRCXForm
+  //must be read before creating the SearchBrickForm
   if ParamSwitch('/UserPath') then
     UserDataLocalPath := IncludeTrailingPathDelimiter(ParamValue('/UserPath'));
 
@@ -170,7 +168,7 @@ begin
   Application.CreateForm(TDiagForm, DiagForm);
   Application.CreateForm(TWatchForm, WatchForm);
   Application.CreateForm(TfrmNewWatch, frmNewWatch);
-  Application.CreateForm(TSearchRCXForm, SearchRCXForm);
+  Application.CreateForm(TSearchBrickForm, SearchBrickForm);
   Application.CreateForm(TPianoForm, PianoForm);
   Application.CreateForm(TConstructForm, ConstructForm);
   Application.CreateForm(TJoystickForm, JoystickForm);

@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -23,7 +23,8 @@ unit uNXCComp;
 interface
 
 uses
-  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess, uCompTokens, Contnrs;
+  Classes, Contnrs, uNBCCommon, uGenLexer, uNXTClasses, uNBCPreprocess,
+  uCompTokens, uCompCommon;
 
 type
   TNXCComp = class
@@ -520,7 +521,7 @@ implementation
 
 uses
   SysUtils, Math, uNXCLexer, uNBCLexer, mwGenericLex, uLocalizedStrings,
-  NBCCommonData, NXCDefsData, uNXTConstants, Parser10;
+  NBCCommonData, NXCDefsData, uNXTConstants, uCommonUtils;
 
 {--------------------------------------------------------------}
 { Constant Declarations }
@@ -981,7 +982,7 @@ begin
           Result := False;
       end
       else
-        Value := NBCFloatToStr(fCalc.Value);
+        Value := CCFloatToStr(fCalc.Value);
     end
     else
       Result := False;
@@ -2168,7 +2169,7 @@ begin
   end
   else
   begin
-    cval := NBCStrToInt64Def(n, 0);
+    cval := CCStrToInt64Def(n, 0);
     n := IntToStr(cval);
     // 2011-07-18 Changed to use mov if the constant is negative in order to
     // avoid using set with unsigned long types. Commented out redundant code below.
@@ -2986,7 +2987,7 @@ begin
       if not fCalc.ParserError then
       begin
         if StatementType = stFloat then
-          str := NBCFloatToStr(fCalc.Value)
+          str := CCFloatToStr(fCalc.Value)
         else
           str := IntToStr(Trunc(fCalc.Value));
         Result := str;
@@ -4005,7 +4006,7 @@ begin
                     fCalc.SilentExpression := GetValueOf(parvalue);
                     if not fCalc.ParserError then
                     begin
-                      parvalue := NBCFloatToStr(fCalc.Value);
+                      parvalue := CCFloatToStr(fCalc.Value);
                       fCalc.SetVariable(parname, fCalc.Value);
                       fp.ConstantValue := parvalue;
                       fInputs.AddObject(parvalue, fp);
@@ -5571,7 +5572,7 @@ begin
   begin
     V := fLocals[i];
     if V.IsConstant and (V.Value <> '') then
-      Result := NBCStrToFloat(V.Value);
+      Result := CCStrToFloat(V.Value);
   end;
 end;
 
@@ -5668,7 +5669,7 @@ var
         begin
           if ArrayBaseType(dt) = TOK_FLOATDEF then
           begin
-            tmpExpr := NBCFloatToStr(fCalc.Value);
+            tmpExpr := CCFloatToStr(fCalc.Value);
           end
           else
             tmpExpr := IntToStr(Trunc(fCalc.Value))
@@ -5753,7 +5754,7 @@ begin
         if not fCalc.ParserError then
         begin
           if dt = TOK_FLOATDEF then
-            Result := NBCFloatToStr(fCalc.Value)
+            Result := CCFloatToStr(fCalc.Value)
           else
             Result := IntToStr(Trunc(fCalc.Value));
         end
@@ -5842,7 +5843,7 @@ begin
         if dt in NonAggregateTypes then
         begin
           if dt = TOK_FLOATDEF then
-            fCalc.SetVariable(savedval, NBCStrToFloatDef(ival, 0))
+            fCalc.SetVariable(savedval, CCStrToFloatDef(ival, 0))
           else
             fCalc.SetVariable(savedval, StrToInt64Def(ival, 0));
         end
@@ -7387,6 +7388,12 @@ begin
   Next;
 end;
 
+const
+  OUT_AB = $03;
+  OUT_AC = $04;
+  OUT_BC = $05;
+  OUT_ABC = $06;
+
 procedure TNXCComp.DoSetInputOutput(const idx: integer);
 var
   port, pchk, field, val, asmstr : string;
@@ -7573,11 +7580,11 @@ end;
 
 procedure TNXCComp.PreProcess;
 var
-  P : TLangPreprocessor;
+  P : TNBCLangPreprocessor;
   i, idx : integer;
   tmpFile, tmpMsg : string;
 begin
-  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC, MaxPreprocessorDepth);
+  P := TNBCLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC, MaxPreprocessorDepth, fCalc);
   try
     P.OnPreprocessorStatusChange := HandlePreprocStatusChange;
     P.AddPoundLineToMultiLineMacros := True;
@@ -9174,7 +9181,7 @@ begin
     fCalc.SilentExpression := aName;
     bIsConst := not fCalc.ParserError;
     if bIsConst then
-      Result := NBCFloatToStr(fCalc.Value);
+      Result := CCFloatToStr(fCalc.Value);
   end;
   if not bIsConst then
     AbortMsg(sConstRequired);

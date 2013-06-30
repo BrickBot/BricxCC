@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is Mark Overmars.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -149,7 +149,6 @@ type
     edtLCCIncludePath: TComboBox;
     edtNQCIncludePath: TComboBox;
     lblCygwin: TLabel;
-    chkKeepBrickOSMakefile: TCheckBox;
     grpHotKeys: TGroupBox;
     lblCodeComp: TLabel;
     lblParamComp: TLabel;
@@ -168,7 +167,6 @@ type
     edtJavaSwitches: TEdit;
     lblLeJOSMakefileTemplate: TLabel;
     edtLeJOSMakefileTemplate: TMemo;
-    chkKeepLeJOSMakefile: TCheckBox;
     Label1: TLabel;
     lblLeJOSRoot: TLabel;
     shtForth: TTabSheet;
@@ -372,6 +370,8 @@ type
     cbxBracketFG: TColorBox;
     lblBracketBG: TLabel;
     cbxBracketBG: TColorBox;
+    radLinux: TRadioButton;
+    chkKeepMakefiles: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -1579,9 +1579,8 @@ begin
     BrickOSRoot             := Reg_ReadString(reg, 'BrickOSRoot', K_BRICKOS_ROOT);
     BrickOSMakefileTemplate := Reg_ReadString(reg, 'BrickOSMakefileTemplate', K_BRICKOS_MAKE_TEMPLATE);
     PascalCompilerPrefix    := Reg_ReadString(reg, 'PascalCompilerPrefix', K_PASCAL_PREFIX);
-    KeepBrickOSMakefile     := Reg_ReadBool(reg, 'KeepBrickOSMakefile', False);
+    KeepMakefiles           := Reg_ReadBool(reg, 'KeepMakefiles', False);
     LeJOSMakefileTemplate   := Reg_ReadString(reg, 'LeJOSMakefileTemplate', K_LEJOS_MAKE_TEMPLATE);
-    KeepLeJOSMakefile       := Reg_ReadBool(reg, 'KeepLeJOSMakefile', False);
     NQCExePath              := Reg_ReadString(reg, 'NQCExePath', '');
     LCCExePath              := Reg_ReadString(reg, 'LCCExePath', '');
     IncludeSrcInList        := Reg_ReadBool(reg, 'IncludeSrcInList', False);
@@ -1623,9 +1622,8 @@ begin
     reg.WriteString('BrickOSRoot', BrickOSRoot);
     reg.WriteString('BrickOSMakefileTemplate', BrickOSMakefileTemplate);
     reg.WriteString('PascalCompilerPrefix', PascalCompilerPrefix);
-    reg.WriteBool('KeepBrickOSMakefile', KeepBrickOSMakefile);
+    reg.WriteBool('KeepMakefiles', KeepMakefiles);
     reg.WriteString('LeJOSMakefileTemplate', LeJOSMakefileTemplate);
-    reg.WriteBool('KeepLeJOSMakefile', KeepLeJOSMakefile);
     reg.WriteString('NQCExePath', NQCExePath);
     reg.WriteString('LCCExePath', LCCExePath);
     reg.WriteBool('IncludeSrcInList', IncludeSrcInList);
@@ -3230,9 +3228,13 @@ end;
 
 procedure TPrefForm.cboLanguagesChange(Sender: TObject);
 begin
-  LoadAttributeNames;
-  ShowSampleSource;
-  SynEditColors.Highlighter := GetActiveHighlighter(ahColors);
+  SynEditColors.Highlighter := nil;
+  try
+    LoadAttributeNames;
+    ShowSampleSource;
+  finally
+    SynEditColors.Highlighter := GetActiveHighlighter(ahColors);
+  end;
 end;
 
 procedure TPrefForm.ResetColorGrid;
@@ -3382,6 +3384,8 @@ begin
     Result := ftPBForth
   else if radLejos.Checked then
     Result := ftLeJOS
+  else if radLinux.Checked then
+    Result := ftLinux
   else if radOtherFirmware.Checked then
     Result := ftOther
   else
@@ -3394,6 +3398,7 @@ begin
     ftBrickOS : radBrickOS.Checked := True;
     ftPBForth : radPBForth.Checked := True;
     ftLeJOS   : radLejos.Checked   := True;
+    ftLinux   : radLinux.Checked   := True;
     ftOther   : radOtherFirmware.Checked := True;
   else
     // assume standard
@@ -3885,9 +3890,8 @@ begin
   edtOSRoot.Text                 := BrickOSRoot;
   edtBrickOSMakefileTemplate.Lines.Text := BrickOSMakefileTemplate;
   edtPascalCompilerPrefix.Text   := PascalCompilerPrefix;
-  chkKeepBrickOSMakefile.Checked := KeepBrickOSMakefile;
+  chkKeepMakefiles.Checked       := KeepMakefiles;
   edtLeJOSMakefileTemplate.Lines.Text := LeJOSMakefileTemplate;
-  chkKeepLeJOSMakefile.Checked   := KeepLeJOSMakefile;
   edtNQCExePath.Text             := NQCExePath;
   edtLCCExePath.Text             := LCCExePath;
   edtNBCExePath.Text             := NBCExePath;
@@ -4089,9 +4093,8 @@ begin
   BrickOSRoot             := edtOSRoot.Text;
   BrickOSMakefileTemplate := edtBrickOSMakefileTemplate.Lines.Text;
   PascalCompilerPrefix    := edtPascalCompilerPrefix.Text;
-  KeepBrickOSMakefile     := chkKeepBrickOSMakefile.Checked;
+  KeepMakefiles           := chkKeepMakefiles.Checked;
   LeJOSMakefileTemplate   := edtLeJOSMakefileTemplate.Lines.Text;
-  KeepLeJOSMakefile       := chkKeepLeJOSMakefile.Checked;
   NQCExePath              := edtNQCExePath.Text;
   LCCExePath              := edtLCCExePath.Text;
   NBCExePath              := edtNBCExePath.Text;

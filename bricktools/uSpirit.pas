@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -26,7 +26,7 @@ interface
 
 
 uses
-  rcx_constants, Classes, FantomDefs, uProgram;
+  rcx_constants, Classes, FantomDefs, uProgram, uCompCommon;
 
 const
   MAX_COMPORT   = 8;
@@ -72,9 +72,6 @@ type
     BTAddress : array[0..6] of Byte;
     DeviceStatus : byte;
   end;
-
-  TNXTFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware);
-  TEV3FileType = (eftProgram, eftGraphics, eftSound, eftData, eftOther, eftFirmware);
 
   TTransmitLevel = (tlNear, tlFar);
   TLSSource = (lsVariable, lsError, lsConstant);
@@ -458,8 +455,6 @@ type
     property  OnDataReceiving : TDataSendReceiveEvent read fOnDataReceiving write fOnDataReceiving;
   end;
 
-function NameToNXTFileType(name : string) : TNXTFileType;
-function NameToEV3FileType(name : string) : TEV3FileType;
 function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
 function FantomAPIAvailable : boolean;
@@ -513,36 +508,6 @@ begin
       SL.Free;
     end;
   end;
-end;
-
-function NameToNXTFileType(name : string) : TNXTFileType;
-var
-  ext : string;
-begin
-  Result := nftOther;
-  ext := AnsiLowercase(ExtractFileExt(name));
-  if (ext = '.rso') or (ext = '.rmd') then
-    Result := nftSound
-  else if ext = '.rdt' then
-    Result := nftData
-  else if (ext = '.ric') then
-    Result := nftGraphics
-  else if (ext = '.rxe') or (ext = '.sys') or (ext = '.rtm') then
-    Result := nftProgram
-end;
-
-function NameToEV3FileType(name : string) : TEV3FileType;
-var
-  ext : string;
-begin
-  Result := eftOther;
-  ext := AnsiLowercase(ExtractFileExt(name));
-  if (ext = '.rsf') then
-    Result := eftSound
-  else if (ext = '.rgf') then
-    Result := eftGraphics
-  else if (ext = '.rbf') then
-    Result := eftProgram
 end;
 
 function MakeValidNXTFilename(const filename : string) : string;
@@ -747,8 +712,8 @@ end;
 
 function TBrickComm.GetBrickTypeName: string;
 const
-  BrickNames : array[rtRCX..rtSPro] of String = (K_RCX, K_CYBER, K_SCOUT, K_RCX2,
-    K_SPY, K_SWAN, K_NXT, K_SPRO);
+  BrickNames : array[rtRCX..rtEV3] of String = (K_RCX, K_CYBER, K_SCOUT, K_RCX2,
+    K_SPY, K_SWAN, K_NXT, K_SPRO, K_EV3);
 begin
   Result := BrickNames[BrickType];
 end;
