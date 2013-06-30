@@ -1,8 +1,8 @@
 object frmProjectManager: TfrmProjectManager
   Left = 309
   Top = 263
-  Width = 180
-  Height = 218
+  Width = 240
+  Height = 238
   HelpContext = 37000
   BorderIcons = [biSystemMenu, biHelp]
   Caption = 'Project Manager'
@@ -19,8 +19,8 @@ object frmProjectManager: TfrmProjectManager
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    172
-    184)
+    224
+    200)
   PixelsPerInch = 96
   TextHeight = 13
   object lblFiles: TLabel
@@ -41,8 +41,8 @@ object frmProjectManager: TfrmProjectManager
   object lstFiles: TListBox
     Left = 4
     Top = 48
-    Width = 165
-    Height = 104
+    Width = 213
+    Height = 120
     HelpContext = 37001
     Anchors = [akLeft, akTop, akRight, akBottom]
     DragMode = dmAutomatic
@@ -55,8 +55,8 @@ object frmProjectManager: TfrmProjectManager
     OnDragOver = lstFilesDragOver
   end
   object btnHelp: TButton
-    Left = 117
-    Top = 156
+    Left = 160
+    Top = 171
     Width = 52
     Height = 25
     HelpContext = 37002

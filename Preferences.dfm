@@ -1089,6 +1089,15 @@ object PrefForm: TPrefForm
               TabOrder = 0
               Value = 0
             end
+            object chkKeepMakefiles: TCheckBox
+              Left = 76
+              Top = 180
+              Width = 325
+              Height = 17
+              HelpContext = 11115
+              Caption = 'Keep generated makefiles'
+              TabOrder = 5
+            end
           end
           object shtCompilerNQC: TTabSheet
             Caption = 'NQC'
@@ -1487,22 +1496,13 @@ object PrefForm: TPrefForm
               TabOrder = 3
               WantTabs = True
             end
-            object chkKeepBrickOSMakefile: TCheckBox
-              Left = 76
-              Top = 196
-              Width = 325
-              Height = 17
-              HelpContext = 11115
-              Caption = 'Keep the makefile after compilation'
-              TabOrder = 4
-            end
             object edtPascalCompilerPrefix: TEdit
               Left = 76
               Top = 216
               Width = 337
               Height = 21
               HelpContext = 11116
-              TabOrder = 5
+              TabOrder = 4
             end
             object edtCygwin2: TEdit
               Left = 76
@@ -1565,15 +1565,6 @@ object PrefForm: TPrefForm
               ScrollBars = ssBoth
               TabOrder = 3
               WantTabs = True
-            end
-            object chkKeepLeJOSMakefile: TCheckBox
-              Left = 76
-              Top = 224
-              Width = 325
-              Height = 17
-              HelpContext = 11126
-              Caption = 'Keep the makefile after compilation'
-              TabOrder = 4
             end
             object edtJavaPath2: TEdit
               Left = 76
@@ -2160,12 +2151,12 @@ object PrefForm: TPrefForm
             Left = 14
             Top = 96
             Width = 385
-            Height = 57
+            Height = 65
             Caption = 'Firmware'
             TabOrder = 2
             object radStandard: TRadioButton
               Left = 8
-              Top = 24
+              Top = 20
               Width = 69
               Height = 17
               HelpContext = 11191
@@ -2173,8 +2164,8 @@ object PrefForm: TPrefForm
               TabOrder = 0
             end
             object radBrickOS: TRadioButton
-              Left = 83
-              Top = 24
+              Left = 82
+              Top = 20
               Width = 69
               Height = 17
               HelpContext = 11192
@@ -2182,8 +2173,8 @@ object PrefForm: TPrefForm
               TabOrder = 1
             end
             object radPBForth: TRadioButton
-              Left = 157
-              Top = 24
+              Left = 156
+              Top = 20
               Width = 69
               Height = 17
               HelpContext = 11193
@@ -2191,8 +2182,8 @@ object PrefForm: TPrefForm
               TabOrder = 2
             end
             object radLejos: TRadioButton
-              Left = 232
-              Top = 24
+              Left = 230
+              Top = 20
               Width = 69
               Height = 17
               HelpContext = 11194
@@ -2200,13 +2191,22 @@ object PrefForm: TPrefForm
               TabOrder = 3
             end
             object radOtherFirmware: TRadioButton
-              Left = 306
-              Top = 24
+              Left = 8
+              Top = 40
               Width = 69
               Height = 17
               HelpContext = 11195
               Caption = 'Other'
               TabOrder = 4
+            end
+            object radLinux: TRadioButton
+              Left = 304
+              Top = 20
+              Width = 69
+              Height = 17
+              HelpContext = 11194
+              Caption = 'Linux'
+              TabOrder = 5
             end
           end
         end

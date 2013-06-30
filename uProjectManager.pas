@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -160,13 +160,18 @@ end;
 procedure TfrmProjectManager.SetProjFile(const Value: string);
 var
   SCH : TSynCustomHighlighter;
+  langName : string;
 begin
   lblProject.Caption := ExtractFileName(Value);
   // attempt to open the project file and load it into lblFiles.
   fProjFile := ChangeFileExt(Value, '.prj');
   dlgOpen.InitialDir := ExtractFilePath(fProjFile);
   SCH := GetHighlighterForFile(Value);
-  dlgOpen.FilterIndex := Highlighters.IndexOf(SCH.LanguageName)+1;
+  if Assigned(SCH) then
+    langName := SCH.LanguageName
+  else
+    langName := 'C++';
+  dlgOpen.FilterIndex := Highlighters.IndexOf(langName)+1;
   lstFiles.Clear; // empty the list of files
   if FileExists(fProjFile) then
     lstFiles.Items.LoadFromFile(fProjFile);

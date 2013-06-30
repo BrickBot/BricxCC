@@ -2,7 +2,8 @@ program PBRTest;
 
 uses
   Forms,
-  uPBRTest in 'uPBRTest.pas' {Form1};
+  uPBRTest in 'uPBRTest.pas' {Form1},
+  uTransport in '..\bricktools\uTransport.pas';
 
 {$R *.res}
 

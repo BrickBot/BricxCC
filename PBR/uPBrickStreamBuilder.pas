@@ -41,30 +41,30 @@ end;
 		private static Dictionary<string, PBrickOpCode> _opCodeMapF;
 		private static Dictionary<TypeCode, Dictionary<string, PBrickOpCode>> _mapMap;
 		private static Dictionary<ConditionCode, string> _conditionCodeNameMap;
+		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", Justification = "this multidimensional array doesn't waste space")]
 		private static PBrickOpCode[,] _opCodeMapMoves;
 		private static readonly Dictionary<TypeCode, PBrickStreamBuilder.MoveInstructionTypes> _clsTypeToMoveInstructionType;
 		private static List<PBrickOpCode> _specialSizedInstructions;
-
 		public PBrickStreamBuilder(ModuleBuilder model, List<Tuple<string, IDataType>> mailboxNames)
 		{
 			this._module = model;
 			this._mailboxNames = mailboxNames;
 			this._viLocalByteCount = new Dictionary<ViBuilder, int>();
 		}
-
+		[SuppressMessage("Microsoft.Performance", "CA1814:PreferJaggedArraysOverMultidimensional", Justification = "thismultidimensionalarraydoesn'twastespace"), SuppressMessage("Microsoft.Performance", "CA1810:InitializeReferenceTypeStaticFieldsInline", Justification = "TODO")]
 		static PBrickStreamBuilder()
 		{
-			Dictionary<TypeCode, MoveInstructionTypes> dictionary = new Dictionary<TypeCode, PBrickStreamBuilder.MoveInstructionTypes>();
-            dictionary.Add(TypeCode.Double, MoveInstructionTypes.Float);
-            dictionary.Add(TypeCode.Single, MoveInstructionTypes.Float);
-            dictionary.Add(TypeCode.Int16, MoveInstructionTypes.Sixteen);
-			dictionary.Add(TypeCode.UInt16, MoveInstructionTypes.Sixteen);
-			dictionary.Add(TypeCode.Int32, MoveInstructionTypes.ThirtyTwo);
-			dictionary.Add(TypeCode.UInt32, MoveInstructionTypes.ThirtyTwo);
-			dictionary.Add(TypeCode.SByte, MoveInstructionTypes.Eight);
-			dictionary.Add(TypeCode.Byte, MoveInstructionTypes.Eight);
-			dictionary.Add(TypeCode.Boolean, MoveInstructionTypes.Eight);
-			dictionary.Add(TypeCode.String, MoveInstructionTypes.Sixteen);
+			Dictionary<TypeCode, PBrickStreamBuilder.MoveInstructionTypes> dictionary = new Dictionary<TypeCode, PBrickStreamBuilder.MoveInstructionTypes>();
+			dictionary.Add(14, PBrickStreamBuilder.MoveInstructionTypes.Float);
+			dictionary.Add(13, PBrickStreamBuilder.MoveInstructionTypes.Float);
+			dictionary.Add(7, PBrickStreamBuilder.MoveInstructionTypes.Sixteen);
+			dictionary.Add(8, PBrickStreamBuilder.MoveInstructionTypes.Sixteen);
+			dictionary.Add(9, PBrickStreamBuilder.MoveInstructionTypes.ThirtyTwo);
+			dictionary.Add(10, PBrickStreamBuilder.MoveInstructionTypes.ThirtyTwo);
+			dictionary.Add(5, PBrickStreamBuilder.MoveInstructionTypes.Eight);
+			dictionary.Add(6, PBrickStreamBuilder.MoveInstructionTypes.Eight);
+			dictionary.Add(3, PBrickStreamBuilder.MoveInstructionTypes.Eight);
+			dictionary.Add(18, PBrickStreamBuilder.MoveInstructionTypes.Sixteen);
 			PBrickStreamBuilder._clsTypeToMoveInstructionType = dictionary;
 			PBrickStreamBuilder._opCodeMisc = new Dictionary<string, PBrickOpCode>();
 			PBrickStreamBuilder._opCodeMap8 = new Dictionary<string, PBrickOpCode>();
@@ -91,15 +91,15 @@ end;
 			PBrickStreamBuilder._opCodeMapMoves[3, 2] = PBrickOpCode.opMOVEF32;
 			PBrickStreamBuilder._opCodeMapMoves[3, 3] = PBrickOpCode.opMOVEFF;
 			PBrickStreamBuilder._specialSizedInstructions = new List<PBrickOpCode>();
-			PBrickStreamBuilder._mapMap.Add(TypeCode.Byte, PBrickStreamBuilder._opCodeMap8);
-			PBrickStreamBuilder._mapMap.Add(TypeCode.SByte, PBrickStreamBuilder._opCodeMap8);
-			PBrickStreamBuilder._mapMap.Add(TypeCode.Boolean, PBrickStreamBuilder._opCodeMap8);
-			PBrickStreamBuilder._mapMap.Add(TypeCode.Int16, PBrickStreamBuilder._opCodeMap16);
-            PBrickStreamBuilder._mapMap.Add(TypeCode.UInt16, PBrickStreamBuilder._opCodeMap16);
-			PBrickStreamBuilder._mapMap.Add(TypeCode.Int32, PBrickStreamBuilder._opCodeMap32);
-            PBrickStreamBuilder._mapMap.Add(TypeCode.UInt32, PBrickStreamBuilder._opCodeMap32);
-			PBrickStreamBuilder._mapMap.Add(TypeCode.Single, PBrickStreamBuilder._opCodeMapF);
-			PBrickStreamBuilder._mapMap.Add(TypeCode.Double, PBrickStreamBuilder._opCodeMapF);
+			PBrickStreamBuilder._mapMap.Add(6, PBrickStreamBuilder._opCodeMap8);
+			PBrickStreamBuilder._mapMap.Add(5, PBrickStreamBuilder._opCodeMap8);
+			PBrickStreamBuilder._mapMap.Add(3, PBrickStreamBuilder._opCodeMap8);
+			PBrickStreamBuilder._mapMap.Add(7, PBrickStreamBuilder._opCodeMap16);
+			PBrickStreamBuilder._mapMap.Add(8, PBrickStreamBuilder._opCodeMap16);
+			PBrickStreamBuilder._mapMap.Add(9, PBrickStreamBuilder._opCodeMap32);
+			PBrickStreamBuilder._mapMap.Add(10, PBrickStreamBuilder._opCodeMap32);
+			PBrickStreamBuilder._mapMap.Add(13, PBrickStreamBuilder._opCodeMapF);
+			PBrickStreamBuilder._mapMap.Add(14, PBrickStreamBuilder._opCodeMapF);
 			PBrickStreamBuilder._opCodeMap8.Add("Add", PBrickOpCode.opADD8);
 			PBrickStreamBuilder._opCodeMap16.Add("Add", PBrickOpCode.opADD16);
 			PBrickStreamBuilder._opCodeMap32.Add("Add", PBrickOpCode.opADD32);
@@ -182,6 +182,8 @@ end;
 			PBrickStreamBuilder._opCodeMisc.Add("InverseSine", PBrickOpCode.opMathASin);
 			PBrickStreamBuilder._opCodeMisc.Add("InverseCosine", PBrickOpCode.opMathACos);
 			PBrickStreamBuilder._opCodeMisc.Add("InverseTangent", PBrickOpCode.opMathATan);
+			PBrickStreamBuilder._opCodeMisc.Add("Ln", PBrickOpCode.opMathLn);
+			PBrickStreamBuilder._opCodeMisc.Add("Log", PBrickOpCode.opMathLog);
 			PBrickStreamBuilder._opCodeMisc.Add("StringConcatenate", PBrickOpCode.opSTRING);
 			PBrickStreamBuilder._opCodeMisc.Add("ToString", PBrickOpCode.opStringValueToString);
 			PBrickStreamBuilder._opCodeMisc.Add("ArrayInsertElement", PBrickOpCode.opARRAYWRITE);
@@ -199,23 +201,18 @@ end;
 			PBrickStreamBuilder._specialSizedInstructions.Add(PBrickOpCode.opOBJECTEND);
 			PBrickStreamBuilder._specialSizedInstructions.Add(PBrickOpCode.opRETURN);
 		}
-
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "TODO"), SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "TODO")]
 		public PBrickOpCode NamedOpToOpCode(Instruction instruction)
 		{
-			PBrickOpCode result;
 			if (instruction is PBRDirectCodeInstruction)
 			{
-				result = (instruction as PBRDirectCodeInstruction).OpCode;
+				return (instruction as PBRDirectCodeInstruction).OpCode;
 			}
-			else
-			{
-				PBrickOpCode pBrickOpCode;
-				if (PBrickStreamBuilder._opCodeMisc.TryGetValue(instruction.OpName, out pBrickOpCode))
+			PBrickOpCode result;
+			if (PBrickStreamBuilder._opCodeMisc.TryGetValue(instruction.OpName, ref result))
 				{
-					result = pBrickOpCode;
+				return result;
 				}
-				else
-				{
 					string text;
 					DataBuilder dataBuilder;
 					if (instruction is ConditionalBranchInstruction)
@@ -227,11 +224,9 @@ end;
 						{
 							if (conditionalBranchInstruction.ConditionCode == ConditionCode.NotEqualTo)
 							{
-								result = PBrickOpCode.opJRTRUE;
-								return result;
+						return PBrickOpCode.opJRTRUE;
 							}
-							result = PBrickOpCode.opJRFALSE;
-							return result;
+					return PBrickOpCode.opJRFALSE;
 						}
 					}
 					else
@@ -239,7 +234,7 @@ end;
 						if (instruction is CompareInstruction)
 						{
 							CompareInstruction compareInstruction = instruction as CompareInstruction;
-							text = PBrickStreamBuilder._conditionCodeNameMap[compareInstruction.ConditionCode];
+					text = PBrickStreamBuilder._conditionCodeNameMap.get_Item(compareInstruction.ConditionCode);
 							dataBuilder = compareInstruction.Operand2;
 						}
 						else
@@ -249,15 +244,13 @@ end;
 								object[] args = instruction.GetArgs();
 								if (((DataBuilder)args[0]).IsArray)
 								{
-									result = PBrickOpCode.opArrayCopy;
-									return result;
+							return PBrickOpCode.opArrayCopy;
 								}
 								TypeCode typeCode = ((DataBuilder)args[1]).BuilderType.TypeCode;
-								PBrickStreamBuilder.MoveInstructionTypes moveInstructionTypes = PBrickStreamBuilder._clsTypeToMoveInstructionType[typeCode];
+						PBrickStreamBuilder.MoveInstructionTypes moveInstructionTypes = PBrickStreamBuilder._clsTypeToMoveInstructionType.get_Item(typeCode);
 								typeCode = ((DataBuilder)args[0]).BuilderType.TypeCode;
-								PBrickStreamBuilder.MoveInstructionTypes moveInstructionTypes2 = PBrickStreamBuilder._clsTypeToMoveInstructionType[typeCode];
-								result = PBrickStreamBuilder._opCodeMapMoves[(int)moveInstructionTypes, (int)moveInstructionTypes2];
-								return result;
+						PBrickStreamBuilder.MoveInstructionTypes moveInstructionTypes2 = PBrickStreamBuilder._clsTypeToMoveInstructionType.get_Item(typeCode);
+						return PBrickStreamBuilder._opCodeMapMoves[(int)moveInstructionTypes, (int)moveInstructionTypes2];
 							}
 							else
 							{
@@ -268,32 +261,29 @@ end;
 						}
 					}
 					IDataType builderType = dataBuilder.BuilderType;
-					Dictionary<string, PBrickOpCode> dictionary = PBrickStreamBuilder._mapMap[builderType.TypeCode];
-					pBrickOpCode = dictionary[text];
-					result = pBrickOpCode;
-				}
-			}
+			Dictionary<string, PBrickOpCode> dictionary = PBrickStreamBuilder._mapMap.get_Item(builderType.TypeCode);
+			result = dictionary.get_Item(text);
 			return result;
 		}
-
+		[SuppressMessage("Microsoft.Reliability", "CA2000:Dispose objects before losing scope", Justification = "TODO"), SuppressMessage("Microsoft.Maintainability", "CA1505:AvoidUnmaintainableCode", Justification = "TODO"), SuppressMessage("Microsoft.Maintainability", "CA1506:AvoidExcessiveClassCoupling", Justification = "TODO"), SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO")]
 		public byte[] GenerateBytes()
 		{
 			int num = 0;
 			this._uncertainOfSomeInstructionSizes = true;
 			List<Instruction> list = new List<Instruction>();
 			List<Instruction> list2 = new List<Instruction>();
-			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator = this._module.ViBuilders.Values.GetEnumerator())
+			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator = this._module.ViBuilders.get_Values().GetEnumerator())
 			{
 				while (enumerator.MoveNext())
 				{
-					ViBuilder current = enumerator.Current;
-					Dictionary<int, ClumpBuilder> clumps = Enumerable.ToDictionary<KeyValuePair<int, ClumpBuilder>, int, ClumpBuilder>(Enumerable.Select<IGrouping<ClumpBuilder, KeyValuePair<int, ClumpBuilder>>, KeyValuePair<int, ClumpBuilder>>(Enumerable.GroupBy<KeyValuePair<int, ClumpBuilder>, ClumpBuilder>(current.Clumps, (KeyValuePair<int, ClumpBuilder> pair) => pair.Value), (IGrouping<ClumpBuilder, KeyValuePair<int, ClumpBuilder>> group) => Enumerable.First<KeyValuePair<int, ClumpBuilder>>(group)), (KeyValuePair<int, ClumpBuilder> pair) => pair.Key, (KeyValuePair<int, ClumpBuilder> pair) => pair.Value);
+					ViBuilder current = enumerator.get_Current();
+					Dictionary<int, ClumpBuilder> clumps = Enumerable.ToDictionary<KeyValuePair<int, ClumpBuilder>, int, ClumpBuilder>(Enumerable.Select<IGrouping<ClumpBuilder, KeyValuePair<int, ClumpBuilder>>, KeyValuePair<int, ClumpBuilder>>(Enumerable.GroupBy<KeyValuePair<int, ClumpBuilder>, ClumpBuilder>(current.Clumps, (KeyValuePair<int, ClumpBuilder> pair) => pair.get_Value()), (IGrouping<ClumpBuilder, KeyValuePair<int, ClumpBuilder>> group) => Enumerable.First<KeyValuePair<int, ClumpBuilder>>(group)), (KeyValuePair<int, ClumpBuilder> pair) => pair.get_Key(), (KeyValuePair<int, ClumpBuilder> pair) => pair.get_Value());
 					current.Clumps = clumps;
 					if (current.IsReentrant)
 					{
 						num += current.ReentrantCallerAdditionalHeaderCount;
 					}
-					num += current.Clumps.Count;
+					num += current.Clumps.get_Count();
 				}
 			}
 			List<object> list3 = new List<object>();
@@ -310,27 +300,27 @@ end;
 			{
 				while (enumerator2.MoveNext())
 				{
-					Tuple<string, IDataType> current2 = enumerator2.Current;
+					Tuple<string, IDataType> current2 = enumerator2.get_Current();
 					list3 = new List<object>();
 					DataBuilder dataBuilder = this._module.DefineConstant(BuiltinDataType.Byte, (double)num2);
 					list3.Add(dataBuilder);
-					DataBuilder dataBuilder2 = this._module.DefineGlobal(BuiltinDataType.String, current2.Item1);
+					DataBuilder dataBuilder2 = this._module.DefineGlobal(BuiltinDataType.String, current2.get_Item1());
 					list3.Add(dataBuilder2);
 					int num3 = 0;
-					if (current2.Item2 == BuiltinDataType.Single)
+					if (current2.get_Item2() == BuiltinDataType.Single)
 					{
 						num3 = 3;
 					}
 					else
 					{
-						if (current2.Item2 == BuiltinDataType.String)
+						if (current2.get_Item2() == BuiltinDataType.String)
 						{
 							num3 = 4;
 						}
 					}
 					DataBuilder dataBuilder3 = this._module.DefineConstant(BuiltinDataType.Byte, (double)num3);
 					list3.Add(dataBuilder3);
-					DataBuilder dataBuilder4 = this._module.DefineConstant(BuiltinDataType.Byte, 0.0);
+					DataBuilder dataBuilder4 = this._module.DefineConstant(BuiltinDataType.Byte, 1.0);
 					list3.Add(dataBuilder4);
 					DataBuilder dataBuilder5 = this._module.DefineConstant(BuiltinDataType.Byte, 1.0);
 					list3.Add(dataBuilder5);
@@ -345,10 +335,10 @@ end;
 			{
 				while (enumerator3.MoveNext())
 				{
-					DataBuilder current3 = enumerator3.Current;
+					DataBuilder current3 = enumerator3.get_Current();
 					if (current3.BuilderType.CompiledType != typeof(RXEMutex))
 					{
-						if (current3.BuilderType.TypeCode == TypeCode.Double)
+						if (current3.BuilderType.TypeCode == 14)
 						{
 							throw new NotSupportedException("PBrick does not support 64 bit floating point numbers.");
 						}
@@ -362,10 +352,10 @@ end;
 							current3.SetTargetOffset(num4, 0);
 							num4 += 2;
 							List<object> list4 = new List<object>();
-							int num5 = 0;
+							int num5 = 1;
 							if (current3.Value != null)
 							{
-								num5 = ((string)current3.Value).Length;
+								num5 = ((string)current3.Value).get_Length();
 							}
 							list4.Add(1);
 							list4.Add(num5);
@@ -388,32 +378,31 @@ end;
 							{
 								current3.SetTargetOffset(num4, 0);
 								num4 += 2;
-								List<object> list4 = new List<object>();
+								List<object> list5 = new List<object>();
 								ArrayCommand arrayCommand = this.ArrayCreateCommandFromType(current3.BuilderType);
-								list4.Add((byte)arrayCommand);
-								Array array = current3.Value as Array;
-								if (array == null)
+								list5.Add((byte)arrayCommand);
+								if (!(current3.Value is Array))
 								{
-									list4.Add(0);
-									list4.Add(current3);
-									PBRDirectCodeInstruction pBRDirectCodeInstruction4 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list4);
-									list.Add(pBRDirectCodeInstruction4);
+									list5.Add(0);
+									list5.Add(current3);
+									PBRDirectCodeInstruction pBRDirectCodeInstruction5 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list5);
+									list.Add(pBRDirectCodeInstruction5);
 								}
 								else
 								{
-									list4.Add((current3.Value as Array).Length);
-									list4.Add(current3);
-									PBRDirectCodeInstruction pBRDirectCodeInstruction4 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list4);
-									list.Add(pBRDirectCodeInstruction4);
-									list4 = new List<object>();
+									list5.Add((current3.Value as Array).get_Length());
+									list5.Add(current3);
+									PBRDirectCodeInstruction pBRDirectCodeInstruction6 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list5);
+									list.Add(pBRDirectCodeInstruction6);
+									list5 = new List<object>();
 									arrayCommand = this.ArrayInitCommandFromType(current3.BuilderType);
-									list4.Add((byte)arrayCommand);
-									list4.Add(current3);
-									list4.Add(0);
-									list4.Add((current3.Value as Array).Length);
-									list4.Add(current3.Value);
-									pBRDirectCodeInstruction4 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list4);
-									list.Add(pBRDirectCodeInstruction4);
+									list5.Add((byte)arrayCommand);
+									list5.Add(current3);
+									list5.Add(0);
+									list5.Add((current3.Value as Array).get_Length());
+									list5.Add(current3.Value);
+									pBRDirectCodeInstruction6 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list5);
+									list.Add(pBRDirectCodeInstruction6);
 								}
 							}
 							else
@@ -432,63 +421,63 @@ end;
 				}
 			}
 			list = Enumerable.ToList<Instruction>(Enumerable.Concat<Instruction>(list, list2));
-			ByteCodeGenerator codeGenerator = Enumerable.First<ClumpBuilder>(Enumerable.First<ViBuilder>(this._module.ViBuilders.Values).Clumps.Values).CodeGenerator;
+			ByteCodeGenerator codeGenerator = Enumerable.First<ClumpBuilder>(Enumerable.First<ViBuilder>(this._module.ViBuilders.get_Values()).Clumps.get_Values()).CodeGenerator;
 			using (List<Label>.Enumerator enumerator4 = codeGenerator.Labels.GetEnumerator())
 			{
 				while (enumerator4.MoveNext())
 				{
-					Label current4 = enumerator4.Current;
-					current4.TargetInstructionIndex += list.Count;
+					Label current4 = enumerator4.get_Current();
+					current4.TargetInstructionIndex += list.get_Count();
 				}
 			}
 			codeGenerator.Instructions = Enumerable.ToList<Instruction>(Enumerable.Concat<Instruction>(list, codeGenerator.Instructions));
-			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator = this._module.ViBuilders.Values.GetEnumerator())
+			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator5 = this._module.ViBuilders.get_Values().GetEnumerator())
 			{
-				while (enumerator.MoveNext())
+				while (enumerator5.MoveNext())
 				{
-					ViBuilder current = enumerator.Current;
+					ViBuilder current5 = enumerator5.get_Current();
 					list = new List<Instruction>();
-					List<Instruction> list5 = new List<Instruction>();
-					using (IEnumerator<DataBuilder> enumerator5 = current.GetNonParameterLocals().GetEnumerator())
+					List<Instruction> list6 = new List<Instruction>();
+					using (IEnumerator<DataBuilder> enumerator6 = current5.GetNonParameterLocals().GetEnumerator())
 					{
-						while (enumerator5.MoveNext())
+						while (enumerator6.MoveNext())
 						{
-							DataBuilder current3 = enumerator5.Current;
-							if (current3.IsArray)
+							DataBuilder current6 = enumerator6.get_Current();
+							if (current6.IsArray)
 							{
-								List<object> list4 = new List<object>();
-								if (current3.BuilderType.Equals(BuiltinDataType.String))
+								List<object> list7 = new List<object>();
+								if (current6.BuilderType.Equals(BuiltinDataType.String))
 								{
-									list4.Add(1);
+									list7.Add(1);
 								}
 								else
 								{
-									ArrayCommand arrayCommand = this.ArrayCreateCommandFromType(current3.BuilderType);
-									list4.Add((byte)arrayCommand);
+									ArrayCommand arrayCommand2 = this.ArrayCreateCommandFromType(current6.BuilderType);
+									list7.Add((byte)arrayCommand2);
 								}
-								list4.Add(1);
-								list4.Add(current3);
-								PBRDirectCodeInstruction pBRDirectCodeInstruction4 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list4);
-								list.Add(pBRDirectCodeInstruction4);
-								list4 = new List<object>();
-								list4.Add(current3);
-								pBRDirectCodeInstruction4 = new PBRDirectCodeInstruction(PBrickOpCode.opArrayDelete, list4);
-								list5.Add(pBRDirectCodeInstruction4);
+								list7.Add(1);
+								list7.Add(current6);
+								PBRDirectCodeInstruction pBRDirectCodeInstruction7 = new PBRDirectCodeInstruction(PBrickOpCode.opARRAY, list7);
+								list.Add(pBRDirectCodeInstruction7);
+								list7 = new List<object>();
+								list7.Add(current6);
+								pBRDirectCodeInstruction7 = new PBRDirectCodeInstruction(PBrickOpCode.opArrayDelete, list7);
+								list6.Add(pBRDirectCodeInstruction7);
 							}
 						}
 					}
-					using (List<Label>.Enumerator enumerator4 = current.RootClump.CodeGenerator.Labels.GetEnumerator())
+					using (List<Label>.Enumerator enumerator7 = current5.RootClump.CodeGenerator.Labels.GetEnumerator())
 					{
-						while (enumerator4.MoveNext())
+						while (enumerator7.MoveNext())
 						{
-							Label current4 = enumerator4.Current;
-							current4.TargetInstructionIndex += list.Count;
+							Label current7 = enumerator7.get_Current();
+							current7.TargetInstructionIndex += list.get_Count();
 						}
 					}
-					current.RootClump.CodeGenerator.Instructions = Enumerable.ToList<Instruction>(Enumerable.Concat<Instruction>(list, current.RootClump.CodeGenerator.Instructions));
-					List<Instruction> instructions = current.RootClump.CodeGenerator.Instructions;
-					int num6 = instructions.Count - 1;
-					instructions.InsertRange(num6, list5);
+					current5.RootClump.CodeGenerator.Instructions = Enumerable.ToList<Instruction>(Enumerable.Concat<Instruction>(list, current5.RootClump.CodeGenerator.Instructions));
+					List<Instruction> instructions = current5.RootClump.CodeGenerator.Instructions;
+					int num6 = instructions.get_Count() - 1;
+					instructions.InsertRange(num6, list6);
 				}
 			}
 			this.CalculateLocalOffests();
@@ -497,7 +486,7 @@ end;
 			while (this._uncertainOfSomeInstructionSizes)
 			{
 				this._uncertainOfSomeInstructionSizes = false;
-				int num7 = (int)binaryWriter.BaseStream.Position;
+				int num7 = (int)binaryWriter.get_BaseStream().get_Position();
 				if (num7 <= 0)
 				{
 					this._uncertainOfSomeInstructionSizes = true;
@@ -511,71 +500,49 @@ end;
 			binaryWriter.Seek(0, 0);
 			return memoryStream.ToArray();
 		}
-
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "TODO")]
 		private ArrayCommand ArrayInitCommandFromType(IDataType dataType)
 		{
-			ArrayCommand result;
 			if (dataType == BuiltinDataType.ByteArray1D || dataType == BuiltinDataType.SByteArray1D || dataType == BuiltinDataType.BooleanArray1D)
 			{
-				result = ArrayCommand.Init8;
+				return ArrayCommand.Init8;
 			}
-			else
-			{
 				if (dataType == BuiltinDataType.Int16Array1D || dataType == BuiltinDataType.UInt16Array1D)
 				{
-					result = ArrayCommand.Init16;
+				return ArrayCommand.Init16;
 				}
-				else
-				{
 					if (dataType == BuiltinDataType.Int32Array1D || dataType == BuiltinDataType.UInt32Array1D)
 					{
-						result = ArrayCommand.Init32;
+				return ArrayCommand.Init32;
 					}
-					else
+			if (dataType == BuiltinDataType.SingleArray1D)
 					{
-						if (dataType != BuiltinDataType.SingleArray1D)
-						{
-							throw new NotImplementedException("Unsupported array type: " + dataType);
-						}
-						result = ArrayCommand.InitF;
-					}
-				}
+				return ArrayCommand.InitF;
 			}
-			return result;
+			throw new NotImplementedException("Unsupported array type: " + dataType);
 		}
-
+		[SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "TODO"), SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "TODO")]
 		private ArrayCommand ArrayCreateCommandFromType(IDataType dataType)
 		{
-			ArrayCommand result;
 			if (dataType == BuiltinDataType.ByteArray1D || dataType == BuiltinDataType.SByteArray1D || dataType == BuiltinDataType.BooleanArray1D)
 			{
-				result = ArrayCommand.Create8;
+				return ArrayCommand.Create8;
 			}
-			else
-			{
 				if (dataType == BuiltinDataType.Int16Array1D || dataType == BuiltinDataType.UInt16Array1D)
 				{
-					result = ArrayCommand.Create16;
+				return ArrayCommand.Create16;
 				}
-				else
-				{
 					if (dataType == BuiltinDataType.Int32Array1D || dataType == BuiltinDataType.UInt32Array1D)
 					{
-						result = ArrayCommand.Create32;
+				return ArrayCommand.Create32;
 					}
-					else
+			if (dataType == BuiltinDataType.SingleArray1D)
 					{
-						if (dataType != BuiltinDataType.SingleArray1D)
-						{
-							throw new NotImplementedException("Unsupported array type: " + dataType);
+				return ArrayCommand.CreateF;
 						}
-						result = ArrayCommand.CreateF;
-					}
-				}
-			}
-			return result;
+			throw new NotImplementedException("Unsupported array type: " + dataType);
 		}
-
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "TODO")]
 		private void WriteImageHeader(BinaryWriter stream, int totalClumps, int totalBytes, int fileSize)
 		{
 			UTF8Encoding uTF8Encoding = new UTF8Encoding();
@@ -586,70 +553,67 @@ end;
 			stream.Write((short)totalClumps);
 			stream.Write(totalBytes);
 		}
-
 		private void CalculateLocalOffests()
 		{
 			int num = 1;
-			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator viBuilderEnum = this._module.ViBuilders.Values.GetEnumerator())
+			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator = this._module.ViBuilders.get_Values().GetEnumerator())
 			{
-				while (viBuilderEnum.MoveNext())
+				while (enumerator.MoveNext())
 				{
-					ViBuilder currVIB = viBuilderEnum.Current;
-					currVIB.Locals.Sort(DataBuilderExtensions.PBRDataBuilderComparer());
-					List<DataBuilder> locals = currVIB.Locals;
-					currVIB.Locals = new List<DataBuilder>();
-					List<Parameter> params = currVIB.Parameters;
-					bool compareByType = true;
-					params.Sort(Parameter.ParameterComparer(compareByType));
-					using (List<Parameter>.Enumerator paramEnum = currVIB.Parameters.GetEnumerator())
+					ViBuilder current = enumerator.get_Current();
+					current.Locals.Sort(DataBuilderExtensions.PBRDataBuilderComparer());
+					List<DataBuilder> locals = current.Locals;
+					current.Locals = new List<DataBuilder>();
+					current.Parameters.Sort(Parameter.ParameterComparer(true));
+					using (List<Parameter>.Enumerator enumerator2 = current.Parameters.GetEnumerator())
 					{
-						while (paramEnum.MoveNext())
+						while (enumerator2.MoveNext())
 						{
-							Parameter currParam = paramEnum.Current;
-							currVIB.Locals.Add(currParam.DataBuilder);
-							locals.Remove(currParam.DataBuilder);
+							Parameter current2 = enumerator2.get_Current();
+							current.Locals.Add(current2.DataBuilder);
+							locals.Remove(current2.DataBuilder);
 						}
 					}
-					currVIB.Locals.AddRange(locals);
+					current.Locals.AddRange(locals);
 					int num2 = 0;
-					using (List<DataBuilder>.Enumerator localEnum = currVIB.Locals.GetEnumerator())
+					using (List<DataBuilder>.Enumerator enumerator3 = current.Locals.GetEnumerator())
 					{
-						while (localEnum.MoveNext())
+						while (enumerator3.MoveNext())
 						{
-							DataBuilder currLocal = localEnum.Current;
-							int pBRStaticSizeInRam = currLocal.GetPBRStaticSizeInRam(num2);
+							DataBuilder current3 = enumerator3.get_Current();
+							LogicException.Assert(current3.BuilderType.TypeCode != 14, "Doubles should have been removed at the DefineLocal level.  Something went wrong to arrive here");
+							int pBRStaticSizeInRam = current3.GetPBRStaticSizeInRam(num2);
 							num2 = ((num2 % pBRStaticSizeInRam == 0) ? num2 : (num2 + (pBRStaticSizeInRam - num2 % pBRStaticSizeInRam)));
-							currLocal.SetTargetOffset(num2, num);
-							num2 += currLocal.GetPBRStaticSizeInRam(num2);
+							current3.SetTargetOffset(num2, num);
+							num2 += current3.GetPBRStaticSizeInRam(num2);
 						}
 					}
 					num++;
-					this._viLocalByteCount.Add(currVIB, num2);
+					this._viLocalByteCount.Add(current, num2);
 				}
 			}
 		}
-
 		private void WriteObjectHeaders(BinaryWriter stream)
 		{
 			int num = 1;
-			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator viBuilderEnum = this._module.ViBuilders.Values.GetEnumerator())
+			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator = this._module.ViBuilders.get_Values().GetEnumerator())
 			{
-				while (viBuilderEnum.MoveNext())
+				while (enumerator.MoveNext())
 				{
-					ViBuilder currVIB = viBuilderEnum.Current;
-					int localBytes = this._viLocalByteCount[currVIB];
-					using (Dictionary<int, ClumpBuilder>.ValueCollection.Enumerator clumpEnum = currVIB.Clumps.Values.GetEnumerator())
+					ViBuilder current = enumerator.get_Current();
+					int localBytes = this._viLocalByteCount.get_Item(current);
+					using (Dictionary<int, ClumpBuilder>.ValueCollection.Enumerator enumerator2 = current.Clumps.get_Values().GetEnumerator())
 					{
-						while (clumpEnum.MoveNext())
+						while (enumerator2.MoveNext())
 						{
-							ClumpBuilder currClump = clumpEnum.Current;
-							PBrickStreamBuilder.WriteObjectHeader(stream, currVIB, localBytes, currClump);
-							currClump.Index = num;
-							if ((currClump == currVIB.RootClump) && currVIB.IsReentrant)
+							ClumpBuilder current2 = enumerator2.get_Current();
+							PBrickStreamBuilder.WriteObjectHeader(stream, current, localBytes, current2);
+							current2.Index = num;
+							if (current2 == current.RootClump && current.IsReentrant)
 							{
-								for (int i = 0; i < currVIB.ReentrantCallerAdditionalHeaderCount; i++)
+								for (int i = 0; i < current.ReentrantCallerAdditionalHeaderCount; i++)
 								{
-									PBrickStreamBuilder.WriteObjectHeader(stream, currVIB, localBytes, currClump);
+									PBrickStreamBuilder.WriteObjectHeader(stream, current, localBytes, current2);
 									num++;
 								}
 							}
@@ -659,33 +623,36 @@ end;
 				}
 			}
 		}
-    
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "TODO")]
 		private bool DoesInstructionUseHandleEncoding(Instruction instruction)
 		{
 			PBRDirectCodeInstruction pBRDirectCodeInstruction = instruction as PBRDirectCodeInstruction;
+			bool result;
 			if (pBRDirectCodeInstruction == null)
 			{
-				string opName = instruction.OpName;
-				if (opName != null)
-				{
-					if (opName == "PbrUIWrite" || opName == "ToString")
-					{
-						return true;
-					}
-				}
+				string opName;
+				result = ((opName = instruction.OpName) != null && (opName == "PbrUIWrite" || opName == "ToString"));
 			}
 			else
 			{
 				PBrickOpCode opCode = pBRDirectCodeInstruction.OpCode;
-				if (opCode <= PBrickOpCode.opStringConcat)
+				if (opCode <= PBrickOpCode.opStringValueToString)
 				{
 					if (opCode <= PBrickOpCode.opInputSample)
 					{
-						if (opCode != PBrickOpCode.opSTRING &&
-                opCode != PBrickOpCode.opUIDRAW &&
-                opCode != PBrickOpCode.opInputSample)
+						if (opCode <= PBrickOpCode.opSTRING)
 						{
-							return false;
+							if (opCode != PBrickOpCode.opNoteToFrequency && opCode != PBrickOpCode.opSTRING)
+							{
+								goto IL_1C4;
+							}
+						}
+						else
+						{
+							if (opCode != PBrickOpCode.opUIDRAW && opCode != PBrickOpCode.opInputSample)
+						{
+								goto IL_1C4;
+							}
 						}
 					}
 					else
@@ -696,7 +663,7 @@ end;
 							{
 								if (opCode != PBrickOpCode.opFILE)
 								{
-									return false;
+									goto IL_1C4;
 								}
 								throw new NotSupportedException("Do not use opFILE.  Use the specific command");
 							}
@@ -705,13 +672,28 @@ end;
 						{
 							switch (opCode)
 							{
+							case PBrickOpCode.opComTest:
 							case PBrickOpCode.opMailboxOpen:
 							case PBrickOpCode.opMailboxWrite:
+							case PBrickOpCode.opMailboxRead:
+								break;
+							case (PBrickOpCode)214:
+							case (PBrickOpCode)215:
+								goto IL_1C4;
+							default:
+								switch (opCode)
+								{
 						  case PBrickOpCode.opStringGetSize:
 							case PBrickOpCode.opStringConcat:
 								break;
 							default:
-								return false;
+									if (opCode != PBrickOpCode.opStringValueToString)
+									{
+										goto IL_1C4;
+									}
+									break;
+								}
+								break;
 							}
 						}
 					}
@@ -720,24 +702,32 @@ end;
 				{
 					if (opCode <= PBrickOpCode.opInputDeviceGetModeName)
 					{
-						if (opCode <= PBrickOpCode.opUIDrawBmpFile)
+						if (opCode <= PBrickOpCode.opSoundRepeat)
 						{
-							if (opCode != PBrickOpCode.opStringValueToString && opCode != PBrickOpCode.opUIDrawBmpFile)
+							if (opCode != PBrickOpCode.opUIDrawBmpFile)
+						{
+								switch (opCode)
 							{
-								return false;
+								case PBrickOpCode.opSoundPlayFile:
+								case PBrickOpCode.opSoundRepeat:
+									break;
+								default:
+									goto IL_1C4;
+								}
 							}
 						}
 						else
 						{
+							if (opCode != PBrickOpCode.opInputDeviceSetup)
+							{
 							switch (opCode)
 							{
-							case PBrickOpCode.opSoundPlayFile:
-							case PBrickOpCode.opSoundRepeat:
 							case PBrickOpCode.opInputDeviceGetName:
 							case PBrickOpCode.opInputDeviceGetModeName:
 								break;
 							default:
-								return false;
+									goto IL_1C4;
+								}
 							}
 						}
 					}
@@ -753,118 +743,127 @@ end;
 							case PBrickOpCode.opFileReadText:
 							case PBrickOpCode.opFileWriteText:
 							case PBrickOpCode.opFileGetHandle:
-							case PBrickOpCode.opFileCloseLog:
 								break;
 							case PBrickOpCode.opFileReadValue:
 							case PBrickOpCode.opFileWriteValue:
 							case PBrickOpCode.opFileClose:
 							case PBrickOpCode.opFileLoadImage:
-							case PBrickOpCode.opFileWriteLog:
-								return false;
+								goto IL_1C4;
 							default:
-                return false;
+								switch (opCode)
+								{
+							case PBrickOpCode.opFileWriteLog:
+									goto IL_1C4;
+								case PBrickOpCode.opFileCloseLog:
+									break;
+							default:
+									goto IL_1C4;
+								}
+								break;
 							}
 						}
 						else
 						{
-							if (opCode != PBrickOpCode.opFileOpenLog &&
-                  opCode != PBrickOpCode.opComSetConnection)
+							if (opCode != PBrickOpCode.opFileOpenLog && opCode != PBrickOpCode.opFileRemove && opCode != PBrickOpCode.opComSetConnection)
 							{
-								return false;
+								goto IL_1C4;
 							}
 						}
 					}
 				}
+				result = true;
+				return result;
+				IL_1C4:
+				result = false;
 			}
-			return true;
+			return result;
 		}
-
 		private static void WriteObjectHeader(BinaryWriter stream, ViBuilder viBuilder, int localBytes, ClumpBuilder clump)
 		{
-			Instruction instruction = clump.CodeGenerator.Instructions[0];
-			int num = (viBuilder.IsSubVI && clump == viBuilder.RootClump) ? (instruction.TargetAddress - (1 + viBuilder.Parameters.Count)) : instruction.TargetAddress;
+			Instruction instruction = clump.CodeGenerator.Instructions.get_Item(0);
+			int num = (viBuilder.IsSubVI && clump == viBuilder.RootClump) ? (instruction.TargetAddress - (1 + viBuilder.Parameters.get_Count())) : instruction.TargetAddress;
 			stream.Write(num);
 			stream.Write((ushort)((clump == viBuilder.RootClump) ? 0 : viBuilder.RootClump.Index));
 			stream.Write(clump.FireCount);
 			stream.Write(localBytes);
 		}
-
+		[SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "TODO"), SuppressMessage("Microsoft.Usage", "CA1801:ReviewUnusedParameters", MessageId = "totalCodeSize", Justification = "TODO")]
 		private void WriteCodeSection(BinaryWriter stream)
 		{
-			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator vibEnum = this._module.ViBuilders.Values.GetEnumerator())
+			using (Dictionary<string, ViBuilder>.ValueCollection.Enumerator enumerator = this._module.ViBuilders.get_Values().GetEnumerator())
 			{
-				while (vibEnum.MoveNext())
+				while (enumerator.MoveNext())
 				{
-					ViBuilder currVIB = vibEnum.Current;
-					if (currVIB.IsSubVI)
+					ViBuilder current = enumerator.get_Current();
+					if (current.IsSubVI)
 					{
-						this.WriteSubCallParamHeaderInfo(stream, currVIB);
+						this.WriteSubCallParamHeaderInfo(stream, current);
 					}
-					using (Dictionary<int, ClumpBuilder>.Enumerator clumpEnum = currVIB.Clumps.GetEnumerator())
+					using (Dictionary<int, ClumpBuilder>.Enumerator enumerator2 = current.Clumps.GetEnumerator())
 					{
-						while (clumpEnum.MoveNext())
+						while (enumerator2.MoveNext())
 						{
-							KeyValuePair<int, ClumpBuilder> currClump = clumpEnum.Current;
-							using (List<Instruction>.Enumerator instrEnum = currClump.Value.CodeGenerator.Instructions.GetEnumerator())
+							KeyValuePair<int, ClumpBuilder> current2 = enumerator2.get_Current();
+							using (List<Instruction>.Enumerator enumerator3 = current2.get_Value().CodeGenerator.Instructions.GetEnumerator())
 							{
-								while (instrEnum.MoveNext())
+								while (enumerator3.MoveNext())
 								{
-									Instruction currInstr = instrEnum.Current;
-									if (currInstr.TargetAddress < 0)
+									Instruction current3 = enumerator3.get_Current();
+									if (current3.TargetAddress < 0)
 									{
-										currInstr.TargetAddress = (int)stream.BaseStream.Position;
+										current3.TargetAddress = (int)stream.get_BaseStream().get_Position();
 									}
 									else
 									{
-										if (currInstr.TargetAddress != (int)stream.BaseStream.Position)
+										if (current3.TargetAddress != (int)stream.get_BaseStream().get_Position())
 										{
 											this._uncertainOfSomeInstructionSizes = true;
-											currInstr.TargetAddress = (int)stream.BaseStream.Position;
+											current3.TargetAddress = (int)stream.get_BaseStream().get_Position();
 										}
 									}
-									if (currInstr is ConditionalBranchInstruction)
+									if (current3 is ConditionalBranchInstruction)
 									{
-										this.WriteConditionalBranchInstruction(stream, currInstr as ConditionalBranchInstruction);
+										this.WriteConditionalBranchInstruction(stream, current3 as ConditionalBranchInstruction);
 									}
 									else
 									{
-										if (currInstr is BranchInstruction)
+										if (current3 is BranchInstruction)
 										{
-											this.WriteBranchInstruction(stream, currInstr as BranchInstruction);
+											this.WriteBranchInstruction(stream, current3 as BranchInstruction);
 										}
 										else
 										{
-											if (currInstr is CompareInstruction)
+											if (current3 is CompareInstruction)
 											{
-												this.WriteCompareInstruction(stream, currInstr as CompareInstruction);
+												this.WriteCompareInstruction(stream, current3 as CompareInstruction);
 											}
 											else
 											{
-												if (currInstr is CodeEndInstruction)
+												if (current3 is CodeEndInstruction)
 												{
-													this.WriteCodeEndInstruction(stream, currInstr as CodeEndInstruction);
+													this.WriteCodeEndInstruction(stream, current3 as CodeEndInstruction);
 												}
 												else
 												{
-													if (currInstr is CallInstruction)
+													if (current3 is CallInstruction)
 													{
-														this.WriteCallInstruction(stream, currInstr as CallInstruction);
+														this.WriteCallInstruction(stream, current3 as CallInstruction);
 													}
 													else
 													{
-														if (currInstr is ClumpInstruction)
+														if (current3 is ClumpInstruction)
 														{
-															this.WriteClumpInstruction(stream, currInstr as ClumpInstruction);
+															this.WriteClumpInstruction(stream, current3 as ClumpInstruction);
 														}
 														else
 														{
-															if (currInstr is PBRDirectCodeInstruction)
+															if (current3 is PBRDirectCodeInstruction)
 															{
-																this.WritePBRDirectCodeInstruction(stream, currInstr as PBRDirectCodeInstruction);
+																this.WritePBRDirectCodeInstruction(stream, current3 as PBRDirectCodeInstruction);
 															}
 															else
 															{
-																this.WriteInstruction(stream, currInstr);
+																this.WriteInstruction(stream, current3);
 															}
 														}
 													}
@@ -879,7 +878,6 @@ end;
 				}
 			}
 		}
-
 		private void WritePBRDirectCodeInstruction(BinaryWriter stream, PBRDirectCodeInstruction instruction)
 		{
 			object[] args = instruction.GetArgs();
@@ -890,9 +888,8 @@ end;
 				{
 					this.WriteArgument(stream, args[i], i == 3);
 				}
+				return;
 			}
-			else
-			{
 				object[] array = args;
 				for (int j = 0; j < array.Length; j++)
 				{
@@ -900,26 +897,25 @@ end;
 					this.WriteArgument(stream, argument, this.DoesInstructionUseHandleEncoding(instruction));
 				}
 			}
-		}
-    
+		[SuppressMessage("Microsoft.Performance", "CA1822:MarkMembersAsStatic", Justification = "TODO")]
 		private void WriteSubCallParamHeaderInfo(BinaryWriter stream, ViBuilder viBuilder)
 		{
-			stream.Write((byte)viBuilder.Parameters.Count);
-			using (List<Parameter>.Enumerator paramEnum = viBuilder.Parameters.GetEnumerator())
+			stream.Write((byte)viBuilder.Parameters.get_Count());
+			using (List<Parameter>.Enumerator enumerator = viBuilder.Parameters.GetEnumerator())
 			{
-				while (paramEnum.MoveNext())
+				while (enumerator.MoveNext())
 				{
-					Parameter currParam = paramEnum.Current;
+					Parameter current = enumerator.get_Current();
 					byte b = 0;
-					if (currParam.IsInput || currParam.DataBuilder.IsArray)
+					if (current.IsInput || current.DataBuilder.IsArray)
 					{
 						b = 128;
 					}
-					if (currParam.IsOutput)
+					if (current.IsOutput)
 					{
 						b |= 64;
 					}
-					switch (currParam.DataBuilder.GetPBRStaticSizeInRam(0))
+					switch (current.DataBuilder.GetPBRStaticSizeInRam(0))
 					{
 					case 2:
 						b |= 1;
@@ -928,7 +924,7 @@ end;
 						b |= 2;
 						break;
 					}
-					if (currParam.DataBuilder.BuilderType.TypeCode == TypeCode.Single)
+					if (current.DataBuilder.BuilderType.TypeCode == 13)
 					{
 						b |= 1;
 					}
@@ -936,14 +932,12 @@ end;
 				}
 			}
 		}
-
 		private void WriteClumpInstruction(BinaryWriter stream, ClumpInstruction clumpInstruction)
 		{
 			PBrickOpCode opCode = this.NamedOpToOpCode(clumpInstruction);
 			stream.WriteOpCode(opCode);
 			this.WriteArgument(stream, clumpInstruction.Clump.Index, this.DoesInstructionUseHandleEncoding(clumpInstruction));
 		}
-
 		private void WriteCodeEndInstruction(BinaryWriter stream, CodeEndInstruction codeEndInstruction)
 		{
 			PBrickOpCode pBrickOpCode = this.NamedOpToOpCode(codeEndInstruction);
@@ -953,7 +947,6 @@ end;
 				stream.Write(10);
 			}
 		}
-    
 		private void WriteInstruction(BinaryWriter stream, Instruction instruction)
 		{
 			PBrickOpCode pBrickOpCode = this.NamedOpToOpCode(instruction);
@@ -964,17 +957,16 @@ end;
 			stream.WriteOpCode(pBrickOpCode);
 			if (pBrickOpCode != PBrickOpCode.opRETURN)
 			{
-				using (List<object>.Enumerator argEnum = list.GetEnumerator())
+				using (List<object>.Enumerator enumerator = list.GetEnumerator())
 				{
-					while (argEnum.MoveNext())
+					while (enumerator.MoveNext())
 					{
-						object currArg = argEnum.Current;
-						this.WriteArgument(stream, currArg, this.DoesInstructionUseHandleEncoding(instruction));
+						object current = enumerator.get_Current();
+						this.WriteArgument(stream, current, this.DoesInstructionUseHandleEncoding(instruction));
 					}
 				}
 			}
 		}
-    
 		private void WriteCompareInstruction(BinaryWriter stream, CompareInstruction instruction)
 		{
 			List<object> list = new List<object>();
@@ -989,30 +981,28 @@ end;
 				}
 			}
 			stream.WriteOpCode(opCode);
-			if (list.Count == 3)
+			if (list.get_Count() == 3)
 			{
-				object obj2 = list[1];
-				list[1] = list[2];
-				list[2] = obj2;
+				object obj2 = list.get_Item(1);
+				list.set_Item(1, list.get_Item(2));
+				list.set_Item(2, obj2);
 			}
 			list.Reverse();
-			using (List<object>.Enumerator argEnum = list.GetEnumerator())
+			using (List<object>.Enumerator enumerator = list.GetEnumerator())
 			{
-				while (argEnum.MoveNext())
+				while (enumerator.MoveNext())
 				{
-					object obj = argEnum.Current;
-					this.WriteArgument(stream, obj, this.DoesInstructionUseHandleEncoding(instruction));
+					object current = enumerator.get_Current();
+					this.WriteArgument(stream, current, this.DoesInstructionUseHandleEncoding(instruction));
 				}
 			}
 		}
-    
 		private void WriteBranchInstruction(BinaryWriter stream, BranchInstruction instruction)
 		{
 			PBrickOpCode opCode = this.NamedOpToOpCode(instruction);
 			stream.WriteOpCode(opCode);
 			this.WriteArgument(stream, instruction.Label, this.DoesInstructionUseHandleEncoding(instruction));
 		}
-    
 		private void WriteConditionalBranchInstruction(BinaryWriter stream, ConditionalBranchInstruction instruction)
 		{
 			PBrickOpCode opCode = this.NamedOpToOpCode(instruction);
@@ -1024,92 +1014,82 @@ end;
 			}
 			this.WriteArgument(stream, instruction.Label, this.DoesInstructionUseHandleEncoding(instruction));
 		}
-    
 		private void WriteCallInstruction(BinaryWriter stream, CallInstruction instruction)
 		{
 			PBrickOpCode opCode = this.NamedOpToOpCode(instruction);
 			stream.WriteOpCode(opCode);
 			this.WriteArgument(stream, (int)((short)instruction.VI.RootClump.Index) + instruction.ReentrantIndex, this.DoesInstructionUseHandleEncoding(instruction));
-			stream.Write((byte)instruction.Arguments.Count);
+			stream.Write((byte)instruction.Arguments.get_Count());
 			List<Parameter> parameters = instruction.VI.Parameters;
-			List<Parameter> arguments = instruction.Arguments;
-			IEnumerator<Parameter> enumerator = arguments.GetEnumerator();
-			IEnumerator<Parameter> enumerator2 = parameters.GetEnumerator();
-			while (enumerator.MoveNext() && enumerator2.MoveNext())
+			IEnumerator<Parameter> DestParamIter = parameters.GetEnumerator();
+			while (DestParamIter.MoveNext())
 			{
-				if (enumerator.Current.DataBuilder != null)
+				Parameter parameter = Enumerable.Single<Parameter>(Enumerable.Where<Parameter>(instruction.Arguments, (Parameter p) => p.ConnectorIndex == DestParamIter.get_Current().ConnectorIndex && p.IsInput == DestParamIter.get_Current().IsInput));
+				if (parameter.DataBuilder != null)
 				{
-					this.WriteArgument(stream, enumerator.Current.DataBuilder, this.DoesInstructionUseHandleEncoding(instruction));
+					this.WriteArgument(stream, parameter.DataBuilder, this.DoesInstructionUseHandleEncoding(instruction));
 				}
 				else
 				{
-					if (enumerator2.Current.DataBuilder.Value == null)
+					if (DestParamIter.get_Current().DataBuilder.Value == null)
 					{
-						if (enumerator2.Current.DBType.TypeCode == TypeCode.String)
+						if (DestParamIter.get_Current().DBType.TypeCode == 18)
 						{
 							throw new NotImplementedException("Unwired string inputs with no default value are not currently supported.");
 						}
 						this.WriteArgument(stream, 0, false);
 					}
-					this.WriteArgument(stream, enumerator2.Current.DataBuilder.Value, this.DoesInstructionUseHandleEncoding(instruction));
+					this.WriteArgument(stream, DestParamIter.get_Current().DataBuilder.Value, this.DoesInstructionUseHandleEncoding(instruction));
 				}
 			}
 		}
-    
 		private void WriteDataBuilderArgument(BinaryWriter stream, DataBuilder db, bool instructionUsesHandleEncoding)
 		{
-			if (db.StorageClass == StorageClass.Constant)
-			{
-				if (db.Value is float || db.Value is float)
-				{
-					stream.WriteFloatArgument(Convert.ToSingle(db.Value, CultureInfo.InvariantCulture));
-				}
-				else
-				{
-					stream.WriteIntArgument(db.IntValue, ArgType.Integer, false);
-				}
-			}
-			else
+			if (db.StorageClass != StorageClass.Constant)
 			{
 				stream.WriteIntArgument(db.TargetOffset, this._module.Globals.Contains(db) ? ArgType.GlobalOffset : ArgType.LocalOffset, db.IsArray && instructionUsesHandleEncoding);
+				return;
 			}
-		}
-
+				if (db.Value is float || db.Value is float)
+				{
+				stream.WriteFloatArgument(Convert.ToSingle(db.Value, CultureInfo.get_InvariantCulture()));
+				return;
+				}
+					stream.WriteIntArgument(db.IntValue, ArgType.Integer, false);
+				}
+		[SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "TODO"), SuppressMessage("Microsoft.Performance", "CA1800:DoNotCastUnnecessarily", Justification = "TODO")]
 		private void WriteArgument(BinaryWriter stream, object argument, bool instructionUsesHandleEncoding)
 		{
 			if (argument is DataBuilder)
 			{
 				this.WriteDataBuilderArgument(stream, argument as DataBuilder, instructionUsesHandleEncoding);
+				return;
 			}
-			else
-			{
 				if (argument is Label)
 				{
 					this.WritelabelArgument(stream, argument as Label);
+				return;
 				}
-				else
-				{
 					if (argument is ushort || argument is int || argument is short || argument is byte || argument is sbyte)
 					{
-						int argument2 = Convert.ToInt32(argument, CultureInfo.InvariantCulture);
+				int argument2 = Convert.ToInt32(argument, CultureInfo.get_InvariantCulture());
 						stream.WriteIntArgument(argument2, ArgType.Integer, false);
+				return;
 					}
-					else
-					{
-						if (null != argument)
+			if (argument == null)
 						{
+				return;
+			}
 							if (argument is float)
 							{
-								stream.WriteFloatArgument(Convert.ToSingle(argument, CultureInfo.InvariantCulture));
+				stream.WriteFloatArgument(Convert.ToSingle(argument, CultureInfo.get_InvariantCulture()));
+				return;
 							}
-							else
-							{
 								if (argument is string)
 								{
 									stream.WriteStringArgument(argument as string);
+				return;
 								}
-								else
-								{
 									if (argument is Array)
 									{
 										if (argument is bool[])
@@ -1123,47 +1103,42 @@ end;
 										if (argument is byte[] || argument is sbyte[])
 										{
 											byte[] array2 = argument as byte[];
-											for (int i = 0; i < array2.Length; i++)
+					for (int j = 0; j < array2.Length; j++)
 											{
-												byte argument3 = array2[i];
+						byte argument3 = array2[j];
 												stream.WriteIntArgument((int)argument3, ArgType.Integer);
 											}
+					return;
 										}
-										else
-										{
 											if (argument is short[] || argument is ushort[])
 											{
 												short[] array3 = argument as short[];
-												for (int i = 0; i < array3.Length; i++)
+					for (int k = 0; k < array3.Length; k++)
 												{
-													short argument4 = array3[i];
+						short argument4 = array3[k];
 													stream.WriteIntArgument((int)argument4, ArgType.Integer);
 												}
+					return;
 											}
-											else
-											{
 												if (argument is int[] || argument is uint[])
 												{
 													int[] array4 = argument as int[];
-													for (int i = 0; i < array4.Length; i++)
+					for (int l = 0; l < array4.Length; l++)
 													{
-														int argument5 = array4[i];
+						int argument5 = array4[l];
 														stream.WriteIntArgument(argument5, ArgType.Integer);
 													}
+					return;
 												}
-												else
-												{
 													if (argument is float[])
 													{
 														float[] array5 = argument as float[];
-														for (int i = 0; i < array5.Length; i++)
+					for (int m = 0; m < array5.Length; m++)
 														{
-															float value = array5[i];
+						float value = array5[m];
 															stream.WriteFloatArgument(value);
 														}
-													}
-												}
-											}
+					return;
 										}
 									}
 									else
@@ -1171,27 +1146,19 @@ end;
 										LogicException.ThrowLogicException("Unsupported argument type: " + argument.GetType().ToString());
 									}
 								}
-							}
-						}
-					}
-				}
-			}
-		}
-
 		private void WritelabelArgument(BinaryWriter stream, Label label)
 		{
 			int num = label.TargetInstruction.TargetAddress;
 			if (num < 0)
 			{
 				this._uncertainOfSomeInstructionSizes = true;
-				num = (int)stream.BaseStream.Position;
+				num = (int)stream.get_BaseStream().get_Position();
 			}
-			int num2 = num - (int)stream.BaseStream.Position;
+			int num2 = num - (int)stream.get_BaseStream().get_Position();
 			int num3 = BinaryWriterExtensions.ArgSize(num2);
 			num2 -= BinaryWriterExtensions.ArgSize(num2 - num3);
 			stream.WriteIntArgument(num2, ArgType.Integer);
 		}
-    
 	}
 *)
 

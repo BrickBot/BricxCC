@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is Mark Overmars.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -29,7 +29,7 @@ uses
   Classes, Controls, Forms, StdCtrls, ExtCtrls, uMiscDefines;
 
 type
-  TSearchRCXForm = class(TForm)
+  TSearchBrickForm = class(TForm)
     Label1: TLabel;
     OKBtn: TButton;
     CancelBtn: TButton;
@@ -45,6 +45,7 @@ type
     cboPort: TComboBox;
     cboBrickType: TComboBox;
     chkUseBluetooth: TCheckBox;
+    radLinux: TRadioButton;
     procedure FirmwareClick(Sender: TObject);
     procedure BrictypeClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -57,26 +58,28 @@ type
     procedure SetUseBT(const Value: boolean);
     procedure DoCreateInitFile;
     function SearchAllPorts : boolean;
+    function GetFirmwareType : TFirmwareType;
+    procedure SetFirmwareType(ft : TFirmwareType);
+    function GetBrickType : integer;
+    procedure SetBrickType(aType : integer);
   public
     { Public declarations }
     function GetPort : string;
-    function GetBrickType : integer;
     function GetStandardFirmware : boolean;
-    function GetFirmwareType : TFirmwareType;
     procedure SetPort(const aName : string);
-    procedure SetRCXType(aType : integer);
     procedure SetStandardFirmware(aVal : Boolean);
-    procedure SetFirmwareType(ft : TFirmwareType);
     procedure PopulatePortsList;
     procedure DoUpdateInitFile;
     procedure DoAutomaticPorts;
     property UseBluetooth : boolean read GetUseBT write SetUseBT;
+    property FirmwareType : TFirmwareType read GetFirmwareType write SetFirmwareType;
+    property BrickType : integer read GetBrickType write SetBrickType;
   end;
 
 var
-  SearchRCXForm: TSearchRCXForm;
+  SearchBrickForm: TSearchBrickForm;
 
-function SearchForRCX(atstartup, bAlwaysPrompt :boolean) : Boolean;
+function SearchForBrick(atstartup, bAlwaysPrompt :boolean) : Boolean;
 
 function UseUSB : Boolean;
 
@@ -111,7 +114,7 @@ begin
   IRexists := false;
   if (theport = '') or (thePort = 'Automatic') or (UpperCase(thePort) = 'SEARCH') then
   begin
-    SearchRCXForm.DoAutomaticPorts;
+    SearchBrickForm.DoAutomaticPorts;
   end
   else
   begin
@@ -130,7 +133,7 @@ function FindIt(thetype:Integer; const theport : string):boolean;
 begin
   BrickComm.BrickType := thetype;
   FindPort(theport);
-  {If it exists, find the RCX}
+  {If it exists, find the brick}
   if IRexists then
     result := CheckAlive
   else
@@ -139,9 +142,9 @@ begin
   LocalUseBluetooth := BrickComm.UseBluetooth;
 end;
 
-{Tries to locate the RCX. atstartup indicates whether this is the
+{Tries to locate the brick. atstartup indicates whether this is the
  call at startup, in which case we use the startup defaults.}
-function SearchForRCX(atstartup, bAlwaysPrompt : boolean) : boolean;
+function SearchForBrick(atstartup, bAlwaysPrompt : boolean) : boolean;
 begin
   result := False;
   IRexists:=false;
@@ -153,26 +156,26 @@ begin
     Result := FindIt(LocalBrickType, LocalPort);
     if Result then Exit;
   end;
-  SearchRCXForm.SetPort(LocalPort);
-  SearchRCXForm.SetRCXType(LocalBrickType);
-  SearchRCXForm.SetStandardFirmware(LocalStandardFirmware);
-  SearchRCXForm.SetFirmwareType(LocalFirmwareType);
-  if SearchRCXForm.ShowModal = mrOk then
+  SearchBrickForm.SetPort(LocalPort);
+  SearchBrickForm.SetBrickType(LocalBrickType);
+  SearchBrickForm.SetStandardFirmware(LocalStandardFirmware);
+  SearchBrickForm.SetFirmwareType(LocalFirmwareType);
+  if SearchBrickForm.ShowModal = mrOk then
   begin
-    LocalPort := SearchRCXForm.GetPort;
-    if LocalBrickType <> SearchRCXForm.GetBrickType then
+    LocalPort := SearchBrickForm.GetPort;
+    if LocalBrickType <> SearchBrickForm.GetBrickType then
     begin
-      LocalBrickType := SearchRCXForm.GetBrickType;
+      LocalBrickType := SearchBrickForm.GetBrickType;
       // release the old brick comm object
       ReleaseBrickComm;
     end;
-    LocalStandardFirmware := SearchRCXForm.GetStandardFirmware;
-    LocalFirmwareType     := SearchRCXForm.GetFirmwareType;
+    LocalStandardFirmware := SearchBrickForm.GetStandardFirmware;
+    LocalFirmwareType     := SearchBrickForm.GetFirmwareType;
     if IsNXT and (UpperCase(LocalPort) = 'SEARCH') then
-      SearchRCXForm.DoUpdateInitFile;
+      SearchBrickForm.DoUpdateInitFile;
     Result := FindIt(LocalBrickType, LocalPort);
-    if UpperCase(SearchRCXForm.GetPort) = 'SEARCH' then
-      SearchRCXForm.PopulatePortsList;
+    if UpperCase(SearchBrickForm.GetPort) = 'SEARCH' then
+      SearchBrickForm.PopulatePortsList;
   end;
 end;
 
@@ -202,7 +205,7 @@ end;
 
 { TSearchRCXForm }
 
-function TSearchRCXForm.GetPort: string;
+function TSearchBrickForm.GetPort: string;
 begin
   if cboPort.ItemIndex = 0 then
     Result := ''
@@ -210,7 +213,7 @@ begin
     Result := cboPort.Text;
 end;
 
-function TSearchRCXForm.GetBrickType: integer;
+function TSearchBrickForm.GetBrickType: integer;
 begin
   if cboBrickType.ItemIndex = -1 then
     Result := SU_RCX
@@ -218,61 +221,101 @@ begin
     Result := cboBrickType.ItemIndex;
 end;
 
-function TSearchRCXForm.GetStandardFirmware: boolean;
+function TSearchBrickForm.GetStandardFirmware: boolean;
 begin
   Result := radStandard.Checked;
 end;
 
-procedure TSearchRCXForm.SetPort(const aName: string);
+procedure TSearchBrickForm.SetPort(const aName: string);
 begin
   cboPort.ItemIndex := cboPort.Items.IndexOf(aName);
   if cboPort.ItemIndex = -1 then
     cboPort.Text := aName;
 end;
 
-procedure TSearchRCXForm.SetRCXType(aType: integer);
+procedure TSearchBrickForm.SetBrickType(aType: integer);
 begin
   cboBrickType.ItemIndex := aType;
   PopulatePortsList;
 end;
 
-procedure TSearchRCXForm.SetStandardFirmware(aVal: Boolean);
+procedure TSearchBrickForm.SetStandardFirmware(aVal: Boolean);
 begin
   radStandard.Checked := aVal;
   if not aVal then
-    radBrickOS.Checked := True;
+    radOtherFirmware.Checked := True;
   UpdateControls;
 end;
 
-procedure TSearchRCXForm.UpdateControls;
+procedure TSearchBrickForm.UpdateControls;
 var
-  bStandard : Boolean;
+  bt : integer;
 begin
-  bStandard := radStandard.Checked;
-  // select RCX and disable brick type combo
-  if not bStandard then
-    cboBrickType.ItemIndex := 0;
-  cboBrickType.Enabled := bStandard;
+  bt := BrickType;
+  case bt of
+    rtRCX, rtRCX2 : begin
+      radStandard.Enabled := True;
+      radBrickOS.Enabled := True;
+      radPBForth.Enabled := True;
+      radLeJOS.Enabled := True;
+      radLinux.Enabled := False;
+      radOtherFirmware.Enabled := True;
+      if radLinux.Checked then
+        radStandard.Checked := True;
+    end;
+    rtCybermaster, rtScout, rtSpy, rtSwan, rtSPro : begin
+      radStandard.Checked := True;
+      radStandard.Enabled := True;
+      radBrickOS.Enabled := False;
+      radPBForth.Enabled := False;
+      radLeJOS.Enabled := False;
+      radLinux.Enabled := False;
+      radOtherFirmware.Enabled := False;
+    end;
+    rtNXT : begin
+      if not (radStandard.Checked or radLeJOS.Checked) then
+        radStandard.Checked := True;
+      radStandard.Enabled := True;
+      radBrickOS.Enabled := False;
+      radPBForth.Enabled := False;
+      radLeJOS.Enabled := True;
+      radLinux.Enabled := False;
+      radOtherFirmware.Enabled := False;
+    end;
+    rtEV3 : begin
+      if not (radStandard.Checked or radLeJOS.Checked or radLinux.Checked) then
+        radStandard.Checked := True;
+      radStandard.Enabled := True;
+      radBrickOS.Enabled := False;
+      radPBForth.Enabled := False;
+      radLeJOS.Enabled := True;
+      radLinux.Enabled := True;
+      radOtherFirmware.Enabled := False;
+    end;
+  end;
+
 end;
 
-procedure TSearchRCXForm.FirmwareClick(Sender: TObject);
+procedure TSearchBrickForm.FirmwareClick(Sender: TObject);
 begin
   UpdateControls;
 end;
 
-procedure TSearchRCXForm.SetFirmwareType(ft: TFirmwareType);
+procedure TSearchBrickForm.SetFirmwareType(ft: TFirmwareType);
 begin
   case ft of
     ftBrickOS : radBrickOS.Checked := True;
     ftPBForth : radPBForth.Checked := True;
     ftLeJOS   : radLejos.Checked   := True;
+    ftLinux   : radLinux.Checked   := True;
+    ftOther   : radOtherFirmware.Checked := True;
   else
     // assume standard
     radStandard.Checked := True;
   end;
 end;
 
-function TSearchRCXForm.GetFirmwareType: TFirmwareType;
+function TSearchBrickForm.GetFirmwareType: TFirmwareType;
 begin
   if radBrickOS.Checked then
     Result := ftBrickOS
@@ -280,23 +323,25 @@ begin
     Result := ftPBForth
   else if radLejos.Checked then
     Result := ftLeJOS
+  else if radLinux.Checked then
+    Result := ftLinux
   else if radOtherFirmware.Checked then
     Result := ftOther
   else
     Result := ftStandard;
 end;
 
-procedure TSearchRCXForm.BrictypeClick(Sender: TObject);
+procedure TSearchBrickForm.BrictypeClick(Sender: TObject);
 begin
   UpdateControls;
 end;
 
-procedure TSearchRCXForm.btnHelpClick(Sender: TObject);
+procedure TSearchBrickForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
 
-procedure TSearchRCXForm.FormCreate(Sender: TObject);
+procedure TSearchBrickForm.FormCreate(Sender: TObject);
 begin
   if not FileExists(GetInitFilename) then
     DoCreateInitFile;
@@ -305,18 +350,18 @@ begin
   cboPort.Text := 'usb';
 end;
 
-function TSearchRCXForm.GetUseBT: boolean;
+function TSearchBrickForm.GetUseBT: boolean;
 begin
 
   Result := chkUseBluetooth.Checked;
 end;
 
-procedure TSearchRCXForm.SetUseBT(const Value: boolean);
+procedure TSearchBrickForm.SetUseBT(const Value: boolean);
 begin
   chkUseBluetooth.Checked := Value;
 end;
 
-procedure TSearchRCXForm.PopulatePortsList;
+procedure TSearchBrickForm.PopulatePortsList;
 var
   i : integer;
   bt : integer;
@@ -336,7 +381,7 @@ begin
   end;
 end;
 
-procedure TSearchRCXForm.DoCreateInitFile;
+procedure TSearchBrickForm.DoCreateInitFile;
 var
   F : TfrmSearchNXT;
   T : TUpdaterThread;
@@ -377,7 +422,7 @@ begin
   end;
 end;
 
-procedure TSearchRCXForm.DoUpdateInitFile;
+procedure TSearchBrickForm.DoUpdateInitFile;
 var
   F : TfrmSearchNXT;
   T : TUpdaterThread;
@@ -409,7 +454,7 @@ begin
   end;
 end;
 
-procedure TSearchRCXForm.DoAutomaticPorts;
+procedure TSearchBrickForm.DoAutomaticPorts;
 var
   F : TfrmSearchNXT;
   T : TUpdaterThread;
@@ -440,7 +485,7 @@ begin
   end;
 end;
 
-function TSearchRCXForm.SearchAllPorts : boolean;
+function TSearchBrickForm.SearchAllPorts : boolean;
 var
   SL : TStringList;
   i : integer;
@@ -498,9 +543,10 @@ begin
   end;
 end;
 
-procedure TSearchRCXForm.cboBrickTypeChange(Sender: TObject);
+procedure TSearchBrickForm.cboBrickTypeChange(Sender: TObject);
 begin
   PopulatePortsList;
+  UpdateControls;
 end;
 
 {$IFDEF FPC}

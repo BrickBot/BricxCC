@@ -1,1 +1,5 @@
-PlayTone(440, 500);	// Play 'A' for one half second
+task main()
+{
+  PlayTone(440, 500);	// Play 'A' for one half second
+  Wait(SEC_1);
+}

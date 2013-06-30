@@ -141,6 +141,16 @@ OriginalFilename=bricxcc.exe
 ProductName=Bricx Command Center
 ProductVersion=3.3
 Comments=NQC (c) 1998-2013 David Baum, John Hansen
+[Excluded Packages]
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxCoreD7.bpl=ExpressCoreLibrary by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxLibraryD7.bpl=Express Cross Platform Library by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxPageControlD7.bpl=ExpressPageControl by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxEditorsD7.bpl=ExpressEditors Library by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxEditorFieldLinkD7.bpl=ExpressEditors FieldLink by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxLayoutControlD7.bpl=ExpressLayout Control by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxGridD7.bpl=ExpressQuantumGrid by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxmdsD7.bpl=ExpressMemData by Developer Express Inc.
+C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxNavBarD7.bpl=ExpressNavBar by Developer Express Inc.
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=G:\nxt\BricxCC\source\NXT\

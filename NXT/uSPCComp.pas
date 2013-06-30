@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -24,7 +24,7 @@ interface
 
 uses
   Classes, uCompTokens, uNBCCommon, uGenLexer, uPreprocess, Contnrs,
-  uNXTClasses, uSPCClasses;
+  uNXTClasses, uSPCClasses, uCompCommon;
 
 type
   TSizeMap = class
@@ -980,7 +980,7 @@ begin
           Result := False;
       end
       else
-        Value := NBCFloatToStr(Trunc(fCalc.Value));
+        Value := CCFloatToStr(Trunc(fCalc.Value));
     end
     else
       Result := False;
@@ -2840,7 +2840,7 @@ begin
                     fCalc.SilentExpression := GetValueOf(parvalue);
                     if not fCalc.ParserError then
                     begin
-                      parvalue := NBCFloatToStr(Trunc(fCalc.Value));
+                      parvalue := CCFloatToStr(Trunc(fCalc.Value));
                       fCalc.SetVariable(parname, Trunc(fCalc.Value));
                       fp.ConstantValue := parvalue;
                       fInputs.AddObject(parvalue, fp);
@@ -5749,7 +5749,7 @@ var
   i, idx : integer;
   tmpFile, tmpMsg : string;
 begin
-  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnSPC, MaxPreprocessorDepth);
+  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnSPC, MaxPreprocessorDepth, fCalc);
   try
     P.OnPreprocessorStatusChange := HandlePreprocStatusChange;
     P.AddPoundLineToMultiLineMacros := True;
@@ -6078,7 +6078,7 @@ begin
     fCalc.SilentExpression := aName;
     bIsConst := not fCalc.ParserError;
     if bIsConst then
-      Result := NBCFloatToStr(Trunc(fCalc.Value));
+      Result := CCFloatToStr(Trunc(fCalc.Value));
   end;
   if not bIsConst then
     AbortMsg(sConstRequired);

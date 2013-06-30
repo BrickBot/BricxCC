@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is Mark Overmars.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -851,7 +851,7 @@ begin
   if not IRExists then
   begin
     if LocalStartupAction <> SU_NOCONNECT then
-      MessageDlg(sNoRCX,mtInformation,[mbOK], 0);
+      MessageDlg(sNoBrick, mtInformation, [mbOK], 0);
     MainForm.barStatus.Panels[2].Text := sNoPort;
     MainForm.barStatus.Panels[3].Text := '';
     // make sure the port is not held open here
@@ -861,7 +861,7 @@ begin
           (bTalkToBrick and not bBrickAlive) then
   begin
     if LocalStartupAction <> SU_NOCONNECT then
-      MessageDlg(sNoRCX,mtInformation,[mbOK], 0);
+      MessageDlg(sNoBrick, mtInformation, [mbOK], 0);
     MainForm.barStatus.Panels[3].Text := sNoRobot;
     // make sure the port is not held open here
     BrickComm.Close;
@@ -921,7 +921,7 @@ procedure FindRCX(atstartup:boolean);
 var
   bAlive : Boolean;
 begin
-  bAlive := SearchForRCX(atstartup, FBAlwaysPrompt);
+  bAlive := SearchForBrick(atstartup, FBAlwaysPrompt);
   if bAlive then
     bAlive := BrickComm.Ping;
   PostSearchSetup(True, bAlive);
@@ -2515,8 +2515,7 @@ begin
         SelectProgram(ProgramBox.ItemIndex);
       end;
     end;
-    if ShowCompilerStatus and UseInternalNBC and
-       UsesNBCCompiler then
+    if ShowCompilerStatus and UseInternalNBC and UseNBCCompiler then
       frmCompStatus.Show;
     Application.ProcessMessages;
 
@@ -2530,7 +2529,7 @@ begin
       if AutoSaveDesktop then
         SaveDesktop(E.Filename);
 
-      Result := CompileIt(DoDisplayErrors, E.TheEditor.Lines, E.TheErrors,
+      Result := CompileIt(DoDisplayErrors, E.TheEditor.Lines, E.TheErrors.Items,
         E.Filename, E.Caption, bDown, bRun, HandleOnCompilerStatusChange,
         HandleOpenStateChanged);
     finally

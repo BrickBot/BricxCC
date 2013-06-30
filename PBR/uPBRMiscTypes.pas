@@ -174,22 +174,27 @@ type
       globals, locals : integer; args : TStream; aStream: TStream);
 		class procedure OutputPower(layer : byte; port : TPortId; power : byte; aStream : TStream);
 		class procedure OutputSpeed(layer : byte; port : TPortId; speed : byte; aStream : TStream);
-		class procedure OutputStart(layer : byte; port : TPortId; aStream : TStream);
-		class procedure OutputStop(layer : byte; port : TPortId; forceStop : Boolean; aStream : TStream);
-		class procedure OutputClearCount(layer, portBitField : byte; aStream : TStream);
 		class procedure MemoryRead(slot : TProgramSlot; objId, offset, size, globalIndex : integer; aStream : TStream);
 		class procedure MemoryWrite(slot : TProgramSlot; objId, offset, size, arrayHandle : integer; aStream : TStream);
     class procedure ReadArrayContent(slot : TProgramSlot; arrayHandle, index, bytes, dataOut : integer; aStream : TStream);
+    class procedure ReadArraySize(slot: TProgramSlot; arrayHandle, dataOut: integer; aStream: TStream);
+		class procedure OutputClearCount(layer, portBitField : byte; aStream : TStream);
+		class procedure OutputStop(layer : byte; port : TPortId; forceStop : Boolean; aStream : TStream);
+		class procedure OutputStart(layer : byte; port : TPortId; aStream : TStream);
 		class procedure SensorRead(layer : byte; port : TPortId; sensor, mode, readSI, globalIndex : byte; aStream : TStream);
 		class procedure SensorReadyRead(layer : byte; port : TPortId; sensor, mode, numberOfReturnValues, readSI, globalIndex : byte; aStream : TStream);
+    class procedure CleanDirectory(path: string; aStream: TStream);
+    class procedure ResolveLogFileName(path: string; aStream: TStream);
 		class procedure SensorGetType(layer : byte; port : TPortId; globalIndexType, globalIndexMode : byte; aStream : TStream);
     class procedure InputClear(layer : byte; port : TPortId; aStream : TStream);
+    class procedure InputClearAll(layer : byte; aStream : TStream);
     class procedure InputWrite(layer : byte; port : TPortId; data : TStream; aStream : TStream);
 		class procedure PutInMruList(fileName : string; aStream : TStream);
 		class procedure LoadImage(imageName : string; slot, size, address : integer; aStream : TStream);
 		class procedure ProgramStart(slot : TProgramSlot; size, address : integer; mode : TProgramStartMode; aStream : TStream);
 		class procedure RenameBrick(name : string; aStream : TStream);
 		class procedure GetBrickName(maxLength, globalOffset : integer; aStream : TStream);
+    class procedure SetDatalogSyncTimeAndTick(globalScratch : integer; aStream: TStream);
 		class procedure ProgramStop(slot : TProgramSlot; aStream : TStream);
 		class procedure GetFavorItemsCount(aStream : TStream);
 		class procedure GetFavorItem(index : byte; aStream : TStream);
@@ -200,7 +205,7 @@ type
 		class procedure GetBrickFirmwareVersion(stringLength, stringIndex : byte; aStream : TStream);
 		class procedure ProgramObjectStart(slot : TProgramSlot; objectID : integer; aStream : TStream);
 		class procedure MoveValueToGlobal(value, globalIndex : integer; aStream : TStream);
-		class procedure InitBytes(destinationIndex : integer; values : TBytes; aStream : TStream);
+		class procedure InitBytes(destinationIndex : integer; values : TJCHBytes; aStream : TStream);
 		class procedure DoesFileExist(fileName : string; statusGlobalIndex : byte; aStream : TStream);
 		class procedure DeleteFile(path : string; aStream : TStream);
 		class procedure CopyFile(sourcePath, destinationPath : string; aStream : TStream);
@@ -1130,6 +1135,17 @@ begin
   if Assigned(args) then
     aStream.CopyFrom(args, 0);
   WriteByte(aStream, 10);
+(*
+				binaryWriter.Write((byte)commandType);
+				binaryWriter.Write((byte)(globals & 255));
+				binaryWriter.Write((byte)((locals & 63) << 2 | (globals >> 8 & 3)));
+				for (int i = 0; i < args.Length; i++)
+				{
+					byte[] array = args[i];
+					binaryWriter.Write(array);
+				}
+				binaryWriter.Write(10);
+*)
 end;
 
 class procedure TDirectCommandBuilder.OutputPower(layer: byte;
@@ -1139,6 +1155,12 @@ begin
   TBinaryWriterExtension.Write(aStream, layer);
   TBinaryWriterExtension.Write(aStream, Byte(port));
   TBinaryWriterExtension.WriteIntArgument(aStream, power, atInteger);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opOUTPUTPOWER);
+				binaryWriter.Write(layer);
+				binaryWriter.Write((byte)port);
+				binaryWriter.WriteIntArgument((int)power, ArgType.Integer);
+*)
 end;
 
 class procedure TDirectCommandBuilder.OutputSpeed(layer: byte;
@@ -1148,31 +1170,12 @@ begin
   TBinaryWriterExtension.Write(aStream, layer);
   TBinaryWriterExtension.Write(aStream, Byte(port));
   TBinaryWriterExtension.WriteIntArgument(aStream, speed, atInteger);
-end;
-
-class procedure TDirectCommandBuilder.OutputStart(layer: byte;
-  port: TPortId; aStream: TStream);
-begin
-  TBinaryWriterExtension.Write(aStream, Byte(pbopOUTPUTSTART));
-  TBinaryWriterExtension.Write(aStream, layer);
-  TBinaryWriterExtension.Write(aStream, Byte(port));
-end;
-
-class procedure TDirectCommandBuilder.OutputStop(layer: byte;
-  port: TPortId; forceStop: Boolean; aStream: TStream);
-begin
-  TBinaryWriterExtension.Write(aStream, Byte(pbopOUTPUTSTOP));
-  TBinaryWriterExtension.Write(aStream, layer);
-  TBinaryWriterExtension.Write(aStream, Byte(port));
-  TBinaryWriterExtension.Write(aStream, Byte(Ord(forceStop)));
-end;
-
-class procedure TDirectCommandBuilder.OutputClearCount(layer,
-  portBitField: byte; aStream: TStream);
-begin
-  TBinaryWriterExtension.Write(aStream, Byte(pbopOUTPUTCLRCOUNT));
-  TBinaryWriterExtension.Write(aStream, layer);
-  TBinaryWriterExtension.Write(aStream, portBitField);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opOUTPUTSPEED);
+				binaryWriter.Write(layer);
+				binaryWriter.Write((byte)port);
+				binaryWriter.WriteIntArgument((int)speed, ArgType.Integer);
+*)
 end;
 
 class procedure TDirectCommandBuilder.MemoryRead(slot: TProgramSlot; objId,
@@ -1184,6 +1187,14 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, offset, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, size, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndex, atGlobalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opMemoryRead);
+				binaryWriter.Write((byte)slot);
+				binaryWriter.Write((byte)objId);
+				binaryWriter.WriteIntArgument(offset, ArgType.Integer);
+				binaryWriter.WriteIntArgument(size, ArgType.Integer);
+				binaryWriter.WriteIntArgument(globalIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.MemoryWrite(slot: TProgramSlot;
@@ -1195,6 +1206,14 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, offset, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, size, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, arrayHandle, atLocalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opMemoryWrite);
+				binaryWriter.Write((byte)slot);
+				binaryWriter.Write((byte)objId);
+				binaryWriter.WriteIntArgument(offset, ArgType.Integer);
+				binaryWriter.WriteIntArgument(size, ArgType.Integer);
+				binaryWriter.WriteIntArgument(arrayHandle, ArgType.LocalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.ReadArrayContent(slot: TProgramSlot;
@@ -1206,6 +1225,70 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, index, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, bytes, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, dataOut, atGlobalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayReadContent);
+				binaryWriter.Write((byte)slot);
+				binaryWriter.WriteIntArgument(arrayHandle, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(index, ArgType.Integer);
+				binaryWriter.WriteIntArgument(bytes, ArgType.Integer);
+				binaryWriter.WriteIntArgument(dataOut, ArgType.GlobalOffset);
+*)
+end;
+
+class procedure TDirectCommandBuilder.ReadArraySize(slot: TProgramSlot;
+  arrayHandle, dataOut: integer; aStream: TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ascReadSize));
+  TBinaryWriterExtension.Write(aStream, Byte(slot));
+  TBinaryWriterExtension.WriteIntArgument(aStream, arrayHandle, atGlobalOffset, True);
+  TBinaryWriterExtension.WriteIntArgument(aStream, dataOut, atGlobalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayReadSize);
+				binaryWriter.Write((byte)slot);
+				binaryWriter.WriteIntArgument(arrayHandle, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(dataOut, ArgType.GlobalOffset);
+*)
+end;
+
+class procedure TDirectCommandBuilder.OutputClearCount(layer,
+  portBitField: byte; aStream: TStream);
+begin
+  TBinaryWriterExtension.Write(aStream, Byte(pbopOUTPUTCLRCOUNT));
+  TBinaryWriterExtension.Write(aStream, layer);
+  TBinaryWriterExtension.Write(aStream, portBitField);
+(*
+				178,
+				layer,
+				portBitField
+*)
+end;
+
+class procedure TDirectCommandBuilder.OutputStop(layer: byte;
+  port: TPortId; forceStop: Boolean; aStream: TStream);
+begin
+  TBinaryWriterExtension.Write(aStream, Byte(pbopOUTPUTSTOP));
+  TBinaryWriterExtension.Write(aStream, layer);
+  TBinaryWriterExtension.Write(aStream, Byte(port));
+  TBinaryWriterExtension.Write(aStream, Byte(Ord(forceStop)));
+(*
+				163,
+				layer,
+				(byte)port,
+				forceStop ? 1 : 0
+*)
+end;
+
+class procedure TDirectCommandBuilder.OutputStart(layer: byte;
+  port: TPortId; aStream: TStream);
+begin
+  TBinaryWriterExtension.Write(aStream, Byte(pbopOUTPUTSTART));
+  TBinaryWriterExtension.Write(aStream, layer);
+  TBinaryWriterExtension.Write(aStream, Byte(port));
+(*
+				166,
+				layer,
+				(byte)port
+*)
 end;
 
 class procedure TDirectCommandBuilder.SensorRead(layer: byte;
@@ -1223,6 +1306,21 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, sensor, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, mode, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndex, atGlobalOffset);
+(*
+				if (readSI)
+				{
+					binaryWriter.WriteOpCode(PBrickOpCode.opINPUTREADSI);
+				}
+				else
+				{
+					binaryWriter.WriteOpCode(PBrickOpCode.opINPUTREAD);
+				}
+				binaryWriter.Write(layer);
+				binaryWriter.Write(port);
+				binaryWriter.WriteIntArgument((int)sensorType, ArgType.Integer);
+				binaryWriter.WriteIntArgument((int)mode, ArgType.Integer);
+				binaryWriter.WriteIntArgument(globalIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.SensorReadyRead(layer: byte;
@@ -1230,6 +1328,7 @@ class procedure TDirectCommandBuilder.SensorReadyRead(layer: byte;
   globalIndex: byte; aStream: TStream);
 var
   op : TPBrickOpCode;
+  i : integer;
 begin
   op := MakeOpCode(idscReadyPct);
   if readSI <> 0 then
@@ -1240,7 +1339,173 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, sensor, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, mode, atInteger);
   TBinaryWriterExtension.Write(aStream, numberOfReturnValues);
+  for i := 0 to numberOfReturnValues - 1 do
+  begin
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndex, atGlobalOffset);
+    Inc(globalIndex, 4);
+  end;
+(*
+				if (readSI)
+				{
+					binaryWriter.WriteOpCode(PBrickOpCode.opInputDeviceReadySI);
+				}
+				else
+				{
+					binaryWriter.WriteOpCode(PBrickOpCode.opInputDeviceReadyPct);
+				}
+				binaryWriter.Write(layer);
+				binaryWriter.Write(port);
+				binaryWriter.WriteIntArgument((int)sensor, ArgType.Integer);
+				binaryWriter.WriteIntArgument((int)mode, ArgType.Integer);
+				binaryWriter.Write(numberOfReturnValues);
+				for (int i = 0; i < (int)numberOfReturnValues; i++)
+				{
+					binaryWriter.WriteIntArgument(globalIndex, ArgType.GlobalOffset);
+					globalIndex += 4;
+				}
+*)
+end;
+
+class procedure TDirectCommandBuilder.CleanDirectory(path: string; aStream: TStream);
+begin
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opMOVE88);
+				binaryWriter.WriteIntArgument(0, ArgType.Integer);
+				binaryWriter.WriteIntArgument(0, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayCreate8);
+				binaryWriter.WriteIntArgument(100, ArgType.Integer);
+				binaryWriter.WriteIntArgument(4, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayCreate8);
+				binaryWriter.WriteIntArgument(32, ArgType.Integer);
+				binaryWriter.WriteIntArgument(6, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayCreate8);
+				binaryWriter.WriteIntArgument(132, ArgType.Integer);
+				binaryWriter.WriteIntArgument(8, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringDuplicate);
+				binaryWriter.WriteStringArgument(path);
+				binaryWriter.WriteIntArgument(4, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileGetFolders);
+				binaryWriter.WriteIntArgument(4, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(1, ArgType.GlobalOffset);
+				long position = memoryStream.get_Position();
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileGetSubFolderName);
+				binaryWriter.WriteIntArgument(4, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(1, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(32, ArgType.Integer);
+				binaryWriter.WriteIntArgument(6, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteIntArgument(4, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(6, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(8, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteIntArgument(8, ArgType.GlobalOffset, true);
+				binaryWriter.WriteStringArgument(".rbf");
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileNameExist);
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(2, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opJRFALSE);
+				binaryWriter.WriteIntArgument(2, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(3, ArgType.Integer);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileRemove);
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteIntArgument(8, ArgType.GlobalOffset, true);
+				binaryWriter.WriteStringArgument(".rsf");
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileNameExist);
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(2, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opJRFALSE);
+				binaryWriter.WriteIntArgument(2, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(3, ArgType.Integer);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileRemove);
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteIntArgument(8, ArgType.GlobalOffset, true);
+				binaryWriter.WriteStringArgument(".rgf");
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileNameExist);
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(2, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opJRFALSE);
+				binaryWriter.WriteIntArgument(2, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(3, ArgType.Integer);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileRemove);
+				binaryWriter.WriteIntArgument(10, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opSUB8);
+				binaryWriter.WriteIntArgument(1, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(1, ArgType.Integer);
+				binaryWriter.WriteIntArgument(1, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opJRLT8);
+				binaryWriter.WriteIntArgument(0, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(1, ArgType.GlobalOffset);
+				int argument = (int)(position - (memoryStream.get_Position() + 2L));
+				binaryWriter.WriteIntArgument(argument, ArgType.Integer);
+*)
+end;
+
+class procedure TDirectCommandBuilder.ResolveLogFileName(path: string; aStream: TStream);
+begin
+(*
+				int argument = 0;
+				int argument2 = 2;
+				int argument3 = 4;
+				int argument4 = 6;
+				int argument5 = 8;
+				int argument6 = 12;
+				int argument7 = 13;
+				binaryWriter.WriteOpCode(PBrickOpCode.opMOVE1616);
+				binaryWriter.WriteIntArgument(1, ArgType.Integer);
+				binaryWriter.WriteIntArgument(argument4, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayCreate8);
+				binaryWriter.WriteIntArgument(100, ArgType.Integer);
+				binaryWriter.WriteIntArgument(argument, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringDuplicate);
+				binaryWriter.WriteStringArgument(path);
+				binaryWriter.WriteIntArgument(argument, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayCreate8);
+				binaryWriter.WriteIntArgument(10, ArgType.Integer);
+				binaryWriter.WriteIntArgument(argument2, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringDuplicate);
+				binaryWriter.WriteStringArgument(".rdf");
+				binaryWriter.WriteIntArgument(argument2, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opArrayCreate8);
+				binaryWriter.WriteIntArgument(32, ArgType.Integer);
+				binaryWriter.WriteIntArgument(argument3, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteIntArgument(argument, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(argument2, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(argument7, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileNameExist);
+				binaryWriter.WriteIntArgument(argument7, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(argument6, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opJRFALSE);
+				binaryWriter.WriteIntArgument(argument6, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(38, ArgType.Integer);
+				binaryWriter.WriteOpCode(PBrickOpCode.opMOVE16F);
+				binaryWriter.WriteIntArgument(argument4, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(argument5, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringValueToString);
+				binaryWriter.WriteIntArgument(argument5, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(-6, ArgType.Integer);
+				binaryWriter.WriteIntArgument(0, ArgType.Integer);
+				binaryWriter.WriteIntArgument(argument2, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteStringArgument("_");
+				binaryWriter.WriteIntArgument(argument2, ArgType.GlobalOffset, true);
+				binaryWriter.WriteIntArgument(argument3, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opStringConcat);
+				binaryWriter.WriteIntArgument(argument3, ArgType.GlobalOffset, true);
+				binaryWriter.WriteStringArgument(".rdf");
+				binaryWriter.WriteIntArgument(argument2, ArgType.GlobalOffset, true);
+				binaryWriter.WriteOpCode(PBrickOpCode.opADD16);
+				binaryWriter.WriteIntArgument(argument4, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument(1, ArgType.Integer);
+				binaryWriter.WriteIntArgument(argument4, ArgType.GlobalOffset);
+				binaryWriter.WriteOpCode(PBrickOpCode.opJR);
+				binaryWriter.WriteIntArgument(-53, ArgType.Integer);
+*)
 end;
 
 class procedure TDirectCommandBuilder.SensorGetType(layer: byte;
@@ -1251,6 +1516,13 @@ begin
   TBinaryWriterExtension.Write(aStream, Byte(port));
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndexType, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndexMode, atGlobalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opInputDeviceGetTypeMode);
+				binaryWriter.Write(layer);
+				binaryWriter.Write(port);
+				binaryWriter.WriteIntArgument((int)globalIndexType, ArgType.GlobalOffset);
+				binaryWriter.WriteIntArgument((int)globalIndexMode, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.InputClear(layer: byte;
@@ -1259,6 +1531,22 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(idscClrChanges));
   TBinaryWriterExtension.Write(aStream, layer);
   TBinaryWriterExtension.Write(aStream, Byte(port));
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opInputDeviceClrChanges);
+				binaryWriter.Write(layer);
+				binaryWriter.Write(port);
+*)
+end;
+
+class procedure TDirectCommandBuilder.InputClearAll(layer: byte;
+  aStream: TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(idscClrAll));
+  TBinaryWriterExtension.Write(aStream, layer);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opInputDeviceClrAll);
+				binaryWriter.Write(layer);
+*)
 end;
 
 class procedure TDirectCommandBuilder.InputWrite(layer: byte;
@@ -1276,6 +1564,17 @@ begin
     data.Read(arg, 1);
     TBinaryWriterExtension.WriteIntArgument(astream, arg, atInteger);
   end;
+(*
+				stream.WriteOpCode(PBrickOpCode.opINPUTWRITE);
+				stream.WriteIntArgument((int)layer, ArgType.Integer);
+				stream.WriteIntArgument((int)port, ArgType.Integer);
+				stream.WriteIntArgument(data.Length, ArgType.Integer);
+				for (int i = 0; i < data.Length; i++)
+				{
+					byte argument = data[i];
+					stream.WriteIntArgument((int)argument, ArgType.Integer);
+				}
+*)
 end;
 
 class procedure TDirectCommandBuilder.PutInMruList(fileName: string;
@@ -1284,6 +1583,11 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, pbopFILE);
   TBinaryWriterExtension.Write(aStream, Byte(fscPutCacheFile));
   TBinaryWriterExtension.WriteStringArgument(aStream, fileName);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opFILE);
+				binaryWriter.Write(21);
+				binaryWriter.WriteStringArgument(fileName);
+*)
 end;
 
 class procedure TDirectCommandBuilder.LoadImage(imageName: string; slot,
@@ -1295,6 +1599,14 @@ begin
   TBinaryWriterExtension.WriteStringArgument(aStream, imageName);
   TBinaryWriterExtension.WriteIntArgument(aStream, size, atLocalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, address, atLocalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opFILE);
+				binaryWriter.Write(8);
+				binaryWriter.WriteIntArgument((int)((byte)slot), ArgType.Integer);
+				binaryWriter.WriteStringArgument(imageName);
+				binaryWriter.WriteIntArgument(size, ArgType.LocalOffset);
+				binaryWriter.WriteIntArgument(address, ArgType.LocalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.ProgramStart(slot: TProgramSlot;
@@ -1305,6 +1617,13 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, size, atLocalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, address, atLocalOffset);
   TBinaryWriterExtension.Write(aStream, Byte(mode));
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opPROGRAMSTART);
+				binaryWriter.WriteIntArgument((int)((byte)slot), ArgType.Integer);
+				binaryWriter.WriteIntArgument(size, ArgType.LocalOffset);
+				binaryWriter.WriteIntArgument(address, ArgType.LocalOffset);
+				binaryWriter.Write((byte)mode);
+*)
 end;
 
 class procedure TDirectCommandBuilder.RenameBrick(name: string;
@@ -1312,6 +1631,10 @@ class procedure TDirectCommandBuilder.RenameBrick(name: string;
 begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(csscBrickName));
   TBinaryWriterExtension.WriteStringArgument(aStream, name);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opComSetBrickName);
+				binaryWriter.WriteStringArgument(name);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetBrickName(maxLength,
@@ -1320,6 +1643,32 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(cgscBrickName));
   TBinaryWriterExtension.WriteIntArgument(aStream, maxLength, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+(*
+				stream.WriteOpCode(PBrickOpCode.OpComGetBrickName);
+				stream.WriteIntArgument(maxLength, ArgType.Integer);
+				stream.WriteIntArgument(globalOffset, ArgType.GlobalOffset);
+*)
+end;
+
+class procedure TDirectCommandBuilder.SetDatalogSyncTimeAndTick(globalScratch : integer;
+  aStream: TStream);
+var
+  argument : integer;
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, pbopTimerReadMicroseconds);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalScratch, atGlobalOffset);
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpcode(fscSetLogSyncTime));
+//				int argument = (int)(DateTime.get_Now() - new DateTime(1970, 1, 1)).get_TotalSeconds();
+  TBinaryWriterExtension.WriteIntArgument(aStream, argument, atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalScratch, atGlobalOffset);
+(*
+				stream.WriteOpCode(PBrickOpCode.opTimerReadMicroseconds);
+				stream.WriteIntArgument(globalScratch, ArgType.GlobalOffset);
+				stream.WriteOpCode(PBrickOpCode.opFileSetLogSyncTime);
+				int argument = (int)(DateTime.get_Now() - new DateTime(1970, 1, 1)).get_TotalSeconds();
+				stream.WriteIntArgument(argument, ArgType.Integer);
+				stream.WriteIntArgument(globalScratch, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.ProgramStop(slot: TProgramSlot;
@@ -1327,6 +1676,10 @@ class procedure TDirectCommandBuilder.ProgramStop(slot: TProgramSlot;
 begin
   TBinaryWriterExtension.WriteOpCode(aStream, pbopPROGRAMSTOP);
   TBinaryWriterExtension.WriteIntArgument(aStream, Byte(slot), atInteger);
+(*
+				stream.WriteOpCode(PBrickOpCode.opPROGRAMSTOP);
+				stream.WriteIntArgument((int)((byte)slot), ArgType.Integer);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetFavorItemsCount(aStream: TStream);
@@ -1334,6 +1687,11 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(cgscFavorItems));
   TBinaryWriterExtension.WriteIntArgument(aStream, Ord(htlBluetooth), atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, 0, atGlobalOffset);
+(*
+				stream.WriteOpCode(PBrickOpCode.OpComFavorItems);
+				stream.WriteIntArgument(2, ArgType.Integer);
+				stream.WriteIntArgument(0, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetFavorItem(index: byte;
@@ -1347,6 +1705,16 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, 30, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, 31, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, 32, atGlobalOffset);
+(*
+				stream.WriteOpCode(PBrickOpCode.OpComFavorItem);
+				stream.WriteIntArgument(2, ArgType.Integer);
+				stream.WriteIntArgument((int)index, ArgType.Integer);
+				stream.WriteIntArgument(30, ArgType.Integer);
+				stream.WriteIntArgument(0, ArgType.GlobalOffset);
+				stream.WriteIntArgument(30, ArgType.GlobalOffset);
+				stream.WriteIntArgument(31, ArgType.GlobalOffset);
+				stream.WriteIntArgument(32, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetProgramStatus(slot: TProgramSlot;
@@ -1356,6 +1724,12 @@ begin
   TBinaryWriterExtension.Write(aStream, Byte(picGetStatus));
   TBinaryWriterExtension.WriteIntArgument(aStream, Ord(slot), atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, statusGlobalIndex, atGlobalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opPROGRAMINFO);
+				binaryWriter.Write(22);
+				binaryWriter.WriteIntArgument((int)((byte)slot), ArgType.Integer);
+				binaryWriter.WriteIntArgument((int)statusGlobalIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetBrickPowerStatus(blockIndex: byte;
@@ -1363,6 +1737,10 @@ class procedure TDirectCommandBuilder.GetBrickPowerStatus(blockIndex: byte;
 begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(urcGetVBattery));
   TBinaryWriterExtension.WriteIntArgument(aStream, blockIndex, atGlobalOffset);
+(*
+				stream.WriteOpCode(UIReadCommand.GetVBattery.MakeOpCode());
+				stream.WriteIntArgument((int)blockIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetBrickSDCardStatus(presentIndex,
@@ -1372,6 +1750,12 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, presentIndex, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, totalKBIndex, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, freeKBIndex, atGlobalOffset);
+(*
+				stream.WriteOpCode(UIReadCommand.GetSDCardPresent.MakeOpCode());
+				stream.WriteIntArgument((int)presentIndex, ArgType.GlobalOffset);
+				stream.WriteIntArgument((int)totalKBIndex, ArgType.GlobalOffset);
+				stream.WriteIntArgument((int)freeKBIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetOnBrickStorageStatus(totalKBIndex,
@@ -1380,6 +1764,11 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, pbopMemoryUsage);
   TBinaryWriterExtension.WriteIntArgument(aStream, totalKBIndex, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, freeKBIndex, atGlobalOffset);
+(*
+				stream.WriteOpCode(PBrickOpCode.opMemoryUsage);
+				stream.WriteIntArgument((int)totalKBIndex, ArgType.GlobalOffset);
+				stream.WriteIntArgument((int)freeKBIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.GetBrickFirmwareVersion(stringLength,
@@ -1388,6 +1777,11 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(urcGetFWVersion));
   TBinaryWriterExtension.WriteIntArgument(aStream, stringLength, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, stringIndex, atGlobalOffset);
+(*
+				stream.WriteOpCode(UIReadCommand.GetFWVersion.MakeOpCode());
+				stream.WriteIntArgument((int)stringLength, ArgType.Integer);
+				stream.WriteIntArgument((int)stringIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.ProgramObjectStart(
@@ -1397,6 +1791,12 @@ begin
   TBinaryWriterExtension.Write(aStream, Byte(picObjectStart));
   TBinaryWriterExtension.WriteIntArgument(aStream, Byte(slot), atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, objectID, atInteger);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opPROGRAMINFO);
+				binaryWriter.Write(4);
+				binaryWriter.WriteIntArgument((int)((byte)slot), ArgType.Integer);
+				binaryWriter.WriteIntArgument(objectID, ArgType.Integer);
+*)
 end;
 
 class procedure TDirectCommandBuilder.MoveValueToGlobal(value,
@@ -1405,10 +1805,15 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, pbopMOVE3232);
   TBinaryWriterExtension.WriteIntArgument(aStream, value, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndex, atGlobalOffset);
+(*
+				stream.WriteOpCode(PBrickOpCode.opMOVE3232);
+				stream.WriteIntArgument(value, ArgType.Integer);
+				stream.WriteIntArgument(globalIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.InitBytes(destinationIndex: integer;
-  values: TBytes; aStream: TStream);
+  values: TJCHBytes; aStream: TStream);
 var
   i : integer;
 begin
@@ -1419,6 +1824,16 @@ begin
   begin
     TBinaryWriterExtension.WriteIntArgument(aStream, values[i], atInteger);
   end;
+(*
+				stream.WriteOpCode(PBrickOpCode.opINITBYTES);
+				stream.WriteIntArgument(destinationIndex, ArgType.LocalOffset);
+				stream.WriteIntArgument(values.Length, ArgType.Integer);
+				for (int i = 0; i < values.Length; i++)
+				{
+					byte argument = values[i];
+					stream.WriteIntArgument((int)argument, ArgType.Integer);
+				}
+*)
 end;
 
 class procedure TDirectCommandBuilder.DoesFileExist(fileName: string;
@@ -1428,6 +1843,12 @@ begin
   TBinaryWriterExtension.Write(aStream, 16);
   TBinaryWriterExtension.WriteStringArgument(aStream, fileName);
   TBinaryWriterExtension.WriteIntArgument(aStream, statusGlobalIndex, atGlobalOffset);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opFileName);
+				binaryWriter.Write(16);
+				binaryWriter.WriteStringArgument(fileName);
+				binaryWriter.WriteIntArgument((int)statusGlobalIndex, ArgType.GlobalOffset);
+*)
 end;
 
 class procedure TDirectCommandBuilder.DeleteFile(path: string; aStream: TStream);
@@ -1435,6 +1856,11 @@ begin
   TBinaryWriterExtension.WriteOpCode(aStream, pbopFILE);
   TBinaryWriterExtension.Write(aStream, Byte(fscRemove));
   TBinaryWriterExtension.WriteStringArgument(aStream, path);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opFILE);
+				binaryWriter.Write(30);
+				binaryWriter.WriteStringArgument(path);
+*)
 end;
 
 class procedure TDirectCommandBuilder.CopyFile(sourcePath,
@@ -1444,11 +1870,20 @@ begin
   TBinaryWriterExtension.Write(aStream, Byte(fscMove));
   TBinaryWriterExtension.WriteStringArgument(aStream, sourcePath);
   TBinaryWriterExtension.WriteStringArgument(aStream, destinationPath);
+(*
+				binaryWriter.WriteOpCode(PBrickOpCode.opFILE);
+				binaryWriter.Write(31);
+				binaryWriter.WriteStringArgument(sourcePath);
+				binaryWriter.WriteStringArgument(destinationPath);
+*)
 end;
 
 class procedure TDirectCommandBuilder.DownloadCompleteSound(aStream: TStream);
 begin
   TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(uwcDownloadEnd));
+(*
+				stream.WriteOpCode(PBrickOpCode.opUIWriteDownloadEnd);
+*)
 end;
 
 { TBinaryWriterExtension }

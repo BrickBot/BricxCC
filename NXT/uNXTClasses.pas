@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -25,7 +25,7 @@ unit uNXTClasses;
 interface
 
 uses
-  Classes, Contnrs, SysUtils, uNXTConstants, uPreprocess,
+  Classes, Contnrs, SysUtils, uNXTConstants, uNBCPreprocess, uCompCommon,
   uNBCCommon;
 
 type
@@ -65,14 +65,6 @@ type
     CodespaceCount : Word;
   end;
 
-  DSTocEntry = record
-    TypeDesc : Byte;
-    Flags : Byte;
-    DataDesc: Word;
-    Size : Word;
-    RefCount: Word;
-  end;
-
   DSTocEntries = array of DSTocEntry; // dynamic array
 
   DopeVector = record
@@ -93,83 +85,10 @@ type
 
   ClumpRecords = array of ClumpRecord; // dynamic array
 
-  TSTTFuncType = function(const stype : string; bUseCase : Boolean = false) : TDSType;
-
 const
-  BytesPerType : array[TDSType] of Byte = (4, 1, 1, 2, 2, 4, 4, 2, 4, 4, 4);
   NOT_AN_ELEMENT = $FFFF;
 
 type
-  TDSBase = class;
-  TDSData = class;
-
-  TDataspaceEntry = class(TCollectionItem)
-  private
-    fThreadNames : TStrings;
-    fDataType: TDSType;
-    fIdentifier: string;
-    fDefValue: Cardinal;
-    fAddress: Word;
-    fSubEntries: TDSBase;
-    fArrayValues: TObjectList;
-    fDSID: integer;
-    fArrayMember: boolean;
-    fRefCount : integer;
-    fTypeName: string;
-    function  GetValue(idx: integer): Cardinal;
-    function  GetArrayInit: string;
-    procedure SetSubEntries(const Value: TDSBase);
-    function GetDataTypeAsString: string;
-    function GetFullPathIdentifier: string;
-    function GetDSBase: TDSBase;
-    procedure SetArrayMember(const Value: boolean);
-    procedure SetIdentifier(const Value: string);
-    function GetInUse: boolean;
-    function GetRefCount: integer;
-    function GetClusterInit: string;
-    function GetInitializationString: string;
-    function GetArrayBaseType: TDSType;
-    function GetIsArray: boolean;
-    function GetSizeOf: integer;
-  protected
-    procedure AssignTo(Dest: TPersistent); override;
-    procedure SaveToDynamicDefaults(aDS : TDSData; const cnt, doffset : integer);
-  public
-    constructor Create(ACollection: TCollection); override;
-    destructor Destroy; override;
-    procedure SaveToStream(aStream : TStream);
-    procedure SaveToStrings(aStrings : TStrings; bDefine : boolean = false;
-      bInCluster : boolean = false);
-    procedure LoadFromStream(aStream : TStream);
-    procedure AddValue(aValue : Cardinal);
-    function AddValuesFromString(Calc : TNBCExpParser; sargs : string) : TDSType;
-    function  ValueCount : Word;
-    function  ArrayElementSize(bPad : boolean = true) : Word;
-    function  ElementSize(bPad : boolean = true) : Word;
-    procedure IncRefCount;
-    procedure DecRefCount;
-    procedure AddThread(const aThreadName : string);
-    function  ThreadCount : integer;
-    property DSBase : TDSBase read GetDSBase;
-    property DSID : integer read fDSID write fDSID;
-    property Identifier : string read fIdentifier write SetIdentifier;
-    property TypeName : string read fTypeName write fTypeName;
-    property DataType : TDSType read fDataType write fDataType;
-    property DataTypeAsString : string read GetDataTypeAsString;
-    property DefaultValue : Cardinal read fDefValue write fDefValue;
-    property Address : Word read fAddress write fAddress;
-    property SubEntries : TDSBase read fSubEntries write SetSubEntries; // used to store array types and cluster structure
-    property Values[idx : integer] : Cardinal read GetValue; // used to store array default values
-    property FullPathIdentifier : string read GetFullPathIdentifier;
-    property InitializationString : string read GetInitializationString;
-    property ArrayMember : boolean read fArrayMember write SetArrayMember;
-    property BaseDataType : TDSType read GetArrayBaseType;
-    property IsArray : boolean read GetIsArray;
-    property InUse : boolean read GetInUse;
-    property RefCount : integer read GetRefCount;
-    property SizeOf : integer read GetSizeOf;
-  end;
-
   TDSData = class
   private
     fDSStaticSize : integer;
@@ -191,46 +110,6 @@ type
     procedure SaveToSymbolTable(aStrings : TStrings);
   end;
 
-  TDSBaseSortCompare = function(List: TDSBase; Index1, Index2: Integer): Integer;
-
-  EDuplicateDataspaceEntry = class(Exception)
-  public
-    constructor Create(DE : TDataspaceEntry);
-  end;
-
-//  TDataspaceEntry = class;
-
-  TDSBase = class(TCollection)
-  private
-    fParent: TPersistent;
-    procedure ExchangeItems(Index1, Index2: Integer);
-    function GetRoot: TDataspaceEntry;
-  protected
-    fEntryIndex : TStringList;
-    function  GetItem(Index: Integer): TDataspaceEntry;
-    procedure SetItem(Index: Integer; Value: TDataspaceEntry);
-    procedure AssignTo(Dest : TPersistent); override;
-    procedure QuickSort(L, R: Integer; SCompare: TDSBaseSortCompare);
-    function  ResolveNestedArrayAddress(DS : TDSData; DV : DopeVector) : TDataspaceEntry;
-  public
-    constructor Create; virtual;
-    destructor Destroy; override;
-    function  Add: TDataspaceEntry;
-    function  Insert(Index: Integer): TDataspaceEntry;
-    function  IndexOfName(const name : string) : integer;
-    function  FullPathName(DE : TDataspaceEntry) : string;
-    function  FindEntryByAddress(Addr : Word) : TDataspaceEntry; virtual;
-    function  FindEntryByFullName(const path : string) : TDataspaceEntry; virtual;
-    function  FindEntryByName(name : string) : TDataspaceEntry; virtual;
-    procedure Sort; virtual;
-    procedure CheckEntry(DE : TDataspaceEntry);
-    property  Items[Index: Integer]: TDataspaceEntry read GetItem write SetItem; default;
-    property  Parent : TPersistent read fParent write fParent;
-    property  Root : TDataspaceEntry read GetRoot;
-  end;
-
-  TDataDefs = class(TDSBase);
-
   TDataspace = class(TDSBase)
   private
     function GetCaseSensitive: boolean;
@@ -243,9 +122,11 @@ type
     fDSList : TObjectList;
     function  GetVector(index: Integer): DopeVector;
   protected
+    function  ResolveNestedArrayAddress(DS : TDSData; DV : DopeVector) : TDataspaceEntry;
     procedure LoadArrayValuesFromDynamicData(DS : TDSData);
     function  FinalizeDataspace(DS : TDSBase; addr : Word) : Word;
     procedure ProcessDopeVectors(aDS : TDSData; addr : Word);
+    procedure SaveToDynamicDefaults(DE : TDataspaceEntry; aDS : TDSData; const cnt, doffset : integer);
     procedure ProcessArray(DE : TDataspaceEntry; aDS : TDSData; var doffset : integer);
   public
     constructor Create; override;
@@ -1128,25 +1009,10 @@ const
   );
 
 const
-  TC_VOID    = 0;
-  TC_UBYTE   = 1;
-  TC_SBYTE   = 2;
-  TC_UWORD   = 3;
-  TC_SWORD   = 4;
-  TC_ULONG   = 5;
-  TC_SLONG   = 6;
-  TC_ARRAY   = 7;
-  TC_CLUSTER = 8;
-  TC_MUTEX   = 9;
-  TC_FLOAT   = 10;
-
-const
   SHOP_MASK = $08; // b00001000
   INST_MASK = $F0; // b11110000
   CC_MASK   = $07; // b00000111
 
-function TypeToStr(const TypeDesc : byte) : string; overload;
-function TypeToStr(const aType : TDSType) : string; overload;
 function StrToType(const stype : string; bUseCase : Boolean = false) : TDSType;
 function GenerateTOCName(const TypeDesc : byte; const idx : Int64; const fmt : string = '%s%4.4x') : string;
 function ShortOpEncoded(const b : byte) : boolean;
@@ -1162,7 +1028,6 @@ procedure LoadRXEDataSpace(H : TRXEHeader; DS : TDSData; aStream : TStream);
 procedure LoadRXEClumpRecords(H : TRXEHeader; CD : TClumpData; aStream : TStream);
 procedure LoadRXECodeSpace(H : TRXEHeader; CS : TCodeSpaceAry; aStream : TStream);
 
-function GetArgDataType(val : Extended): TDSType;
 function ExpectedArgType(const firmVer : word; const op : TOpCode; const argIdx: integer): TAsmArgType;
 function ProcessCluster(aDS : TDSData; Item : TDataspaceEntry; idx : Integer;
   var staticIndex : Integer) : integer;
@@ -1172,10 +1037,6 @@ function GetTypeHint(DSpace : TDataspace; const aLine: TASMLine;
 function CreateConstantVar(DSpace : TDataspace; val : Extended;
   bIncCount : boolean; aTypeHint : TDSType = dsVoid) : string;
 
-procedure InstantiateCluster(DD : TDataDefs; DE: TDataspaceEntry; const clustername: string);
-procedure HandleVarDecl(DD : TDataDefs; NT : TMapList; bCaseSensitive : boolean;
-  DSE : TDataspaceEntry; albl, aopcode : string; sttFunc : TSTTFuncType);
-
 implementation
 
 uses
@@ -1184,7 +1045,6 @@ uses
 
 const
   CLUMP_FMT = 't%3.3d';
-  DWORD_LEN = 4;
 
   SubroutineReturnAddressType = dsUByte;
 
@@ -1204,14 +1064,6 @@ type
   TProcessLevel = class(TPreprocLevel)
   public
     constructor Create; override;
-  end;
-
-  TCardinalObject = class
-  protected
-    fValue : Cardinal;
-  public
-    constructor Create(aValue : Cardinal);
-    property Value : Cardinal read fValue;
   end;
 
   TIntegerObject = class
@@ -1267,29 +1119,6 @@ end;
 function IsConstant(const str : string) : boolean;
 begin
   Result := (Pos('__constVal', str) = 1);
-end;
-
-function RoundToByteSize(addr : Word; size : byte) : Word;
-var
-  x : Word;
-begin
-  x := Word(addr mod size);
-  if x <> 0 then
-    Result := Word(addr + size - x)
-  else
-    Result := addr;
-end;
-
-function QuotedString(const sargs : string) : boolean;
-var
-  p1, len, L1, p2, L2 : integer;
-begin
-  len := Length(sargs);
-  p1 := Pos('''', sargs);
-  p2 := Pos('"', sargs);
-  L1 := LastDelimiter('''', sargs);
-  L2 := LastDelimiter('"', sargs);
-  Result := ((p1 = 1) and (L1 = len)) or ((p2 = 1) and (L2 = len));
 end;
 
 function StripExtraQuotes(str : string) : string;
@@ -1364,11 +1193,6 @@ begin
   end;
 end;
 
-function TypeToStr(const aType : TDSType) : string;
-begin
-  Result := TypeToStr(Byte(Ord(aType)));
-end;
-
 const
   NXTTypes : array[0..17] of NXTInstruction =
    (
@@ -1431,47 +1255,6 @@ begin
     OPS_FLOAT  : Result := dsFloat;
   else
     Result := dsVoid;
-  end;
-end;
-
-function ValToStr(const aType : TDSType; aVal : Cardinal) : string;
-begin
-  if aVal = 0 then
-    Result := '' // don't output question marks needlessly
-  else
-    case aType of
-      dsVoid : Result := '';
-      dsUByte : Result := Format('%u', [Byte(aVal)]);
-      dsSByte : Result := Format('%d', [Shortint(aVal)]);
-      dsUWord : Result := Format('%u', [Word(aVal)]);
-      dsSWord : Result := Format('%d', [Smallint(aVal)]);
-      dsULong : Result := Format('%u', [aVal]);
-      dsSLong : Result := Format('%d', [Integer(aVal)]);
-      dsMutex : Result := Format('%u', [aVal]);
-      dsArray : Result := '';
-      dsCluster : Result := '';
-      dsFloat : Result := NBCFloatToStr(CardinalToSingle(aVal));
-    else
-      Result := '???';
-    end;
-end;
-
-function TypeToStr(const TypeDesc : byte) : string;
-begin
-  case TypeDesc of
-    TC_VOID : Result := 'void';
-    TC_UBYTE : Result := 'byte';
-    TC_SBYTE : Result := 'sbyte';
-    TC_UWORD : Result := 'word';
-    TC_SWORD : Result := 'sword';
-    TC_ULONG : Result := 'dword';
-    TC_SLONG : Result := 'sdword';
-    TC_ARRAY : Result := 'array';
-    TC_CLUSTER : Result := 'struct';
-    TC_MUTEX : Result := 'mutex';
-    TC_FLOAT : Result := 'float';
-  else
-    Result := '????';
   end;
 end;
 
@@ -2541,341 +2324,6 @@ begin
   end;
 end;
 
-{ TDSBase }
-
-function TDSBase.Add: TDataspaceEntry;
-begin
-  Result := TDataspaceEntry(inherited Add);
-end;
-
-procedure TDSBase.AssignTo(Dest: TPersistent);
-var
-  i : integer;
-begin
-  if Dest is TDSBase then
-  begin
-    TDSBase(Dest).Clear;
-    for i := 0 to Self.Count - 1 do
-    begin
-      TDSBase(Dest).Add.Assign(Self[i]);
-    end;
-  end
-  else
-    inherited;
-end;
-
-function TDSBase.GetItem(Index: Integer): TDataspaceEntry;
-begin
-  Result := TDataspaceEntry(inherited GetItem(Index));
-end;
-
-function TDSBase.FindEntryByFullName(const path : string): TDataspaceEntry;
-var
-  i, p : integer;
-  tmp : string;
-  DE : TDataspaceEntry;
-begin
-  i := fEntryIndex.IndexOf(path);
-  if i <> -1 then
-    Result := TDataspaceEntry(fEntryIndex.Objects[i])
-  else
-  begin
-    Result := nil;
-    for i := 0 to Self.Count - 1 do
-    begin
-      DE := Items[i];
-      if DE.Identifier = path then
-      begin
-        Result := DE;
-        Break;
-      end
-      else
-      begin
-        p := Pos(DE.Identifier + '.', path);
-        if p = 1 then // 2009-05-12 JCH: was p > 0
-        begin
-          tmp := Copy(path, p+Length(DE.Identifier)+1, MaxInt);
-          Result := DE.SubEntries.FindEntryByFullName(tmp);
-          if Result <> nil then
-            Break;
-        end;
-      end;
-    end;
-  end;
-end;
-
-function TDSBase.IndexOfName(const name : string): integer;
-var
-  DE : TDataspaceEntry;
-begin
-  DE := FindEntryByFullName(name);
-  if Assigned(DE) then
-    Result := DE.Index
-  else
-    Result := -1;
-end;
-
-function TDSBase.Insert(Index: Integer): TDataspaceEntry;
-begin
-  result := TDataspaceEntry(inherited Insert(Index));
-end;
-
-procedure TDSBase.ExchangeItems(Index1, Index2: Integer);
-var
-  Temp1, Temp2: Integer;
-  de1, de2 : TDataspaceEntry;
-begin
-  de1 := Items[Index1];
-  de2 := Items[Index2];
-  Temp1 := de1.Index;
-  Temp2 := de2.Index;
-  BeginUpdate;
-  try
-    de1.Index := Temp2;
-    de2.Index := Temp1;
-  finally
-    EndUpdate;
-  end;
-end;
-
-procedure TDSBase.QuickSort(L, R: Integer; SCompare: TDSBaseSortCompare);
-var
-  I, J, P: Integer;
-begin
-  repeat
-    I := L;
-    J := R;
-    P := (L + R) shr 1;
-    repeat
-      while SCompare(Self, I, P) < 0 do Inc(I);
-      while SCompare(Self, J, P) > 0 do Dec(J);
-      if I <= J then
-      begin
-        ExchangeItems(I, J);
-        if P = I then
-          P := J
-        else if P = J then
-          P := I;
-        Inc(I);
-        Dec(J);
-      end;
-    until I > J;
-    if L < J then QuickSort(L, J, SCompare);
-    L := I;
-  until I >= R;
-end;
-
-procedure TDSBase.SetItem(Index: Integer; Value: TDataspaceEntry);
-begin
-  inherited SetItem(Index, Value);
-end;
-
-function GetBytesPerType(dt : TDSType) : integer;
-begin
-  if dt = dsCluster then
-    Result := -10
-  else if dt = dsArray then
-    Result := -20
-  else
-    Result := BytesPerType[dt];
-end;
-
-function IsScalarType(dt : TDSType) : boolean;
-begin
-  Result := not (dt in [dsArray, dsCluster]);
-end;
-
-function DSBaseCompareSizes(List: TDSBase; Index1, Index2: Integer): Integer;
-var
-  de1, de2 : TDataspaceEntry;
-  b1, b2 : Integer;
-//  dt1, dt2 : TDSType;
-//  bScalar1, bScalar2 : boolean;
-begin
-{
-  -1 if the item identified by Index1 comes before the item identified by Index2
-	0 if the two are equivalent
-	1 if the item with Index1 comes after the item identified by Index2.
-}
-  de1 := List.Items[Index1];
-  de2 := List.Items[Index2];
-  b1 := GetBytesPerType(de1.DataType);
-  b2 := GetBytesPerType(de2.DataType);
-  if b1 > b2 then  // larger sizes of scalar types come first
-    Result := -1
-  else if b1 = b2 then
-    Result := 0
-  else
-    Result := 1;
-(*
-{
-  We want to sort the dataspace so that
-  1. all scalar types come before aggregate types.
-  2. scalar types are ordered by size with 4 byte types before 2 byte types
-     before 1 byte types
-  3. All structs come before arrays
-  4. arrays are last
-
-  TDSType = (dsVoid, dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong,
-    dsArray, dsCluster, dsMutex, dsFloat);
-}
-  dt1 := de1.DataType;
-  dt2 := de2.DataType;
-  bScalar1 := IsScalarType(dt1);
-  bScalar2 := IsScalarType(dt2);
-  if bScalar1 and bScalar2 then
-  begin
-    b1 := GetBytesPerType(dt1);
-    b2 := GetBytesPerType(dt2);
-    if b1 > b2 then  // larger sizes of scalar types come first
-      Result := -1
-    else if b1 = b2 then
-      Result := 0
-    else
-      Result := 1;
-  end
-  else if bScalar1 then
-  begin
-    // 1 is scalar but 2 is not
-    Result := -1;
-  end
-  else if bScalar2 then
-  begin
-    // 2 is scalar but 1 is not
-    Result := 1;
-  end
-  else begin
-    // neither one is scalar
-    if dt1 < dt2 then
-      Result := 1
-    else if dt1 = dt2 then
-      Result := 0
-    else
-      Result := -1;
-  end;
-*)
-end;
-
-procedure TDSBase.Sort;
-begin
-  if Count = 0 then Exit;
-  QuickSort(0, Count - 1, @DSBaseCompareSizes);
-end;
-
-constructor TDSBase.Create;
-begin
-  inherited Create(TDataspaceEntry);
-  fEntryIndex := TStringList.Create;
-  fEntryIndex.CaseSensitive := True;
-  fEntryIndex.Sorted := True;
-  fParent := nil;
-end;
-
-function TDSBase.FullPathName(DE: TDataspaceEntry): string;
-begin
-  if Parent <> nil then
-    Result := TDataspaceEntry(Parent).FullPathIdentifier + '.' + DE.Identifier
-  else
-    Result := DE.Identifier;
-end;
-
-function TDSBase.FindEntryByAddress(Addr: Word): TDataspaceEntry;
-var
-  i : integer;
-begin
-  Result := nil;
-  for i := 0 to Count - 1 do
-  begin
-    if Items[i].DataType = dsCluster then
-    begin
-      Result := Items[i].SubEntries.FindEntryByAddress(Addr);
-      if assigned(Result) then Break;
-    end
-    else if Items[i].Address = Addr then
-    begin
-      Result := Items[i];
-      Break;
-    end;
-  end;
-end;
-
-function TDSBase.FindEntryByName(name: string): TDataspaceEntry;
-var
-  i : integer;
-begin
-  // find the first entry with a matching name (could be duplicates).
-  Result := nil;
-  for i := 0 to Self.Count - 1 do
-  begin
-    if Items[i].Identifier = name then
-    begin
-      Result := Items[i];
-      Break;
-    end
-    else
-    begin
-      Result := Items[i].SubEntries.FindEntryByName(name);
-      if Result <> nil then
-        Break;
-    end;
-  end;
-end;
-
-procedure TDSBase.CheckEntry(DE: TDataspaceEntry);
-var
-  X : TDataspaceEntry;
-begin
-  // identifier must be valid
-  if not IsValidIdent(DE.Identifier) then
-    raise Exception.CreateFmt(sInvalidVarDecl, [DE.Identifier]);
-  // make sure entry is unique
-  X := FindEntryByFullName(DE.FullPathIdentifier);
-  if (X <> nil) and (X <> DE) then
-    raise EDuplicateDataspaceEntry.Create(DE);
-end;
-
-function EqualDopeVectors(DV1, DV2 : DopeVector) : boolean;
-begin
-  Result := (DV1.offset = DV2.offset) and (DV1.elemsize = DV2.elemsize) and
-            (DV1.count = DV2.count) and (DV1.backptr = DV2.backptr) and
-            (DV1.link = DV2.link); 
-end;
-
-function TDSBase.ResolveNestedArrayAddress(DS: TDSData;
-  DV: DopeVector): TDataspaceEntry;
-var
-  i, addr : integer;
-begin
-  addr := -1;
-  // find the index of the DV in DS.DopeVectors and look at
-  // the item just before it to get the Dataspace entry address
-  for i := Low(DS.DopeVecs) to High(DS.DopeVecs) do
-  begin
-    if EqualDopeVectors(DS.DopeVecs[i], DV) and (i > Low(DS.DopeVecs)) then
-    begin
-      // found the item
-      addr := DS.DopeVecs[i-1].backptr;
-      Break;
-    end;
-  end;
-  Result := FindEntryByAddress(Word(addr));
-end;
-
-function TDSBase.GetRoot: TDataspaceEntry;
-begin
-  Result := nil;
-  if Assigned(Parent) then
-    Result := TDataspaceEntry(Parent).DSBase.Root;
-  if not Assigned(Result) then
-    Result := TDataspaceEntry(Parent);
-end;
-
-destructor TDSBase.Destroy;
-begin
-  FreeAndNil(fEntryIndex);
-  inherited;
-end;
-
 { TDataspace }
 
 constructor TDataspace.Create;
@@ -2914,17 +2362,17 @@ begin
     begin
       DE.Address := Word(DE.SubEntries.Count);
       currAddress := FinalizeDataspace(DE.SubEntries,
-        RoundToBytesize(currAddress, BytesPerType[dsCluster]));
+        RoundToByteSize(currAddress, BytesPerType[dsCluster]));
     end
     else if DE.DataType = dsArray then
     begin
-      DE.Address := RoundToBytesize(currAddress, BytesPerType[dsArray]);
+      DE.Address := RoundToByteSize(currAddress, BytesPerType[dsArray]);
       FinalizeDataspace(DE.SubEntries, 0);
       currAddress := Word(DE.Address + BytesPerType[DE.DataType]);
     end
     else
     begin
-      DE.Address := RoundToBytesize(currAddress, BytesPerType[DE.DataType]);
+      DE.Address := RoundToByteSize(currAddress, BytesPerType[DE.DataType]);
       currAddress := Word(DE.Address + BytesPerType[DE.DataType]);
     end;
   end;
@@ -3061,6 +2509,33 @@ end;
 const
   INVALID_LINK = $FFFF;
   NESTED_ARRAY_BACKPTR = $FFFE;
+
+function EqualDopeVectors(DV1, DV2 : DopeVector) : boolean;
+begin
+  Result := (DV1.offset = DV2.offset) and (DV1.elemsize = DV2.elemsize) and
+            (DV1.count = DV2.count) and (DV1.backptr = DV2.backptr) and
+            (DV1.link = DV2.link); 
+end;
+
+function TDataspace.ResolveNestedArrayAddress(DS: TDSData;
+  DV: DopeVector): TDataspaceEntry;
+var
+  i, addr : integer;
+begin
+  addr := -1;
+  // find the index of the DV in DS.DopeVectors and look at
+  // the item just before it to get the Dataspace entry address
+  for i := Low(DS.DopeVecs) to High(DS.DopeVecs) do
+  begin
+    if EqualDopeVectors(DS.DopeVecs[i], DV) and (i > Low(DS.DopeVecs)) then
+    begin
+      // found the item
+      addr := DS.DopeVecs[i-1].backptr;
+      Break;
+    end;
+  end;
+  Result := FindEntryByAddress(Word(addr));
+end;
 
 procedure TDataspace.LoadArrayValuesFromDynamicData(DS: TDSData);
 var
@@ -3255,7 +2730,7 @@ begin
   begin
     pTE := @(aDS.TOC[i]);
     DE := TDataspaceEntry(fDSList[i]);
-    aDS.TOCNames[i] := DE.GetFullPathIdentifier;
+    aDS.TOCNames[i] := DE.FullPathIdentifier;
     if DE.DataType = dsMutex then
       DE.DefaultValue := $FFFFFFFF;
     pTE^.TypeDesc := Byte(Ord(DE.DataType));
@@ -3428,7 +2903,7 @@ begin
   pDV := @(aDS.DopeVecs[Length(aDS.DopeVecs)-1]);
   if pDV^.count > 0 then
     pDV^.link := 0;
-  aDS.DopeVecs[0].offset := RoundToBytesize(addr, DWORD_LEN);
+  aDS.DopeVecs[0].offset := RoundToByteSize(addr, DWORD_LEN);
   aDS.DopeVecs[aDS.Tail].link := $FFFF;
 end;
 
@@ -3552,7 +3027,7 @@ begin
     // write to dynamic data
     // clusters store the initialization data one level down
     // and it is organized by cluster member
-    DE.SaveToDynamicDefaults(aDS, cnt, doffset);
+    SaveToDynamicDefaults(DE, aDS, cnt, doffset);
   end
   else
   begin
@@ -3616,559 +3091,8 @@ begin
   end;
 end;
 
-{ TDataspaceEntry }
-
-procedure TDataspaceEntry.AddValue(aValue: Cardinal);
-begin
-  fArrayValues.Add(TCardinalObject.Create(aValue));
-end;
-
-function StripArrayAndStructDelimiters(const str : string) : string;
-begin
-  Result := Trim(Replace(Replace(Replace(Replace(str, '{', ''), '}', ''), '[', ''), ']', ''));
-  // if the string either starts or ends with a comma then delete it.
-  if Pos(',', Result) = 1 then
-    System.Delete(Result, 1, 1);
-  if LastDelimiter(',', Result) = Length(Result) then
-    System.Delete(Result, Length(Result), 1);
-  Result := Trim(Result);
-end;
-
-function ValueOutside64BitRange(aValue : Extended) : boolean;
-begin
-  Result := (aValue > High(Int64)) or (aValue < Low(Int64));
-end;
-
-function ValueAsCardinal(aValue : Extended; aDST : TDSType = dsVoid) : Cardinal;
-var
-  iVal : Int64;
-  sVal : Single;
-begin
-  if (aDST = dsFloat) or ValueOutside64BitRange(aValue) then
-  begin
-    sVal := aValue;
-    Result := SingleToCardinal(sVal);
-  end
-  else
-  begin
-    iVal := Trunc(aValue);
-    if (iVal = aValue) and (aDST <> dsFloat) then
-      Result := Cardinal(iVal)
-    else
-    begin
-      sVal := aValue;
-      Result := SingleToCardinal(sVal);
-    end;
-  end;
-end;
-
-function CalcDSType(aDSType : TDSType; aValue : Extended) : TDSType;
-var
-  oldBPT, newBPT : byte;
-begin
-  Result := GetArgDataType(aValue);
-  if Result <> aDSType then
-  begin
-    oldBPT := BytesPerType[aDSType];
-    newBPT := BytesPerType[Result];
-    if oldBPT >= newBPT then
-    begin
-      // we will return the old type since it is >= new type
-      if (Result in [dsSByte, dsSWord, dsSLong]) and
-         (aDSType in [dsUByte, dsUWord, dsULong]) then
-      begin
-        // if new type is signed but old is unsigned then switch to equivalent signed type
-        Result := TDSType(Ord(aDSType)+1); // signed is always unsigned+1
-      end
-      else
-      begin
-        // in all other cases (old signed, new unsigned or both same)
-        // just return old type
-        Result := aDSType;
-      end;
-    end;
-  end;
-end;
-
-function TDataspaceEntry.AddValuesFromString(Calc : TNBCExpParser; sargs: string) : TDSType;
-var
-  i : integer;
-  SL : TStringList;
-  x : Byte;
-  fVal : Extended;
-begin
-  Result := dsUByte; // default value type is unsigned byte
-  sargs := Trim(sargs);
-  // sargs is a comma-separated list of values
-  // it could also be a ? or a {} pair
-  if (sargs = '') or (sargs = '?') or (sargs = '{}') then Exit;
-  SL := TStringList.Create;
-  try
-    // is sargs a quoted string?
-    if QuotedString(sargs) then
-    begin
-      sargs := Copy(sargs, 2, Length(sargs)-2); // remove quotes at both ends
-      for i := 1 to Length(sargs) do
-      begin
-        x := Ord(sargs[i]);
-        case x of
-          3 : AddValue(9);  // tab
-          4 : AddValue(10); // lf
-          5 : AddValue(13); // cr
-          6 : AddValue(Ord('\'));
-          7 : AddValue(Ord(''''));
-          8 : AddValue(Ord('"'));
-        else
-          AddValue(x);
-        end;
-      end;
-      // add a null terminator
-      AddValue(0);
-    end
-    else
-    begin
-      sargs := StripArrayAndStructDelimiters(sargs);
-      SL.CommaText := sargs;
-      if DataType = dsCluster then
-      begin
-        // initialize cluster members
-        if Self.ArrayMember then
-        begin
-          for i := 0 to SL.Count - 1 do
-          begin
-            Calc.Expression := SL[i];
-            fVal := Calc.Value;
-            AddValue(ValueAsCardinal(fVal));
-            Result := CalcDSType(Result, fVal);
-          end;
-        end
-        else
-        begin
-          for i := 0 to Self.SubEntries.Count - 1 do
-          begin
-            if i < SL.Count then
-            begin
-              Calc.Expression := SL[i];
-              fVal := Calc.Value;
-              SubEntries[i].DefaultValue := ValueAsCardinal(fVal, SubEntries[i].DataType);
-              Result := CalcDSType(dsUByte, fVal);
-            end;
-          end;
-        end;
-      end
-      else if DataType = dsArray then
-      begin
-        // initialize array
-        // first check whether this is an array of scalars or an array
-        // of structs or array of array
-        if Self.SubEntries[0].DataType in [dsCluster, dsArray] then
-          SubEntries[0].AddValuesFromString(Calc, sargs)
-        else
-        begin
-          for i := 0 to SL.Count - 1 do
-          begin
-            Calc.Expression := SL[i];
-            fVal := Calc.Value;
-            AddValue(ValueAsCardinal(fVal, Self.SubEntries[0].DataType));
-            Result := CalcDSType(Result, fVal);
-          end;
-        end;
-      end
-      else
-      begin
-        // initialize scalar types
-        // if there is only one value then used DefaultValue rather
-        // than AddValue
-        Calc.Expression := SL[0];
-        fVal := Calc.Value;
-        DefaultValue := ValueAsCardinal(fVal, DataType);
-        Result := CalcDSType(dsUByte, fVal);
-      end;
-    end;
-  finally
-    SL.Free;
-  end;
-end;
-
-function TDataspaceEntry.ElementSize(bPad : boolean) : Word;
-var
-  i, bpt, padBytes : integer;
-  DE : TDataspaceEntry;
-begin
-  Result := 0;
-  if DataType in [dsVoid..dsSLong, dsMutex, dsFloat] then
-  begin
-    Result := Word(BytesPerType[DataType]);
-  end
-  else
-  begin
-    // handle special cases (arrays of clusters and arrays of arrays)
-    if DataType = dsCluster then
-    begin
-      // calculate the padded size of a cluster
-      for i := 0 to SubEntries.Count - 1 do
-      begin
-        DE := SubEntries[i];
-        bpt := DE.ElementSize(bPad); // 2006-10-02 JCH recursively calculate the element size
-        // this fixes a problem with the size of arrays containing nested aggregate types
-        if bPad then
-        begin
-          padBytes := bpt - (Result mod bpt);
-          if padBytes < bpt then
-          begin
-            Result := Word(Result + padBytes);
-          end;
-        end;
-        Result := Word(Result + bpt);
-      end;
-      if bPad then
-        Result := RoundToBytesize(Result, DWORD_LEN);
-    end
-    else if DataType = dsArray then
-    begin
-      // TODO: check validity of array of array element size calculation
-//      Result := ArrayElementSize + 4;
-      Result := 4;
-    end
-    else
-      Result := 4;
-  end;
-end;
-
-function TDataspaceEntry.ArrayElementSize(bPad : boolean) : Word;
-begin
-  Result := 0;
-  if DataType <> dsArray then Exit;
-  if SubEntries[0].DataType = dsArray then
-    Result := 2
-  else
-    Result := SubEntries[0].ElementSize(bPad);
-end;
-
-procedure TDataspaceEntry.AssignTo(Dest: TPersistent);
-var
-  i : integer;
-begin
-  if Dest is TDataspaceEntry then
-  begin
-    TDataspaceEntry(Dest).Identifier   := Self.Identifier;
-    TDataspaceEntry(Dest).DataType     := Self.DataType;
-    TDataspaceEntry(Dest).DefaultValue := Self.DefaultValue;
-    TDataspaceEntry(Dest).ArrayMember  := Self.ArrayMember;
-    TDataspaceEntry(Dest).SubEntries   := Self.SubEntries;
-    TDataspaceEntry(Dest).fArrayValues.Clear;
-    for i := 0 to Self.ValueCount - 1 do
-      TDataspaceEntry(Dest).AddValue(Self.Values[i]);
-  end
-  else
-    inherited;
-end;
-
-constructor TDataspaceEntry.Create(ACollection: TCollection);
-begin
-  inherited;
-  fThreadNames := TStringList.Create;
-  TStringList(fThreadNames).Sorted := True;
-  TStringList(fThreadNames).Duplicates := dupIgnore;
-  fSubEntries := TDSBase.Create;
-  fSubEntries.Parent := Self;
-  fArrayValues := TObjectList.Create;
-  fArrayMember := False;
-  fRefCount    := 0;
-end;
-
-destructor TDataspaceEntry.Destroy;
-begin
-  FreeAndNil(fThreadNames);
-  FreeAndNil(fArrayValues);
-  FreeAndNil(fSubEntries);
-  inherited;
-end;
-
-function TDataspaceEntry.GetInitializationString: string;
-begin
-  if DataType = dsArray then
-    Result := GetArrayInit
-  else if DataType = dsCluster then
-    Result := GetClusterInit
-  else
-    Result := ValToStr(DataType, DefaultValue);
-end;
-
-function TDataspaceEntry.GetArrayInit: string;
-var
-  i : integer;
-  bIsString : boolean;
-  Sub : TDataspaceEntry;
-  x : Char;
-begin
-  Result := '';
-  if DataType <> dsArray then Exit; // no output if this isn't an array
-  if Self.ArrayMember then Exit;
-  Sub := SubEntries[0];
-  if Sub.DataType = dsCluster then
-  begin
-    // the values are each considered to be the values of cluster members
-    // so group the values using {} around N elements based on the
-    // cluster definition
-    for i := 0 to Sub.ValueCount - 1 do
-    begin
-      if (i mod Sub.SubEntries.Count) = 0 then
-      begin
-        if Length(Result) > 0 then
-          Delete(Result, Length(Result)-1, MaxInt);
-        if i > 0 then
-          Result := Result + '}, {'
-        else
-          Result := Result + '{';
-      end;
-      Result := Result + '0x' + IntToHex(Sub.Values[i], 1) + ', ';
-    end;
-    Delete(Result, Length(Result)-1, MaxInt);
-    if Length(Result) > 0 then
-      Result := Result + '}';
-  end
-  else if Sub.DataType = dsArray then
-  begin
-    Result := Sub.InitializationString; // ????
-    if Trim(Result) <> '' then
-      Result := '['+Result+']';
-  end
-  else
-  begin
-    // an array of scalars
-    bIsString := False;
-    if (ValueCount > 1) and
-       (Values[ValueCount - 1] = 0) and
-       (Sub.DataType in [dsUByte, dsSByte]) then
-    begin
-      // at least 2 items and the last one is zero and it is an array of byte
-      // Maybe this is a string???
-      bIsString := True;
-      for i := 0 to ValueCount - 2 do // skip the 0 at the end
-      begin
-        // check that all values are in the alphanumeric ASCII range
-        if not (Values[i] in [9, 10, 13, 32..126]) then
-//        if (Values[i] < 32) or (Values[i] > 126) then
-        begin
-          bIsString := False;
-          break;
-        end;
-      end;
-    end;
-    if bIsString then
-    begin
-      Result := '''';
-      for i := 0 to ValueCount - 2 do // skip null
-      begin
-        x := Chr(Values[i]);
-        case x of
-          '"', '''', '\' : Result := Result + '\' + x;
-          #9 : Result := Result + '\t';
-          #10 : Result := Result + '\n';
-          #13 : Result := Result + '\r';
-        else
-          Result := Result + x;
-        end;
-      end;
-      Result := Result + '''';
-    end
-    else
-    begin
-      for i := 0 to ValueCount - 1 do
-      begin
-        Result := Result + '0x' + IntToHex(Values[i], 1) + ', ';
-      end;
-      Delete(Result, Length(Result)-1, MaxInt);
-    end;
-  end;
-end;
-
-function TDataspaceEntry.GetClusterInit: string;
-var
-  i : integer;
-  Sub : TDataspaceEntry;
-begin
-  Result := '';
-  if DataType <> dsCluster then Exit; // no output if this isn't a cluster
-  for i := 0 to SubEntries.Count - 1 do
-  begin
-    Sub := SubEntries[i];
-    if Result = '' then
-      Result := Sub.InitializationString
-    else
-      Result := Result + ', ' + Sub.InitializationString;
-  end;
-  if Result <> '' then
-    Result := '{' + Result + '}';
-end;
-
-function TDataspaceEntry.GetDataTypeAsString: string;
-begin
-  if DataType = dsCluster then
-    Result := Identifier + '_def'
-  else if DataType = dsArray then
-  begin
-    if SubEntries[0].DataType = dsCluster then
-      Result := SubEntries[0].Identifier + '_def[]'
-    else if SubEntries[0].DataType = dsArray then
-      Result := SubEntries[0].DataTypeAsString + '[]'
-    else
-      Result := TypeToStr(SubEntries[0].DataType) + '[]';
-  end
-  else
-    Result := TypeToStr(DataType);
-end;
-
-function TDataspaceEntry.GetDSBase: TDSBase;
-begin
-  Result := TDSBase(Collection);
-end;
-
-function TDataspaceEntry.GetFullPathIdentifier: string;
-begin
-  // ask my collection what my full path identifier is
-  Result := DSBase.FullPathName(self);
-end;
-
-function TDataspaceEntry.GetValue(idx: integer): Cardinal;
-begin
-  Result := TCardinalObject(fArrayValues[idx]).Value;
-end;
-
-procedure TDataspaceEntry.LoadFromStream(aStream: TStream);
-var
-  X : DSTOCEntry;
-begin
-  X.TypeDesc := 0;
-  X.Flags := 0;
-  X.DataDesc := 0;
-  aStream.Read(X.TypeDesc, 1);
-  aStream.Read(X.Flags, 1);
-  ReadWord(aStream, X.DataDesc);
-  // copy DSTOCEntry values to collection item
-  X.TypeDesc := Byte(Ord(Self.DataType));
-end;
-
-procedure TDataspaceEntry.SaveToStream(aStream: TStream);
-var
-  X : DSTOCEntry;
-begin
-  // copy collection item values to DSTOCEntry
-  X.TypeDesc := Byte(Ord(DataType));
-  if DefaultValue <> 0 then
-    X.Flags := 0
-  else
-    X.Flags := 1;
-  case DataType of
-    dsCluster : X.DataDesc := Word(SubEntries.Count);
-  else
-    X.DataDesc := Address;
-  end;
-  aStream.Write(X.TypeDesc, 1);
-  aStream.Write(X.Flags, 1);
-  WriteWord(aStream, X.DataDesc);
-end;
-
-function Replicate(const str : string; const times : integer) : string;
-var
-  i : integer;
-begin
-  Result := '';
-  for i := 0 to times - 1 do
-    Result := Result + str;
-end;
-
-procedure TDataspaceEntry.SaveToStrings(aStrings: TStrings; bDefine, bInCluster : boolean);
-var
-  tmpStr : string;
-  i : integer;
-begin
-  // write self and subentries to strings
-  if bDefine then
-  begin
-    for i := 0 to SubEntries.Count - 1 do
-      SubEntries[i].SaveToStrings(aStrings, True);
-  end;
-  case DataType of
-    dsArray : begin
-      // arrays should have only one sub entry
-      if SubEntries.Count > 0 then
-      begin
-        // if the array type is a structure then define it first and then output
-        // the array declaration
-        tmpStr := Format('%s'#9'%s', [Identifier, DataTypeAsString]);
-        if not bInCluster then
-          tmpStr := tmpStr + Format(#9'%s', [InitializationString]);
-        if not bDefine or bInCluster then
-          aStrings.Add(tmpStr);
-      end;
-    end;
-    dsCluster : begin
-        // definitions are only needed for items which are clusters
-      if bDefine then
-      begin
-        if DataType = dsCluster then
-        begin
-          // only output a definition if this item is the first of its type
-          tmpStr := Format('%s_def'#9'%s', [Identifier, 'struct']);
-          aStrings.Add(tmpStr);
-          for i := 0 to SubEntries.Count - 1 do
-            SubEntries[i].SaveToStrings(aStrings, False, True);
-          tmpStr := Format('%s_def'#9'%s', [Identifier, 'ends']);
-          aStrings.Add(tmpStr);
-        end;
-      end
-      else
-      begin
-        tmpStr := Format('%s'#9'%s'#9'%s', [Identifier, DataTypeAsString, InitializationString]);
-        aStrings.Add(tmpStr);
-      end;
-    end;
-    dsVoid, dsMutex : begin
-      tmpStr := Format('%s'#9'%s', [Identifier, DataTypeAsString]);
-      if not bDefine or bInCluster then
-        aStrings.Add(tmpStr);
-    end;
-  else
-    // scalars & floats
-    tmpStr := Format('%s'#9'%s', [Identifier, DataTypeAsString]);
-    if not {bDefine}bInCluster then
-      tmpStr := tmpStr + Format(#9'%s', [InitializationString]);
-    if not bDefine or bInCluster then
-      aStrings.Add(tmpStr);
-  end;
-end;
-
-procedure TDataspaceEntry.SetArrayMember(const Value: boolean);
-var
-  i : integer;
-begin
-  fArrayMember := Value;
-  // iterate through all sub entries
-  for i := 0 to SubEntries.Count - 1 do
-    SubEntries[i].ArrayMember := Value;
-end;
-
-procedure TDataspaceEntry.SetIdentifier(const Value: string);
-begin
-  fIdentifier := Value;
-  DSBase.fEntryIndex.AddObject(Self.FullPathIdentifier, Self);
-  DSBase.CheckEntry(self);
-end;
-
-procedure TDataspaceEntry.SetSubEntries(const Value: TDSBase);
-begin
-  fSubEntries.Assign(Value);
-end;
-
-function TDataspaceEntry.ValueCount: Word;
-begin
-  Result := Word(fArrayValues.Count);
-end;
-
-procedure TDataspaceEntry.SaveToDynamicDefaults(aDS: TDSData;
-  const cnt, doffset: integer);
+procedure TDataspace.SaveToDynamicDefaults(DE: TDataspaceEntry;
+  aDS: TDSData; const cnt, doffset: integer);
 var
   elemsize : integer;
   X : TDataspaceEntry;
@@ -4210,7 +3134,7 @@ var
         j := bytesWritten;
       end;
       // are we at the right boundary for the next (current) struct field?
-      j := RoundToBytesize(j, bpt);
+      j := RoundToByteSize(j, bpt);
       if j > bytesWritten then
         for k := 0 to j - bytesWritten - 1 do
           aDS.DynamicDefaults[doffset+bytesWritten+k] := $FF;
@@ -4229,108 +3153,14 @@ var
   end;
 begin
   // this routine is for saving array of struct or array of arrays to dynamic data
-  if DataType <> dsArray then Exit;
-  if SubEntries.Count <> 1 then Exit;
-  elemsize := ArrayElementSize;
-  X := SubEntries[0];
+  if DE.DataType <> dsArray then Exit;
+  if DE.SubEntries.Count <> 1 then Exit;
+  elemsize := DE.ArrayElementSize;
+  X := DE.SubEntries[0];
   if X.DataType in [dsCluster, dsArray] then
   begin
     DoSaveToDynDefaults;
   end;
-end;
-
-function TDataspaceEntry.GetInUse: boolean;
-var
-  i : integer;
-begin
-  Result := fRefCount > 0;
-  if not Result and (DataType = dsCluster) then
-  begin
-    for i := 0 to SubEntries.Count - 1 do
-    begin
-      Result := SubEntries[i].InUse;
-      if Result then
-        Break;
-    end;
-  end;
-end;
-
-function TDataspaceEntry.GetRefCount: integer;
-begin
-  Result := fRefCount;
-end;
-
-procedure TDataspaceEntry.IncRefCount;
-var
-  i : integer;
-begin
-  inc(fRefCount);
-  // check sub entries if this entry is a cluster
-  if DataType = dsCluster then
-  begin
-    for i := 0 to SubEntries.Count - 1 do
-    begin
-      SubEntries[i].IncRefCount;
-    end;
-  end;
-end;
-
-procedure TDataspaceEntry.DecRefCount;
-var
-  i : integer;
-begin
-  dec(fRefCount);
-  if DataType = dsCluster then
-  begin
-    for i := 0 to SubEntries.Count - 1 do
-    begin
-      SubEntries[i].DecRefCount;
-    end;
-  end;
-end;
-
-function TDataspaceEntry.GetArrayBaseType: TDSType;
-begin
-  Result := DataType;
-  if IsArray then
-    Result := SubEntries[0].BaseDataType;
-end;
-
-function TDataspaceEntry.GetIsArray: boolean;
-begin
-  Result := DataType = dsArray;
-end;
-
-procedure TDataspaceEntry.AddThread(const aThreadName: string);
-begin
-  fThreadNames.Add(aThreadName);
-end;
-
-function TDataspaceEntry.ThreadCount: integer;
-begin
-  Result := fThreadNames.Count;
-end;
-
-function TDataspaceEntry.GetSizeOf: integer;
-var
-  i : integer;
-  sub : TDataspaceEntry;
-begin
-  if DataType = dsCluster then
-  begin
-    Result := 0;
-    for i := 0 to SubEntries.Count - 1 do
-    begin
-      sub := SubEntries[i];
-      Result := Result + sub.SizeOf;
-    end;
-  end
-  else if DataType = dsArray then
-  begin
-    Result := 2; // TODO: fix this to properly calculate the size of an array
-  end
-  else
-    Result := 1; // base size is 1
 end;
 
 { TRXEProgram }
@@ -4583,7 +3413,7 @@ end;
 function TRXEProgram.Parse(aStrings: TStrings) : string;
 var
   i, idx : integer;
-  P : TLangPreprocessor;
+  P : TNBCLangPreprocessor;
   S : TMemoryStream;
   tmpFile, tmpMsg : string;
 begin
@@ -4612,7 +3442,7 @@ begin
     fShiftCount       := 0;
     fMainStateLast    := masCodeSegment; // used only when we enter a block comment
     fMainStateCurrent := masCodeSegment; // default state
-    P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)), lnNBC, MaxPreprocessorDepth);
+    P := TNBCLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)), lnNBC, MaxPreprocessorDepth, Calc);
     try
       P.OnPreprocessorStatusChange := HandlePreprocStatusChange;
       P.Defines.AddDefines(Defines);
@@ -4900,75 +3730,6 @@ begin
     end;
   finally
     values.Free;
-  end;
-end;
-
-procedure InstantiateCluster(DD : TDataDefs; DE: TDataspaceEntry;
-  const clustername: string);
-var
-  idx : integer;
-  Def : TDataspaceEntry;
-begin
-  DE.TypeName := clustername;
-  // find an entry in the datadefs collection with clustername
-  idx := DD.IndexOfName(clustername);
-  if idx <> -1 then
-  begin
-    Def := DD[idx];
-    DE.SubEntries := Def.SubEntries;
-  end;
-end;
-
-procedure HandleVarDecl(DD : TDataDefs; NT : TMapList; bCaseSensitive : boolean;
-  DSE : TDataspaceEntry; albl, aopcode : string; sttFunc : TSTTFuncType);
-var
-  stype : string;
-  idx, p, len : integer;
-  Sub : TDataspaceEntry;
-begin
-  DSE.Identifier := albl;
-  stype := aopcode;
-  p := Pos('[]', stype);
-  len := Length(stype);
-  // calculate the named type index without [] if there are any
-  if p > 0 then
-  begin
-    Delete(aopcode, len-1, 2); // assumes that [] are last two characters
-    stype := aopcode;
-  end;
-  idx := NT.IndexOf(stype);
-  if idx <> -1 then
-    stype := NT.MapValue[idx];
-  if (p > 0) then
-  begin
-    // this is an array type
-    DSE.DataType := dsArray;
-    DSE.TypeName := stype;
-    Sub := DSE.SubEntries.Add;
-    Sub.Identifier := DSE.Identifier + '_type';
-    // could be an array of structs (yuck!)
-    if (idx <> -1) and (aopcode = stype) then
-    begin
-      // must be a struct type
-      Sub.DataType := dsCluster;
-      InstantiateCluster(DD, Sub, stype);
-    end
-    else
-    begin
-      HandleVarDecl(DD, NT, bCaseSensitive, Sub, Sub.Identifier, aopcode, sttFunc);
-    end;
-    Sub.DefaultValue := 0;
-    Sub.ArrayMember := True;
-  end
-  else if (idx <> -1) and (aopcode = stype) then
-  begin
-    DSE.DataType := dsCluster;
-    InstantiateCluster(DD, DSE, stype);
-  end
-  else
-  begin
-    // a simple type
-    DSE.DataType := sttFunc(stype, bCaseSensitive);
   end;
 end;
 
@@ -5979,40 +4740,8 @@ begin
         arg.Value := '-1'; // set to a valid numeric string
       end
       else
-        arg.Value := NBCFloatToStr(Calc.Value);
+        arg.Value := CCFloatToStr(Calc.Value);
     end;
-  end;
-end;
-
-function GetArgDataType(val : Extended): TDSType;
-var
-  iVal : Int64;
-begin
-  if ValueOutside64BitRange(val) then
-  begin
-     Result := dsFloat;
-  end
-  else
-  begin
-    iVal := Trunc(val);
-    if iVal = val then
-    begin
-      val := iVal;
-      // see if this works.  if not then figure out the
-      // type based on the size of the value
-      if (val >= Low(ShortInt)) and (val <= High(ShortInt)) then
-        Result := dsSByte
-      else if (val >= Low(SmallInt)) and (val <= High(SmallInt)) then
-        Result := dsSWord
-      else if (val >= Low(Integer)) and (val <= High(Integer)) then
-        Result := dsSLong
-      else if (val > High(Cardinal)) or (val < Low(Integer)) then
-        Result := dsFloat
-      else
-        Result := dsULong;
-    end
-    else
-      Result := dsFloat;
   end;
 end;
 
@@ -7323,7 +6052,7 @@ begin
   end
   else
   begin
-    Arg.Value := left + NBCFloatToStr(Calc.Value) + right;
+    Arg.Value := left + CCFloatToStr(Calc.Value) + right;
   end;
 end;
 
@@ -7386,7 +6115,7 @@ begin
     begin
       s1 := AL.Args[1].Value;
       s2 := de.TypeName;
-      s3 := de.GetDataTypeAsString;
+      s3 := de.DataTypeAsString;
       bCheckOkay := (s1 = s2) or (s1 = s3);
       if not bCheckOkay then
       begin
@@ -8893,7 +7622,7 @@ begin
     datatype := GetArgDataType(val);
 //  iVal := Trunc(val*1000000); // scale by 6 decimal places
 //  Result := GenerateTOCName(Byte(Ord(datatype)), Int64(abs(iVal)), '%1:d');
-  Result := Replace(NBCFloatToStr(abs(val)), '.', 'P');
+  Result := Replace(CCFloatToStr(abs(val)), '.', 'P');
   if datatype = dsFloat then
     Result := 'f' + Result; // distinguish between float constants and integer constants
   if val < 0 then
@@ -8964,7 +7693,7 @@ begin
   if bIsFloat then
   begin
     arg1 := Replace(Replace(arg1, 'f', ''), 'P', '.');
-    val := NBCStrToFloatDef(arg1, 0);
+    val := CCStrToFloatDef(arg1, 0);
   end
   else
     val := StrToIntDef(arg1, 0);
@@ -10148,25 +8877,11 @@ begin
   end;
 end;
 
-{ TCardinalObject }
-
-constructor TCardinalObject.Create(aValue: Cardinal);
-begin
-  fValue := aValue;
-end;
-
 { TIntegerObject }
 
 constructor TIntegerObject.Create(aValue: Integer);
 begin
   fValue := aValue;
-end;
-
-{ EDuplicateDataspaceEntry }
-
-constructor EDuplicateDataspaceEntry.Create(DE : TDataspaceEntry);
-begin
-  inherited Create(Format(sDuplicateDSEntry, [DE.FullPathIdentifier]));
 end;
 
 { TPreprocLevel }

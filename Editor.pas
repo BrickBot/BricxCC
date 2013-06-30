@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is Mark Overmars.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -247,7 +247,7 @@ uses
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
   uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics, uSPCHTMLTopics,
-  uPSComponent, uPSDebugger, uROPS, uCompTokens;
+  uPSComponent, uPSDebugger, uROPS, uCompTokens, uCompCommon;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -619,7 +619,7 @@ begin
       end;
       break;
     end;
-    if UsesNBCCompiler(Highlighter) then
+    if UseNBCCompiler(Highlighter) then
       break;
   end;
   bThisFile := True;
@@ -787,7 +787,11 @@ begin
     else if LocalFirmwareType = ftPBForth then
       Self.Highlighter := MainForm.SynForthSyn
     else if LocalFirmwareType = ftLeJOS then
-      Self.Highlighter := MainForm.SynJavaSyn;
+      Self.Highlighter := MainForm.SynJavaSyn
+    else if LocalFirmwareType = ftLinux then
+    begin
+      Self.Highlighter := MainForm.SynCppSyn;
+    end;
   end
   else
     Self.Highlighter := GetHighlighterForFile(Filename);

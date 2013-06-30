@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -23,7 +23,7 @@ unit uProgram;
 interface
 
 uses
-  Classes, uNXTConstants;
+  Classes, uNXTConstants, uCompCommon;
 
 type
   TProgClumpData = class;

@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -65,9 +65,9 @@ begin
   try
     wd := ExcludeTrailingPathDelimiter(GetCurrentDir);
     fname := wd + '\' + M_NAME;
-    GenerateMakefile(fname, False, i);
+    GenerateRCXMakefile(fname, False, i);
     commandstr := '/bin/make set_addr -f"' + fname + '" -s';
-    commandstr := ProcessMakeCommand(fname, '', commandstr);
+    commandstr := ProcessRCXMakeCommand(fname, '', commandstr);
     {Execute the command, and wait}
     BrickComm.Close;
     try

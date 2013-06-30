@@ -1,0 +1,25 @@
+PROGRAM=%PROGRAM%
+DOBJECTS=%DOBJECTS%
+TOOLPREFIX=%TOOLPREFIX%
+
+all:: $(DOBJECTS) $(PROGRAM)
+
+clean::
+	rm -f *.o *.ppu *.rst
+
+realclean:: clean
+	rm -f $(PROGRAM)
+
+FLAGS=%FLAGS%
+
+CC=$(TOOLPREFIX)%CCNAME%
+
+
+# how to link executable
+%PROGRAM%: %MAINSRC%
+	$(CC) $(FLAGS) $< -o$@
+
+# how to compile source
+%.o: %.%EXT%
+	$(CC) $(FLAGS) $< -o$@
+

@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -23,7 +23,7 @@ uses
   BricxccSynEdit;
 
 type
-  TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftOther);
+  TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftLinux, ftOther);
 
 const
   SU_SHOWFORM = 0;
@@ -51,7 +51,7 @@ function FileCanBeCompiled: Boolean;
 function FileCanBeProcessed: Boolean;
 function FileIsCPPOrPascalOrJava(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsMindScriptOrLASM(AEH : TSynCustomHighlighter = nil): Boolean;
-function UsesNBCCompiler(AEH : TSynCustomHighlighter = nil): Boolean;
+function UseNBCCompiler(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsNBCOrNXC(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsPascal(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsCPP(AEH : TSynCustomHighlighter = nil): Boolean;
@@ -234,7 +234,7 @@ begin
   Result := FileIsMindScript(AEH) or FileIsLASM(AEH);
 end;
 
-function UsesNBCCompiler(AEH : TSynCustomHighlighter): Boolean;
+function UseNBCCompiler(AEH : TSynCustomHighlighter): Boolean;
 begin
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
@@ -403,7 +403,7 @@ begin
     else begin
       if BrickComm.BrickAlive then
         Break
-      else if MessageDlg(S_CANNOT_FIND_RCX, mtWarning, [mbOK, mbCancel], 0) = mrCancel then
+      else if MessageDlg(S_CANNOT_FIND_BRICK, mtWarning, [mbOK, mbCancel], 0) = mrCancel then
         Exit;
     end;
     if not BrickComm.UseBluetooth then

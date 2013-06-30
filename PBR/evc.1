@@ -1,0 +1,116 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH EVC 1 "June  17, 2013"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+evc \- Compiler for LEGO Mindstorms EV3
+.SH SYNOPSIS
+.B nbc
+.RI [ options ] " file " [options]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B nbc
+command.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+\fBevc\fP is a program that compiles EV3 C (EVC) files 
+or EV3 assembler (EVA) files into programs that can run on the standard
+LEGO MINDSTORMS EV3 firmware or the enhanced EVC/EVA firmware. The evc 
+compiler can either save the compiler output to a file or upload
+it to a LEGO Mindstorms EV3 for execution.  Since evc can compile different 
+programming languages it
+uses the file extension to determine the type of code it is compiling.
+EVC programs should use the .evc file extension and EVA programs should 
+use the .eva file extension.
+.SH OPTIONS
+.TP
+.B \-T=<target>
+target can be EV3 (default)
+.TP
+.B \-S=<portname>
+specify port name (COMn or usb), resource name, or alias
+.TP
+.B \-d
+download program
+.TP
+.B \-r
+download and run program
+.TP
+.B \-b
+treat input file as a binary file (don't compile it)
+.TP
+.B \-q
+quiet mode
+.TP
+.B \-n
+prevent the system files from being included
+.TP
+.B \-D=<sym>[=<value>]
+define macro <sym>
+.TP
+.B \-x
+decompile program
+.TP
+.B \-Z[1|2|3|4|5|6]
+turn on compiler optimizations
+.TP
+.B \-ER=n
+set maximum errors before aborting (0 == no limit)
+.TP
+.B \-PD=n
+set max preprocessor recursion depth (default == 10)
+.TP
+.B \-O=<filename>
+specify output file
+.TP
+.B \-E=<filename>
+ write compiler errors to <filename>
+.TP
+.B \-I=<path>
+search <path> for include files
+.TP
+.B \-asm=<filename>
+save intermediate (assembler) code to <filename>
+.TP
+.B \-L=<filename>
+generate code listing to <filename>
+.TP
+.B \-Y=<filename>
+generate symbol table to <filename>
+.TP
+.B \-w[-|+]
+warnings off or on [default is on]
+.TP
+.B \-sm[-|+]
+compiler status messages off or on [default is on]
+.TP
+.B \-EF
+target the enhanced firmware
+.TP
+.B \-api[=0|1|2|3]
+dump the NBC/NXC API to stdout
+.TP
+.B \-v=n
+set the targeted firmware version
+.TP
+.B \-help
+display command line options
+.SH AUTHOR
+evc was written by John Hansen.
+.PP
+This manual page was written by John Hansen.

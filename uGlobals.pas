@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -56,6 +56,7 @@ const
   K_SWAN  = 'Swan';
   K_NXT   = 'NXT';
   K_SPRO  = 'SuperPro';
+  K_EV3   = 'EV3';
 
 const
   rtRCX         = 0;
@@ -66,7 +67,7 @@ const
   rtSwan        = 5;
   rtNXT         = 6;
   rtSPro        = 7;
-  rtEv3         = 8;
+  rtEV3         = 8;
 
 const
   SU_RCX         = rtRCX;
@@ -77,7 +78,7 @@ const
   SU_SWAN        = rtSwan;
   SU_NXT         = rtNXT;
   SU_SPRO        = rtSPro;
-  SU_EV3         = rtEv3;
+  SU_EV3         = rtEV3;
 
 var
   UserDataLocalPath : string;
@@ -97,7 +98,7 @@ function IsRCX : boolean;
 function IsScout : boolean;
 function IsSpybotic : boolean;
 function IsSuperPro : boolean;
-function IsEv3 : boolean;
+function IsEV3 : boolean;
 
 {$IFNDEF FPC}
 function GetSpecialFolderPath(folder : integer) : string;
@@ -147,7 +148,7 @@ begin
   result := (LocalBrickType = SU_SPRO);
 end;
 
-function IsEv3 : boolean;
+function IsEV3 : boolean;
 begin
   result := (LocalBrickType = SU_EV3);
 end;

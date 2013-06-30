@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -19,25 +19,14 @@ unit uNBCCommon;
 interface
 
 uses
-  Parser10, uNXTConstants, Classes, SysUtils;
+  Parser10, uNXTConstants, uCompCommon, Classes, SysUtils;
 
 type
-  TCompilerStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string; const bDone : boolean) of object;
-
-  TNBCExpParser = class(TExpParser)
-  private
-    fStandardDefs: boolean;
-    fExtraDefs: boolean;
-    fFirmwareVersion: word;
-    procedure SetStandardDefs(const aValue: boolean);
-    procedure SetExtraDefs(const aValue: boolean);
-    procedure SetFirmwareVersion(const aValue: word);
+  TNBCExpParser = class(TCCExpParser)
+  protected
+    procedure InitializeCalc; override;
   public
     constructor Create(AOwner: TComponent); override;
-    procedure InitializeCalc;
-    property StandardDefines : boolean read fStandardDefs write SetStandardDefs;
-    property ExtraDefines : boolean read fExtraDefs write SetExtraDefs;
-    property FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
   end;
 
   TStatementType = (stUnsigned, stSigned, stFloat);
@@ -233,39 +222,6 @@ type
 const
   LABEL_PREFIX = '__ASM_Label_';
 
-const
-  STR_NA    = 'NA';
-  STR_TRUE  = 'TRUE';
-  STR_FALSE = 'FALSE';
-  STR_OUT_A = 'OUT_A';
-  STR_OUT_B = 'OUT_B';
-  STR_OUT_C = 'OUT_C';
-  OUT_A = $00;
-  OUT_B = $01;
-  OUT_C = $02;
-  OUT_AB = $03;
-  OUT_AC = $04;
-  OUT_BC = $05;
-  OUT_ABC = $06;
-  STR_IN_1 = 'IN_1';
-  STR_IN_2 = 'IN_2';
-  STR_IN_3 = 'IN_3';
-  STR_IN_4 = 'IN_4';
-  IN_1 = $00;
-  IN_2 = $01;
-  IN_3 = $02;
-  IN_4 = $03;
-  STR_IO_BASE    = 'IO_BASE';
-  STR_MOD_INPUT  = 'MOD_INPUT';
-  STR_MOD_OUTPUT = 'MOD_OUTPUT';
-  STR_IO_IN_FPP  = 'IO_IN_FPP';
-  STR_IO_OUT_FPP = 'IO_OUT_FPP';
-  IO_BASE    = $c000;
-  MOD_INPUT  = $0000;
-  MOD_OUTPUT = $0200;
-  IO_IN_FPP  = 6;
-  IO_OUT_FPP = 15;
-
 type
   CCEncoding = record
     Encoding : Byte;
@@ -415,6 +371,7 @@ const
   );
 
 const
+  IO_BASE = $c000;
   IOMapFieldIDsCount = (InputFieldIDsCount*NumInputs)+((OutputFieldIDsCount-3)*NumOutputs);
   IOMapFieldIDs : array[0..IOMapFieldIDsCount-1] of IDRec =
   (
@@ -1206,17 +1163,9 @@ function StripDecoration(const name : string) : string;
 function PrettyNameStrip(const name : string) : string;
 function ApplyGlobalDecoration(const val: string): string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
-function Replace(const str : string; const src, rep : string) : string;
-function NBCStrToFloat(const AValue: string): Double;
-function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
-//function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
-function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
-function NBCFloatToStr(const AValue: Double): string;
-function NBCStrToInt64Def(const AValue: string; const aDef : Int64): Int64;
 function ValueToDataType(const value : integer) : char;
 function DataTypeToTypeName(const dt : char) : string;
 function BoolToString(aValue : boolean) : string;
-function RootOf(const name: string): string;
 function AlreadyDecorated(n : string; aThreadNames : TStrings) : boolean;
 
 const
@@ -1252,9 +1201,9 @@ const
 const
   DECOR_SEP = '_7qG2_';
 
+const
+  STR_NA = 'NA';
 
-var
-  MaxStackDepth : integer;
 
 implementation
 
@@ -1268,6 +1217,17 @@ uses
   uCommonUtils,
   uCompTokens;
 
+
+const
+  STR_IO_BASE    = 'IO_BASE';
+  STR_MOD_INPUT  = 'MOD_INPUT';
+  STR_MOD_OUTPUT = 'MOD_OUTPUT';
+  STR_IO_IN_FPP  = 'IO_IN_FPP';
+  STR_IO_OUT_FPP = 'IO_OUT_FPP';
+  MOD_INPUT  = $0000;
+  MOD_OUTPUT = $0200;
+  IO_IN_FPP  = 6;
+  IO_OUT_FPP = 15;
 
 function AlreadyDecorated(n : string; aThreadNames : TStrings) : boolean;
 var
@@ -1298,17 +1258,6 @@ begin
                 (tmp = 'unsigned_stack') or (tmp = 'float_stack');
     end;
   end;
-end;
-
-function RootOf(const name: string): string;
-var
-  p : integer;
-begin
-  p := Pos('.', name);
-  if p > 0 then
-    Result := Copy(name, 1, p-1)
-  else
-    Result := name;
 end;
 
 function IsAlpha(c: char): boolean;
@@ -1449,80 +1398,6 @@ begin
   end;
 end;
 
-function Replace(const str : string; const src, rep : string) : string;
-begin
-{$IFDEF FAST_MM}
-  Result := FastReplace(str, src, rep);
-{$ELSE}
-  Result := StringReplace(str, src, rep, [rfReplaceAll]);
-{$ENDIF}
-end;
-
-procedure NBCFormatSettings(var aFS : TFormatSettings; const aDS : Char);
-begin
-  aFS.DecimalSeparator  := aDS;
-  aFS.ThousandSeparator := #0;
-  aFS.CurrencyFormat    := 0;
-  aFS.NegCurrFormat     := 0;
-  aFS.CurrencyDecimals  := 2;
-  aFS.CurrencyString    := '$';
-end;
-
-function NBCFloatToStr(const AValue: Double): string;
-begin
-  Result := StripTrailingZeros(NBCFormat('%.10f', [AValue]));
-end;
-
-function NBCStrToFloat(const AValue: string): Double;
-var
-  FS : TFormatSettings;
-begin
-  FS.DecimalSeparator := '.';
-  NBCFormatSettings(FS, '.');
-  Result := StrToFloat(AValue, FS);
-end;
-
-function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
-var
-  FS : TFormatSettings;
-begin
-  FS.DecimalSeparator := '.';
-  NBCFormatSettings(FS, '.');
-  Result := StrToFloatDef(AValue, aDef, FS);
-end;
-
-(*
-function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
-var
-  FS : TFormatSettings;
-  val : Extended;
-begin
-  FS.DecimalSeparator := '.';
-  NBCFormatSettings(FS, '.');
-  Result := TextToFloat(Buffer, val, ValueType, FS);
-  Extended(Value) := 0;
-end;
-*)
-
-function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
-var
-  FS : TFormatSettings;
-begin
-  FS.DecimalSeparator := '.';
-  NBCFormatSettings(FS, '.');
-  Result := Format(FmtStr, theArgs, FS);
-end;
-
-function NBCStrToInt64Def(const AValue: string; const aDef : Int64): Int64;
-begin
-  if Pos('0b', AValue) = 1 then
-  begin
-    Result := BinToIntDef(Copy(AValue, 3, MaxInt), Integer(aDef));
-  end
-  else
-    Result := StrToInt64Def(AValue, aDef);
-end;
-
 function ValueToDataType(const value : integer) : char;
 begin
   if value < 0 then begin
@@ -1572,19 +1447,17 @@ end;
 constructor TNBCExpParser.Create(AOwner: TComponent);
 begin
   inherited;
-  fFirmwareVersion := MAX_FW_VER1X;
+  FirmwareVersion := MAX_FW_VER1X;
 end;
 
 procedure TNBCExpParser.InitializeCalc;
 var
   i : integer;
 begin
-  ClearVariables;
+  inherited;
   if StandardDefines then
   begin
     SetVariable(STR_NA, NOT_AN_ELEMENT);
-    SetVariable(STR_FALSE, Ord(false));
-    SetVariable(STR_TRUE, Ord(true));
     // add comparison codes
     for i := Low(CCEncodings) to High(CCEncodings) do
       SetVariable(CCEncodings[i].Mode, CCEncodings[i].Encoding);
@@ -1618,13 +1491,6 @@ begin
   end;
   if ExtraDefines then
   begin
-    SetVariable(STR_OUT_A, OUT_A);
-    SetVariable(STR_OUT_B, OUT_B);
-    SetVariable(STR_OUT_C, OUT_C);
-    SetVariable(STR_IN_1, IN_1);
-    SetVariable(STR_IN_2, IN_2);
-    SetVariable(STR_IN_3, IN_3);
-    SetVariable(STR_IN_4, IN_4);
     SetVariable(STR_IO_BASE, IO_BASE);
     SetVariable(STR_MOD_OUTPUT, MOD_OUTPUT);
     SetVariable(STR_MOD_INPUT, MOD_INPUT);
@@ -1659,29 +1525,6 @@ begin
     for i := Low(IOMapMiscRecords) to High(IOMapMiscRecords) do
       SetVariable(IOMapMiscRecords[i].Name, IOMapMiscRecords[i].ID);
 }
-  end;
-end;
-
-procedure TNBCExpParser.SetExtraDefs(const aValue: boolean);
-begin
-  if fExtraDefs <> aValue then
-  begin
-    fExtraDefs := aValue;
-    InitializeCalc;
-  end;
-end;
-
-procedure TNBCExpParser.SetFirmwareVersion(const aValue: word);
-begin
-  fFirmwareVersion := aValue;
-end;
-
-procedure TNBCExpParser.SetStandardDefs(const aValue: boolean);
-begin
-  if fStandardDefs <> aValue then
-  begin
-    fStandardDefs := aValue;
-    InitializeCalc;
   end;
 end;
 

@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -267,7 +267,7 @@ uses
 {$ELSE}
   FileUtil,
 {$ENDIF}
-  brick_common, uGuiUtils,
+  brick_common, uGuiUtils, uCompCommon,
   uSpirit, uNXTExplorerSettings, uLocalizedStrings,
   uTextViewer;
 

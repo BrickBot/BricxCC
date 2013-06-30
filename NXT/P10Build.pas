@@ -9,7 +9,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -63,7 +63,7 @@ procedure ParseFunction( FunctionString: string; { the unparsed string }
 implementation
 
 uses
-  uNBCCommon, uCommonUtils;
+  uCompCommon, uCommonUtils;
 
 
 resourcestring
@@ -269,8 +269,8 @@ procedure ParseFunction( FunctionString: string;
                   try
                 {$ENDIF}
                   try
-                    FloatNumber := NBCStrToFloatDef(s, 0);
-                    if FloatNumber <> NBCStrToFloatDef(s, -1) then
+                    FloatNumber := CCStrToFloatDef(s, 0);
+                    if FloatNumber <> CCStrToFloatDef(s, -1) then
                     begin
                       // if this failed try an integer variable (handles hex notation)
                       if Pos('0x', s) = 1 then

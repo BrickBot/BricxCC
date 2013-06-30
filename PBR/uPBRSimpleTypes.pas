@@ -39,7 +39,8 @@ type
 		atUiWriteCommand,
 		atUiReadCommand,
 		atUiDrawCommand,
-		atSoundCommand
+		atSoundCommand,
+		atFileNameCommand
 	);
 
   TArraySubCommand = (
@@ -392,7 +393,9 @@ type
 		pbopJRGTEQ32,
 		pbopJRGTEQF,
 		pbopINFO,
-		pbopSTRING,
+//		pbopInfoGetMinutes = 31750,
+//		pbopInfoSetMinutes,
+		pbopSTRING, // 125
 //		pbopStringGetSize = 32001,
 //		pbopStringConcat,
 //		pbopStringCompare,
@@ -720,21 +723,23 @@ type
 
 	TSystemCommand = (
 		sycIllegalCommand, // 0
-		sycFileDownloadHeader = 146,
-		sycFileDownloadBlock, // 147
-		sycBeginUpload,      // 148
-		sycContinueUpload,   // 149
-		sycBeginGetFile,     // 150
-		sycContinueGetFile,  // 151
-		sycCloseHandle,      // 152
-		sycListFiles,        // 153
-		sycContinueListFiles,// 154
-		sycCreateDir,        // 155
-		sycDeleteFile,       // 156
-		sycListOpenHandles,  // 157
-		sycWriteMailbox,     // 158
-		sycBluetoothPin,     // 159
-    sycEnterFirmwareUpdate // 160
+		sycFileDownloadHeader = 146, // ($92) begin download
+		sycFileDownloadBlock, // 147 // ($93) continue download
+		sycBeginUpload,      // 148 ($94)
+		sycContinueUpload,   // 149 ($95)
+		sycBeginGetFile,     // 150 ($96)
+		sycContinueGetFile,  // 151 ($97)
+		sycCloseHandle,      // 152 ($98)
+		sycListFiles,        // 153 ($99)
+		sycContinueListFiles,// 154 ($9a)
+		sycCreateDir,        // 155 ($9b)
+		sycDeleteFile,       // 156 ($9c)
+		sycListOpenHandles,  // 157 ($9d)
+		sycWriteMailbox,     // 158 ($9e)
+		sycBluetoothPin,     // 159 ($9f)
+    sycEnterFirmwareUpdate, // 160 (a0)
+    sycSetBundleID, // 160 ($a1)
+    sycSetBundleSeedID // 161 ($a2)
 	);
 
 	TUiDrawCommand = (

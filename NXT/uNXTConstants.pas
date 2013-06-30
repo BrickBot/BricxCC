@@ -10,17 +10,13 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
 unit uNXTConstants;
 
 interface
-
-type
-  TDSType = (dsVoid, dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong,
-    dsArray, dsCluster, dsMutex, dsFloat);
 
 const
   MIN_FW_VER1X = 101; // 1.01
