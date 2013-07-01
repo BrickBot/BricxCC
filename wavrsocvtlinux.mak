@@ -18,7 +18,7 @@ PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fusamplerate
 #PPC=$(PTOOLPREFIX)ppc386.exe
 
 # Linux
-PTOOLPREFIX=/usr/bin/
+#PTOOLPREFIX=/usr/bin/
 PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable

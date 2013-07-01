@@ -526,7 +526,7 @@ uses
   uGlobals, uHighlighterProcs, brick_common, FantomSpirit,
   dlgSearchText, dlgReplaceText, dlgConfirmReplace,// DTestPrintPreview,
   uEditorUtils, uMiscDefines, rcx_constants, uLocalizedStrings,
-  uParseCommon, uNXTExplorer, uCompTokens
+  uParseCommon, uNXTExplorer, uCompTokens, uCompCommon
   ;
 
 
@@ -2270,7 +2270,7 @@ var
   SaveCursor : TCursor;
 begin
   if ShowCompilerStatus and UseInternalNBC and
-     UsesNBCCompiler then
+     UseNBCCompiler then
     frmCompStatus.Show;
   Application.ProcessMessages;
 
@@ -2282,7 +2282,7 @@ begin
     if AutoSaveFiles then
       SaveModifiedFiles;
 
-    Result := CompileIt(DoDisplayErrors, TheEditor.Lines, TheErrors,
+    Result := CompileIt(DoDisplayErrors, TheEditor.Lines, TheErrors.Items,
       Filename, Caption, bDown, bRun, HandleOnCompilerStatusChange,
       HandleOpenStateChanged);
   finally
@@ -2919,7 +2919,7 @@ begin
        break;
      end;
     end;
-    if UsesNBCCompiler then
+    if UseNBCCompiler then
       break;
   end;
   bThisFile := True;

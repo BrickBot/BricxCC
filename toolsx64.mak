@@ -38,13 +38,13 @@ realclean:: clean
 midibatch.exe:: MidiBatch.dpr midibatch_preproc.inc uMidiBatch.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 
-nextexplorer.exe:: NeXTExplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs
+nextexplorer.exe:: NeXTExplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 
 nextscreen.exe:: NeXTScreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 
-nxtdiagnose.exe:: nxtdiagnose.dpr nxtdiagnose_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs
+nxtdiagnose.exe:: nxtdiagnose.dpr nxtdiagnose_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs uportsedit.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 
 nxtdirect.exe:: nxtdirect.dpr nxtdirect_preproc.inc Controller.lrs uPortPrompt.lrs
