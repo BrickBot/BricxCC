@@ -11,14 +11,14 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) 
 
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools -dCAN_DOWNLOAD -dNXT_ONLY
 
 # Win32
 #PTOOLPREFIX=C:/lazarus/pp/bin/i386-win32/
 #PPC=$(PTOOLPREFIX)ppc386.exe
 
 # Linux
-PTOOLPREFIX=/usr/bin/
+#PTOOLPREFIX=/usr/bin/
 PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable

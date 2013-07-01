@@ -37,7 +37,7 @@ midibatch:: midibatch.dpr midibatch_preproc.inc uMidiBatch.lrs
 	mkdir -p $(ARCH)
 	mv $@ ./$(ARCH)
 
-nextexplorer:: nextexplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs
+nextexplorer:: nextexplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir -p $(ARCH)
@@ -49,7 +49,7 @@ nextscreen:: nextscreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uP
 	mkdir -p $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtdiagnose:: nxtdiagnose.dpr nxtdiagnose_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs
+nxtdiagnose:: nxtdiagnose.dpr nxtdiagnose_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs uportsedit.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir -p $(ARCH)

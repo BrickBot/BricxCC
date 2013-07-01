@@ -39,6 +39,7 @@ uses
   uSpirit in 'bricktools\uSpirit.pas',
   FantomSpirit in 'bricktools\FantomSpirit.pas',
   uCommonUtils in 'uCommonUtils.pas',
+  uCompCommon in 'uCompCommon.pas',
   uUtilities in 'uUtilities.pas',
   uCmdLineUtils in 'uCmdLineUtils.pas';
 

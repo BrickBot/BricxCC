@@ -12,7 +12,7 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) 
 
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools -FuNXT -dNXT_ONLY
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools -FuNXT -dCAN_DOWNLOAD -dNXT_ONLY
 
 # Linux
 #PTOOLPREFIX=/usr/bin/
