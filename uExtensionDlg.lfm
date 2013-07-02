@@ -187,4 +187,22 @@ object frmExtensionDlg: TfrmExtensionDlg
     Caption = '.rops (Pascal Script)'
     TabOrder = 17
   end
+  object chkSPC: TCheckBox
+    Left = 8
+    Height = 24
+    Top = 300
+    Width = 170
+    HelpContext = 3114
+    Caption = '.spc (SuperPro C)'
+    TabOrder = 18
+  end
+  object chkSPASM: TCheckBox
+    Left = 8
+    Height = 24
+    Top = 320
+    Width = 170
+    HelpContext = 3114
+    Caption = '.spasm (SuperPro ASM)'
+    TabOrder = 19
+  end
 end

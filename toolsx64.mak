@@ -41,7 +41,7 @@ midibatch.exe:: MidiBatch.dpr midibatch_preproc.inc uMidiBatch.lrs
 nextexplorer.exe:: NeXTExplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 
-nextscreen.exe:: NeXTScreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
+nextscreen.exe:: NeXTScreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs uNXTImagePrefs.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 
 nxtdiagnose.exe:: nxtdiagnose.dpr nxtdiagnose_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs uportsedit.lrs
