@@ -43,7 +43,7 @@ nextexplorer:: NeXTExplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs uPortP
 	mkdir -p $(ARCH)
 	mv $@ ./$(ARCH)
 
-nextscreen:: NeXTScreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
+nextscreen:: NeXTScreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs uNXTImagePrefs.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir -p $(ARCH)
