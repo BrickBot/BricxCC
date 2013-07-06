@@ -1703,10 +1703,20 @@ end;
 
 procedure TEditorForm.OpenFileAtCursor;
 var
-  fName : string;
+  fName, ext : string;
   bFound : boolean;
 begin
   fName := TheEditor.TextWithinDelimiters(['"', ' ']);
+  // if the filename ends with comma or semicolon remove it
+  if fName[Length(fName)] in [',', ';'] then
+    System.Delete(fName, Length(fName), 1);
+  // does the file have any extension?
+  if ExtractFileExt(fName) = '' then
+  begin
+    ext := LowerCase(ExtractFileExt(Filename));
+    if (ext = '.dpr') or (ext = '.pas') then
+      fName := fName + '.pas';
+  end;
   if FileExists(fName) then
     MainForm.OpenFile(fName)
   else
