@@ -67,3 +67,5 @@ IMG_REFRESH BITMAP img\img_refresh.bmp
 IMG_PLAY BITMAP img\img_play.bmp
 IMG_MUTE BITMAP img\img_mute.bmp
 IMG_DEFRAG BITMAP img\img_decompile.bmp
+IMG_GREPSEARCH BITMAP img\img_grepsearch.bmp
+IMG_GREPRESULTS BITMAP img\img_grepresults.bmp

@@ -190,6 +190,8 @@ const
     #13#10 +
     'all:: realclean $(DOBJECTS) $(PROGRAM)' + #13#10 +
     #13#10 +
+    'download:: all' + #13#10 +
+    #13#10 +
     'clean::' + #13#10 +
     #9'rm -f *.o *.ppu *.rst' + #13#10 +
     #13#10 +
@@ -208,8 +210,10 @@ const
     '%.o: %%EXT%' + #13#10 +
     #9'$(CC) $(FLAGS) %LINKONLY% $< -o$@' + #13#10 +
     #13#10;
-  K_EV3_FPC_FLAGS = '-Tlinux -Parm -XX -S2cdghi -dRELEASE -vewnhi -l -Fu. ';
+  K_EV3_FPC_FLAGS = '-Tlinux -Parm -XX -Xs -dRELEASE -Fu. ';
   K_EV3_GCC_PREXIX = 'arm-none-linux-gnueabi-';
+
+//    #9'pscp -scp -pw "%PW%" %PROGRAM% root@%IPADDR%:%FOLDER%' + #13#10 +
 
 var
   CurrentProgramSlot : Integer = 0;
@@ -239,7 +243,6 @@ var
   IgnoreSysFiles : Boolean;
   IncludeSrcInList : Boolean;
   SaveBinaryOutput : Boolean;
-  ProgramDir : string;
   DefaultDir : string;
   ShowRecent:boolean;        // Whether to show recent files
 //  ShowRecentChanged:boolean; // Whether ShowRecent was changed
@@ -249,6 +252,10 @@ var
   EV3FPCPrefix : string = '';
   EV3GCCFlags : string = '';
   EV3GCCPrefix : string = K_EV3_GCC_PREXIX;
+  EV3RootPassword : string = '';
+  EV3IPAddress : string = '192.168.2.128';
+  EV3Folder : string = '/media/card';
+  EV3UseSharedLib : boolean = false;
 
 var
   NQCExePath : string;

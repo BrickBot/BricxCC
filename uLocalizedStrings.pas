@@ -654,6 +654,7 @@ resourcestring
   UsageAPI       = '   -api: dump the NBC/NXC API to stdout';
   UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 128, NXT 1.1 == 105)';
   UsageHelp      = '   -help : display command line options';
+  UsageFolder    = '   -F=<path> : remote destination folder (default is /media/card)';
 
 // uEditorExperts.pas
 resourcestring
@@ -717,7 +718,7 @@ resourcestring
 
 // uportsedit.pas
 resourcestring
-  sSaveNXTDatChanges = 'Save changes to nxt.dat file?';
+  sSaveNXTDatChanges = 'Save changes to bricks.dat file?';
   
 // uNBCInterface.pas
 resourcestring

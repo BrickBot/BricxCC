@@ -87,7 +87,7 @@ var
   btncount, state, clump : byte;
   i2csend, rawcmd, tmpstr : string;
   LSBlock : NXTLSBlock;
-  Msg : NXTMessage;
+  Msg : PBRMessage;
   BC : TBrickComm;
   EHO : TEventHandlerObject;
   nxtdev : NXTDevice;
@@ -223,13 +223,13 @@ begin
   Writeln('   -btconnection=<idx> : Get the specified bluetooth connection');
   Writeln('   -shutdown : Turn off the NXT');
 {
-NXTPollCommandLen
-NXTPollCommand
-NXTWriteIOMap
-NXTReadIOMap
-    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
-    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
-    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
+SCPollCommandLen
+SCPollCommand
+SCWriteIOMap
+SCReadIOMap
+    function DCSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function DCGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
+    function DCSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
 }
   Writeln('General:');
   Writeln('   -help : display command line options');
@@ -355,7 +355,7 @@ begin
     if ParamSwitch('-init') then
     begin
       BrickComm.SearchBluetooth := Boolean(ParamIntValue('-init', 1));
-      if BrickComm.NXTInitializeResourceNames then
+      if BrickComm.InitializeResourceNames then
         Exit
       else
         Halt(NoBricksFound);
@@ -363,7 +363,7 @@ begin
     if ParamSwitch('-update') then
     begin
       BrickComm.SearchBluetooth := Boolean(ParamIntValue('-update', 1));
-      if BrickComm.NXTUpdateResourceNames then
+      if BrickComm.UpdateResourceNames then
         Exit
       else
         Halt(NoBricksFound);
@@ -372,7 +372,7 @@ begin
     begin
       SL.Clear;
       BrickComm.SearchBluetooth := Boolean(ParamIntValue('-listbricks', 1));
-      if BrickComm.NXTListBricks(SL) then
+      if BrickComm.ListBricks(SL) then
       begin
         for i := 0 to SL.Count - 1 do
           WriteLn(SL[i]);
@@ -411,14 +411,14 @@ begin
         BrickComm.Sleep(ParamIntValue('-sleep', 10));
       if ParamSwitch('-msg') then
       begin
-        BrickComm.NXTMessageWrite(Byte(ParamIntValue('/Inbox', 0)), ParamValue('-msg'));
+        BrickComm.DCMessageWrite(Byte(ParamIntValue('/Inbox', 0)), ParamValue('-msg'));
       end;
       if ParamSwitch('-battery') then
         OutputValue(BrickComm.BatteryLevel);
       if ParamSwitch('-input') then
       begin
         port := ParamIntValue('-input', 0);
-        if BrickComm.GetNXTInputValues(Byte(port), valid,
+        if BrickComm.DCGetInputValues(Byte(port), valid,
           calibrated, stype, smode, raw, normalized, scaled, calvalue) then
         begin
           Writeln(Format('Port: %d'#13#10 +
@@ -446,12 +446,12 @@ begin
         smodestr := ParamValue('/SensorMode');
         if smodestr <> '' then
           smode := StrToNXTInputMode(smodestr);
-        BrickComm.SetNXTInputMode(Byte(port), stype, smode);
+        BrickComm.DCSetInputMode(Byte(port), stype, smode);
       end;
       if ParamSwitch('-output') then
       begin
         port := ParamIntValue('-output', 0);
-        if BrickComm.GetNXTOutputState(Byte(port), power, mode,
+        if BrickComm.DCGetOutputState(Byte(port), power, mode,
           regmode, turnratio, runstate, tacholimit, tachocount, blocktachocount, rotationcount) then
         begin
           Writeln(Format('Port: %d'#13#10 +
@@ -485,50 +485,50 @@ begin
           runstate := StrToNXTOutputRunState(runstatestr);
         turnratio := ParamIntValue('/TurnRatio', turnratio);
         tacholimit := ParamIntValue('/TachoLimit', tacholimit);
-        BrickComm.SetNXTOutputState(Byte(port), power, mode, regmode, turnratio, runstate, tacholimit);
+        BrickComm.DCSetOutputState(Byte(port), power, mode, regmode, turnratio, runstate, tacholimit);
       end;
       if ParamSwitch('-mute') then
         BrickComm.MuteSound;
       if ParamSwitch('-playtone') then
         BrickComm.PlayTone(Word(ParamIntValue('-playtone', 440)), Word(ParamIntValue('/Duration', 500)));
       if ParamSwitch('-stop') then
-        BrickComm.NXTStopProgram;
+        BrickComm.DCStopProgram;
       if ParamSwitch('-playfile') then
-        BrickComm.NXTPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/Loop'));
+        BrickComm.DCPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/Loop'));
       if ParamSwitch('-keepalive') then
       begin
-        if BrickComm.NXTKeepAlive(cvalue) then
+        if BrickComm.DCKeepAlive(cvalue) then
           OutputValue(cvalue div 60000);
       end;
       if ParamSwitch('-resetoutputposition') then
-        BrickComm.NXTResetOutputPosition(Byte(ParamIntValue('-resetoutputposition', 0)), ParamSwitch('/Relative'));
+        BrickComm.DCResetOutputPosition(Byte(ParamIntValue('-resetoutputposition', 0)), ParamSwitch('/Relative'));
       if ParamSwitch('-resetinputsv') then
-        BrickComm.NXTResetInputScaledValue(Byte(ParamIntValue('-resetinputsv', 0)));
+        BrickComm.DCResetInputScaledValue(Byte(ParamIntValue('-resetinputsv', 0)));
       if ParamSwitch('-upload') then
       begin
         pattern := ParamValue('-upload');
         if pattern = '' then
           pattern := '*.*';
-        BrickComm.NXTUploadFile(pattern);
+        BrickComm.UploadFile(pattern);
       end;
       if ParamSwitch('-download') then
       begin
         pattern := ParamValue('-download');
         if pattern <> '' then
-          BrickComm.NXTDownloadFile(pattern, NameToNXTFileType(pattern));
+          BrickComm.DownloadFile(pattern, NXTNameToPBRFileType(pattern));
       end;
       if ParamSwitch('-run') then begin
-        BrickComm.NXTStartProgram(ParamValue('-run'));
+        BrickComm.DCStartProgram(ParamValue('-run'));
       end;
       if ParamSwitch('-delete') then
       begin
         pattern := ParamValue('-delete');
         if pattern <> '' then
-          BrickComm.NXTDeleteFile(pattern, True);
+          BrickComm.SCDeleteFile(pattern, True);
       end;
       if ParamSwitch('-defrag') then
       begin
-        if not BrickComm.NXTDefragmentFlash then
+        if not BrickComm.SCDefragmentFlash then
           WriteLn('Defragmentation failed');
       end;
       if ParamSwitch('-listfiles') then
@@ -537,7 +537,7 @@ begin
         if pattern = '' then
           pattern := '*.*';
         SL.Clear;
-        BrickComm.NXTListFiles(pattern, SL);
+        BrickComm.ListFiles(pattern, SL);
         for i := 0 to SL.Count - 1 do
           WriteLn(SL[i]);
       end;
@@ -547,24 +547,24 @@ begin
         if pattern = '' then
           pattern := '*.*';
         SL.Clear;
-        BrickComm.NXTListModules(pattern, SL);
+        BrickComm.ListModules(pattern, SL);
         for i := 0 to SL.Count - 1 do
           WriteLn(SL[i]);
       end;
       if ParamSwitch('-runningprogram') then
       begin
-        if BrickComm.NXTGetCurrentProgramName(pattern) then
+        if BrickComm.DCGetCurrentProgramName(pattern) then
           Writeln(pattern);
       end;
       if ParamSwitch('-setname') then
-        BrickComm.NXTSetBrickName(ParamValue('-setname'), True);
+        BrickComm.SCSetBrickName(ParamValue('-setname'), True);
       if ParamSwitch('-boot') then
-        BrickComm.NXTBootCommand(True);
+        BrickComm.SCBootCommand(True);
       if ParamSwitch('-btreset') then
-        BrickComm.NXTBTFactoryReset(True);
+        BrickComm.SCBTFactoryReset(True);
       if ParamSwitch('-versions') then
       begin
-        if BrickComm.NXTGetVersions(pmin, pmaj, fmin, fmaj) then
+        if BrickComm.SCGetVersions(pmin, pmaj, fmin, fmaj) then
         begin
           Writeln(Format('Protocol version = %d.%d', [pmaj, pmin]));
           Writeln(Format('Firmware version = %d.%2.2d', [fmaj, fmin]));
@@ -572,7 +572,7 @@ begin
       end;
       if ParamSwitch('-deviceinfo') then
       begin
-        if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
+        if BrickComm.SCGetDeviceInfo(pattern, btaddr, btsig, memFree) then
         begin
           Writeln(Format('Brick name = %s', [pattern]));
           Writeln(Format('Bluetooth Address = %s', [btaddr]));
@@ -583,12 +583,12 @@ begin
       end;
       if ParamSwitch('-getname') then
       begin
-        if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
+        if BrickComm.SCGetDeviceInfo(pattern, btaddr, btsig, memFree) then
           Writeln(pattern);
       end;
       if ParamSwitch('-freemem') then
       begin
-        if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
+        if BrickComm.SCGetDeviceInfo(pattern, btaddr, btsig, memFree) then
           OutputValue(memFree);
       end;
       if ParamSwitch('-i2cbytes') then
@@ -629,7 +629,7 @@ begin
       if ParamSwitch('-lsstatus') then
       begin
         port := ParamIntValue('-lsstatus', 0);
-        if BrickComm.NXTLSGetStatus(Byte(port), bytesReady, lsstate) then
+        if BrickComm.DCLSGetStatus(Byte(port), bytesReady, lsstate) then
         begin
           OutputValue(bytesReady, False); Write(' ');
           OutputValue(lsstate);
@@ -645,14 +645,14 @@ begin
       if ParamSwitch('-btnstate') then
       begin
         port := ParamIntValue('-btnstate', 0);
-        if BrickComm.NXTGetButtonState(Byte(port), False, pressed, btncount) then
+        if BrickComm.DCGetButtonState(Byte(port), False, pressed, btncount) then
           Writeln(Format('Button %d: pressed = %s, count = %d', [port, BoolToStr(pressed), btncount]));
       end;
 }
       if ParamSwitch('-resetbtnstate') then
       begin
         port := ParamIntValue('-resetbtnstate', 0);
-        BrickComm.NXTGetButtonState(Byte(port), True, pressed, btncount);
+        BrickComm.DCGetButtonState(Byte(port), True, pressed, btncount);
       end;
       if ParamSwitch('-readmsg') then
       begin
@@ -664,7 +664,7 @@ begin
           bErase := not ParamSwitch('/KeepMsg');
           while j > 0 do
           begin
-            if BrickComm.NXTMessageRead(Byte(port), 0, bErase, Msg) then
+            if BrickComm.DCMessageRead(Byte(port), 0, bErase, Msg) then
             begin
               case Msg.Size of
                 0 : ; // do nothing
@@ -786,11 +786,11 @@ begin
       end;
       if ParamSwitch('-setvmstate') then
       begin
-        BrickComm.NXTSetVMState(ParamIntValue('-setvmstate', 0));
+        BrickComm.DCSetVMState(ParamIntValue('-setvmstate', 0));
       end;
       if ParamSwitch('-getvmstate') then
       begin
-        BrickComm.NXTGetVMState(state, clump, pc);
+        BrickComm.DCGetVMState(state, clump, pc);
         OutputValue(state, False); Write(' ');
         OutputValue(clump, False); Write(' ');
         OutputValue(pc);
@@ -799,7 +799,7 @@ begin
       begin
         i := ParamIntValue('-btdevice', 0);
         if i > 29 then i := 0;
-        nxtdev := BrickComm.NXTBTDevice(i);
+        nxtdev := BrickComm.SCBTDevice(i);
         Writeln(string(PChar(@(nxtdev.Name[0]))));
         with nxtdev do
         begin
@@ -818,7 +818,7 @@ begin
       begin
         i := ParamIntValue('-btconnection', 0);
         if i > 3 then i := 0;
-        nxtconn := BrickComm.NXTBTConnection(i);
+        nxtconn := BrickComm.SCBTConnection(i);
         Writeln(string(PChar(@(nxtconn.Name[0]))));
         with nxtconn do
         begin
@@ -838,11 +838,11 @@ begin
       end;
       if ParamSwitch('-btdevcnt') then
       begin
-        OutputValue(BrickComm.NXTBTDeviceCount);
+        OutputValue(BrickComm.SCBTDeviceCount);
       end;
       if ParamSwitch('-btnamecnt') then
       begin
-        OutputValue(BrickComm.NXTBTDeviceNameCount);
+        OutputValue(BrickComm.SCBTDeviceNameCount);
       end;
       if ParamSwitch('-shutdown') then
         BrickComm.Shutdown;

@@ -39,7 +39,7 @@ uses
   SynHighlighterForth, SynHighlighterCpp, SynHighlighterJava,
   SynHighlighterCS, SynHighlighterMindScript, SynHighlighterLua,
   SynHighlighterLASM, SynHighlighterPas, uParseCommon, uNewHotKey,
-  uMiscDefines, SynHighlighterNBC, uOfficeComp, BricxccSpin,
+  uMiscDefines, SynHighlighterNBC, uOfficeComp, BricxccSpin, uGlobals,
   SynHighlighterRuby, SynHighlighterNPG, SynHighlighterRS,
   SynHighlighterROPS, SynHighlighterSPASM;
 
@@ -130,25 +130,8 @@ type
     lblCompilerTimeout: TLabel;
     lblCompilerSwitches: TLabel;
     edtCompilerSwitches: TEdit;
-    shtCompilerNQC: TTabSheet;
-    lblNQCIncludePath: TLabel;
-    shtCompilerLCC: TTabSheet;
-    lblLCCIncludePath: TLabel;
-    shtCompilerBrickOS: TTabSheet;
-    edtNQCSwitches: TEdit;
-    lblNQCSwitches: TLabel;
-    lblLCCSwitches: TLabel;
-    edtLCCSwitches: TEdit;
-    lblOSRoot: TLabel;
-    edtOSRoot: TEdit;
-    edtCPPSwitches: TEdit;
-    lblCPPSwitches: TLabel;
+    shtCompilerRCX: TTabSheet;
     lblCommonSeconds: TLabel;
-    lblBrickOSMakefileTemplate: TLabel;
-    edtBrickOSMakefileTemplate: TMemo;
-    edtLCCIncludePath: TComboBox;
-    edtNQCIncludePath: TComboBox;
-    lblCygwin: TLabel;
     grpHotKeys: TGroupBox;
     lblCodeComp: TLabel;
     lblParamComp: TLabel;
@@ -158,34 +141,7 @@ type
     cbProg6: TCheckBox;
     cbProg7: TCheckBox;
     cbProg8: TCheckBox;
-    lblNQCPath: TLabel;
-    lblLCCExePath: TLabel;
-    btnGetNQCVersion: TButton;
-    btnGetLCCVersion: TButton;
-    shtCompilerLeJOS: TTabSheet;
-    lblJavaSwitches: TLabel;
-    edtJavaSwitches: TEdit;
-    lblLeJOSMakefileTemplate: TLabel;
-    edtLeJOSMakefileTemplate: TMemo;
-    Label1: TLabel;
-    lblLeJOSRoot: TLabel;
-    shtForth: TTabSheet;
-    chkShowAllOutput: TCheckBox;
-    chkStopOnAborted: TCheckBox;
-    chkSkipBlankLines: TCheckBox;
-    chkStripComments: TCheckBox;
-    lblInterCharacterDelay: TLabel;
-    lblInterLineDelay: TLabel;
-    chkConsoleSyntaxHL: TCheckBox;
-    chkOutputSeparate: TCheckBox;
-    chkShowConsoleLineNumbers: TCheckBox;
-    grpUSB: TGroupBox;
-    lblReadFirstTimeout: TLabel;
-    lblReadICTimeout: TLabel;
-    lblWriteTimeout: TLabel;
-    chkConsoleCompProp: TCheckBox;
-    edtPascalCompilerPrefix: TEdit;
-    lblPascalCompilerPrefix: TLabel;
+    shtCompilerEV3: TTabSheet;
     chkMaxEditWindows: TCheckBox;
     chkMultiFormatCopy: TCheckBox;
     chkUseMDI: TCheckBox;
@@ -282,12 +238,7 @@ type
     cbxBGColor: TColorBox;
     Label5: TLabel;
     lblMaxErrors: TLabel;
-    edtNQCExePath2: TEdit;
-    edtLCCExePath2: TEdit;
     edtNBCExePath2: TEdit;
-    edtCygwin2: TEdit;
-    edtJavaPath2: TEdit;
-    edtLeJOSRoot2: TEdit;
     pagAPILang: TPageControl;
     shtNQCAPI: TTabSheet;
     pagNQCAPI: TPageControl;
@@ -325,7 +276,6 @@ type
     edtRICDecompArrayFmt: TEdit;
     shtExperts: TTabSheet;
     btnEditorExpertsConfig: TButton;
-    chkIncludeSrcInList: TCheckBox;
     pnlAPIRight: TPanel;
     grpAPIHeaders: TGroupBox;
     btnShowNQCDefs: TButton;
@@ -343,11 +293,6 @@ type
     edtWaitTime: TBricxccSpinEdit;
     edtCompilerTimeout: TBricxccSpinEdit;
     edtMaxErrors: TBricxccSpinEdit;
-    edtConsoleReadFirstTimeout: TBricxccSpinEdit;
-    edtConsoleReadICTimeout: TBricxccSpinEdit;
-    edtConsoleWriteTimeout: TBricxccSpinEdit;
-    edtICDelay: TBricxccSpinEdit;
-    edtILDelay: TBricxccSpinEdit;
     inpRightOffset: TBricxccSpinEdit;
     inpLeftOffset: TBricxccSpinEdit;
     inpDigitCount: TBricxccSpinEdit;
@@ -372,6 +317,85 @@ type
     cbxBracketBG: TColorBox;
     radLinux: TRadioButton;
     chkKeepMakefiles: TCheckBox;
+    pagRCX: TPageControl;
+    shtCompilerNQC: TTabSheet;
+    chkIncludeSrcInList: TCheckBox;
+    btnGetNQCVersion: TButton;
+    edtNQCExePath2: TEdit;
+    edtNQCSwitches: TEdit;
+    edtNQCIncludePath: TComboBox;
+    lblNQCIncludePath: TLabel;
+    lblNQCSwitches: TLabel;
+    lblNQCPath: TLabel;
+    shtCompilerLCC: TTabSheet;
+    btnGetLCCVersion: TButton;
+    edtLCCExePath2: TEdit;
+    edtLCCSwitches: TEdit;
+    edtLCCIncludePath: TComboBox;
+    lblLCCIncludePath: TLabel;
+    lblLCCSwitches: TLabel;
+    lblLCCExePath: TLabel;
+    shtCompilerBrickOS: TTabSheet;
+    lblCygwin: TLabel;
+    edtCygwin2: TEdit;
+    lblOSRoot: TLabel;
+    edtOSRoot: TEdit;
+    lblCPPSwitches: TLabel;
+    edtCPPSwitches: TEdit;
+    lblBrickOSMakefileTemplate: TLabel;
+    edtBrickOSMakefileTemplate: TMemo;
+    edtPascalCompilerPrefix: TEdit;
+    lblPascalCompilerPrefix: TLabel;
+    shtCompilerLeJOS: TTabSheet;
+    Label1: TLabel;
+    lblLeJOSRoot: TLabel;
+    lblJavaSwitches: TLabel;
+    lblLeJOSMakefileTemplate: TLabel;
+    edtJavaPath2: TEdit;
+    edtLeJOSRoot2: TEdit;
+    edtJavaSwitches: TEdit;
+    edtLeJOSMakefileTemplate: TMemo;
+    shtCompilerPBForth: TTabSheet;
+    grpUSB: TGroupBox;
+    lblReadFirstTimeout: TLabel;
+    lblReadICTimeout: TLabel;
+    lblWriteTimeout: TLabel;
+    edtConsoleReadFirstTimeout: TBricxccSpinEdit;
+    edtConsoleReadICTimeout: TBricxccSpinEdit;
+    edtConsoleWriteTimeout: TBricxccSpinEdit;
+    edtILDelay: TBricxccSpinEdit;
+    edtICDelay: TBricxccSpinEdit;
+    lblInterCharacterDelay: TLabel;
+    lblInterLineDelay: TLabel;
+    chkStripComments: TCheckBox;
+    chkSkipBlankLines: TCheckBox;
+    chkStopOnAborted: TCheckBox;
+    chkShowAllOutput: TCheckBox;
+    chkOutputSeparate: TCheckBox;
+    chkShowConsoleLineNumbers: TCheckBox;
+    chkConsoleSyntaxHL: TCheckBox;
+    chkConsoleCompProp: TCheckBox;
+    pagEV3: TPageControl;
+    shtCompilerEVC: TTabSheet;
+    shtEV3BrickOS: TTabSheet;
+    Label4: TLabel;
+    edtEV3MakeTemplate: TMemo;
+    Label7: TLabel;
+    edtFPCPrefix: TEdit;
+    Label8: TLabel;
+    Label9: TLabel;
+    edtFPCFlags: TEdit;
+    Label10: TLabel;
+    edtGCCPrefix: TEdit;
+    Label11: TLabel;
+    edtGCCFlags: TEdit;
+    Label12: TLabel;
+    edtEV3Password: TEdit;
+    Label13: TLabel;
+    edtEV3IPAddress: TEdit;
+    Label14: TLabel;
+    edtEV3Folder: TEdit;
+    chkEV3SharedLib: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -627,7 +651,7 @@ uses
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
   uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
   uEECommentConfig, uEEAlignConfig, uNBCInterface, uJoyGlobals,
-  uRemoteGlobals, uRegUtils, uGlobals, uBasicPrefs, uEditorShortcut;
+  uRemoteGlobals, uRegUtils, uBasicPrefs, uEditorShortcut;
 
 
 var
@@ -810,7 +834,14 @@ var
   R : TRegistry;
 begin
   SetToolbarDragging(not LockToolbars);
-  if LockToolbars then Exit; // do not restore toolbars
+  if LockToolbars then
+  begin
+    // try to fix weird behavior of help toolbar
+//    MainForm.ogpHelp.Width := 1;
+    MainForm.ogpHelp.Width := 47;
+    MainForm.ogpTools.Left := 202;
+    Exit; // do not restore toolbars
+  end;
   R := TRegistry.Create;
   try
     R.RootKey := HKEY_CURRENT_USER;
@@ -1495,7 +1526,7 @@ begin
     LockToolbars       := Reg_ReadBool(reg, 'LockToolbars', True);
     MaxEditWindows     := Reg_ReadBool(reg, 'MaxEditWindows', False);
     MultiFormatCopy    := Reg_ReadBool(reg, 'MultiFormatCopy', False);
-    UseMDIMode         := Reg_ReadBool(reg, 'UseMDIMode', True);
+    UseMDIMode         := Reg_ReadBool(reg, 'UseMDIMode', False);
     QuietFirmware      := Reg_ReadBool(reg, 'QuietFirmware', False);
     FirmwareFast       := Reg_ReadBool(reg, 'FirmwareFast', False);
     FirmwareComp       := Reg_ReadBool(reg, 'FirmwareComp', False);
@@ -1600,6 +1631,16 @@ begin
     ConsoleUSBFirstTimeout  := Reg_ReadInteger(reg, 'ConsoleUSBFirstTimeout', 10);
     ConsoleUSBICTimeout     := Reg_ReadInteger(reg, 'ConsoleUSBICTimeout', 0);
     ConsoleUSBWriteTimeout  := Reg_ReadInteger(reg, 'ConsoleUSBWriteTimeout', 0);
+    // EV3 makefile settings
+    EV3MakefileTemplate     := Reg_ReadString(reg, 'EV3MakefileTemplate', EV3MakefileTemplate);
+    EV3FPCFlags             := Reg_ReadString(reg, 'EV3FPCFlags', EV3FPCFlags);
+    EV3FPCPrefix            := Reg_ReadString(reg, 'EV3FPCPrefix', EV3FPCPrefix);
+    EV3GCCFlags             := Reg_ReadString(reg, 'EV3GCCFlags', EV3GCCFlags);
+    EV3GCCPrefix            := Reg_ReadString(reg, 'EV3GCCPrefix', EV3GCCPrefix);
+    EV3RootPassword         := Reg_ReadString(reg, 'EV3RootPassword', EV3RootPassword);
+    EV3IPAddress            := Reg_ReadString(reg, 'EV3IPAddress', EV3IPAddress);
+    EV3Folder               := Reg_ReadString(reg, 'EV3Folder', EV3Folder);
+    EV3UseSharedLib         := Reg_ReadBool(reg, 'EV3UseSharedLib', EV3UseSharedLib);
   finally
     reg.CloseKey;
   end;
@@ -1642,6 +1683,16 @@ begin
     reg.WriteInteger('ConsoleUSBFirstTimeout', ConsoleUSBFirstTimeout);
     reg.WriteInteger('ConsoleUSBICTimeout', ConsoleUSBICTimeout);
     reg.WriteInteger('ConsoleUSBWriteTimeout', ConsoleUSBWriteTimeout);
+
+    reg.WriteString('EV3MakefileTemplate', EV3MakefileTemplate);
+    reg.WriteString('EV3FPCFlags', EV3FPCFlags);
+    reg.WriteString('EV3FPCPrefix', EV3FPCPrefix);
+    reg.WriteString('EV3GCCFlags', EV3GCCFlags);
+    reg.WriteString('EV3GCCPrefix', EV3GCCPrefix);
+    reg.WriteString('EV3RootPassword', EV3RootPassword);
+    reg.WriteString('EV3IPAddress', EV3IPAddress);
+    reg.WriteString('EV3Folder', EV3Folder);
+    reg.WriteBool('EV3UseSharedLib', EV3UseSharedLib); 
   finally
     reg.CloseKey;
   end;
@@ -2519,7 +2570,7 @@ begin
   CreateSynEditComponents;
   CreateHotKeyEdits;
   CreatePrefFormHighlighters;
-  LoadNXTPorts(cboPort.Items);
+  LoadKnownPorts(cboPort.Items);
   for i := 1 to 8 do
   begin
     cboPort.Items.Add('COM'+IntToStr(i));
@@ -3414,7 +3465,7 @@ begin
   try
     Reg_OpenKey(R, 'ExtraGeneral');
     try
-      Result := Reg_ReadBool(R, 'UseMDIMode', True);
+      Result := Reg_ReadBool(R, 'UseMDIMode', False);
     finally
       R.CloseKey;
     end;
@@ -3920,6 +3971,16 @@ begin
 
   edtNQCIncludePath.Items.CommaText := OldNQCIncPaths;
   edtLCCIncludePath.Items.CommaText := OldLCCIncPaths;
+
+  edtEV3MakeTemplate.Lines.Text     := EV3MakefileTemplate;
+  edtFPCFlags.Text                  := EV3FPCFlags;
+  edtFPCPrefix.Text                 := EV3FPCPrefix;
+  edtGCCFlags.Text                  := EV3GCCFlags;
+  edtGCCPrefix.Text                 := EV3GCCPrefix;
+  edtEV3Password.Text               := EV3RootPassword;
+  edtEV3IPAddress.Text              := EV3IPAddress;
+  edtEV3Folder.Text                 := EV3Folder;
+  chkEV3SharedLib.Checked           := EV3UseSharedLib;
 end;
 
 procedure TPrefForm.DisplayEditorValues;
@@ -4119,6 +4180,16 @@ begin
   ConsoleUSBFirstTimeout  := edtConsoleReadFirstTimeout.Value;
   ConsoleUSBICTimeout     := edtConsoleReadICTimeout.Value;
   ConsoleUSBWriteTimeout  := edtConsoleWriteTimeout.Value;
+
+  EV3MakefileTemplate     := edtEV3MakeTemplate.Lines.Text;
+  EV3FPCFlags             := edtFPCFlags.Text;
+  EV3FPCPrefix            := edtFPCPrefix.Text;
+  EV3GCCFlags             := edtGCCFlags.Text;
+  EV3GCCPrefix            := edtGCCPrefix.Text;
+  EV3RootPassword         := edtEV3Password.Text;
+  EV3IPAddress            := edtEV3IPAddress.Text;
+  EV3Folder               := edtEV3Folder.Text;
+  EV3UseSharedLib         := chkEV3SharedLib.Checked;
 end;
 
 procedure TPrefForm.GetEditorValues;

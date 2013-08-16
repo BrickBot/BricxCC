@@ -310,7 +310,7 @@ begin
             modID := kNXT_ModuleCmd;
             count := size; // variable size
             buffer.Data[0] := 0;
-            res := NXTReadIOMap(modID, fOffsetDS+offset, count, buffer);
+            res := SCReadIOMap(modID, fOffsetDS+offset, count, buffer);
             if res then
             begin
               case dst of
@@ -665,21 +665,21 @@ begin
   // use kNXT_VMState_Single instead of kNXT_VMState_Pause because for
   // some unexplained reason I get back NOT_A_CLUMP (0xFF) for the current
   // clump when I use kNXT_VMState_Pause
-  Result := BrickComm.NXTSetVMState(kNXT_VMState_Single);
+  Result := BrickComm.DCSetVMState(kNXT_VMState_Single);
   if Result then
-    Result := BrickComm.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+    Result := BrickComm.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
 end;
 
 function TProgram.Run: boolean;
 begin
   // is the program already running?
   if fNXTVMState = kNXT_VMState_Idle then
-    Result := BrickComm.NXTStartProgram(ChangeFileExt(fName, '.rxe'))
+    Result := BrickComm.DCStartProgram(ChangeFileExt(fName, '.rxe'))
   else
   begin
-    Result := BrickComm.NXTSetVMState(kNXT_VMState_RunFree);
+    Result := BrickComm.DCSetVMState(kNXT_VMState_RunFree);
     if Result then
-      Result := BrickComm.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := BrickComm.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
   end;
 end;
 
@@ -706,12 +706,12 @@ begin
   Result := True;
   while (newLine = curLine) and Result do
   begin
-    if bc.NXTSetVMState(kNXT_VMState_Single) then
+    if bc.DCSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
       if Result and (fNXTClump < CurrentProgram.Count) then
       begin
         CD := CurrentProgram[fNXTClump];
@@ -793,12 +793,12 @@ begin
   while ((newLine = curLine) or
          ((oldClump <> $FF) and (oldClump <> fNXTClump))) and Result do
   begin
-    if bc.NXTSetVMState(kNXT_VMState_Single) then
+    if bc.DCSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
       if Result and (fNXTClump < CurrentProgram.Count) then
       begin
         CD := CurrentProgram[fNXTClump];
@@ -901,7 +901,7 @@ procedure TProgram.UpdateOffsets;
 var
   res : boolean;
   modID : Cardinal;
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
   acount : Word;
 begin
   fOffsetDS := $FFFF;
@@ -911,7 +911,7 @@ begin
   acount := 2;
   buffer.Data[0] := 0;
   buffer.Data[1] := 0;
-  res := BrickComm.NXTReadIOMap(modID, CommandOffsetOffsetDS, acount, buffer);
+  res := BrickComm.SCReadIOMap(modID, CommandOffsetOffsetDS, acount, buffer);
   if res then
     fOffsetDS := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
   // IOMapRead CommandOffsetOffsetDVA
@@ -919,7 +919,7 @@ begin
   acount := 2;
   buffer.Data[0] := 0;
   buffer.Data[1] := 0;
-  res := BrickComm.NXTReadIOMap(modID, CommandOffsetOffsetDVA, acount, buffer);
+  res := BrickComm.SCReadIOMap(modID, CommandOffsetOffsetDVA, acount, buffer);
   if res then
     fOffsetDVA := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
 end;
@@ -929,7 +929,7 @@ begin
   fNXTVMState := kNXT_VMState_Idle;
   fNXTClump   := $FF;
   fNXTProgramCounter := 0;
-  BrickComm.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+  BrickComm.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
   Result := fNXTVMState;
 end;
 
@@ -938,9 +938,9 @@ begin
   // before stopping the program make sure the VM State is RunFree
   if bEnhanced and (fNXTVMState = kNXT_VMState_Pause) then
   begin
-    BrickComm.NXTSetVMState(kNXT_VMState_RunFree);
+    BrickComm.DCSetVMState(kNXT_VMState_RunFree);
   end;
-  Result := BrickComm.NXTStopProgram;
+  Result := BrickComm.DCStopProgram;
   fNXTVMState := kNXT_VMState_Idle;
 end;
 
@@ -967,12 +967,12 @@ begin
   Result := True;
   while (aLine > curLine) and Result do
   begin
-    if bc.NXTSetVMState(kNXT_VMState_Single) then
+    if bc.DCSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
       if Result and (fNXTClump < CurrentProgram.Count) then
       begin
         CD := CurrentProgram[fNXTClump];
@@ -1012,12 +1012,12 @@ begin
   oldClump := fNXTClump;
   while (oldClump = fNXTClump) and Result do
   begin
-    if bc.NXTSetVMState(kNXT_VMState_Single) then
+    if bc.DCSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.DCGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
     end
     else
       Result := False;

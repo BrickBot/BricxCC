@@ -1,0 +1,8 @@
+#include "foo.h"
+
+task main()
+{
+  TextOut(0, LCD_LINE1, "test");
+  printf("amazing");
+  while(true);
+}

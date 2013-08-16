@@ -1,0 +1,12 @@
+task main(){
+     float val = 1000;
+     string sval;
+     sval = FlattenVar(val);
+
+     TextOut(0, LCD_LINE1, NumToStr(sval[0]));
+     TextOut(0, LCD_LINE2, NumToStr(sval[1]));
+     TextOut(0, LCD_LINE3, NumToStr(sval[2]));
+     TextOut(0, LCD_LINE4, NumToStr(sval[3]));
+
+     while(1);
+}

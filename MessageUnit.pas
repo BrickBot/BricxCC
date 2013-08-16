@@ -83,18 +83,18 @@ uses
 
 procedure TMessageForm.Button0Click(Sender: TObject);
 begin
-  if LocalBrickType <> SU_NXT then
+  if not (LocalBrickType in [SU_NXT, SU_EV3]) then
     BrickComm.SendMessage(TButton(Sender).Tag)
   else
-    BrickComm.NXTMessageWrite(GetInBox, GetMessage(Sender));
+    BrickComm.DCMessageWrite(GetInBox, GetMessage(Sender));
 end;
 
 procedure TMessageForm.SendButtonClick(Sender: TObject);
 begin
-  if LocalBrickType <> SU_NXT then
+  if not (LocalBrickType in [SU_NXT, SU_EV3]) then
     BrickComm.SendMessage(edtMessageNum.Value)
   else
-    BrickComm.NXTMessageWrite(GetInBox, GetMessage(Sender));
+    BrickComm.DCMessageWrite(GetInBox, GetMessage(Sender));
 end;
 
 procedure TMessageForm.btnHelpClick(Sender: TObject);
@@ -104,7 +104,7 @@ end;
 
 procedure TMessageForm.FormShow(Sender: TObject);
 begin
-  if LocalBrickType = SU_NXT then
+  if (LocalBrickType in [SU_NXT, SU_EV3]) then
   begin
     edtMessageNum.MaxLength := 0;
     edtMessageNum.MaxValue  := 0;
@@ -156,7 +156,7 @@ end;
 
 procedure TMessageForm.btnSendNXTClick(Sender: TObject);
 begin
-  BrickComm.NXTMessageWrite(GetInBox, GetMessage(Sender));
+  BrickComm.DCMessageWrite(GetInBox, GetMessage(Sender));
 end;
 
 {$IFDEF FPC}

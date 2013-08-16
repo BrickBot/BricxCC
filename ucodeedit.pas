@@ -2326,7 +2326,7 @@ begin
         if (binext = '.rxe') and not CurrentProgram.Loaded(Fname) then
           DoCompileAction(False, False);
 
-        BrickComm.NXTStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
+        BrickComm.DCStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
@@ -3918,7 +3918,7 @@ begin
     else if FileIsNBCOrNXC then
     begin
       Accessible := False;
-      if BrickComm.NXTGetCurrentProgramName(name) then
+      if BrickComm.DCGetCurrentProgramName(name) then
       begin
         Accessible := CurrentProgram.Loaded(name);
       end;

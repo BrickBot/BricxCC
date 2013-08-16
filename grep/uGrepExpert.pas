@@ -240,7 +240,7 @@ begin
   FGrepImplementation := Settings.ReadBool(ConfigurationKey, 'Implementation', True);
   FGrepInitialization := Settings.ReadBool(ConfigurationKey, 'Initialization', True);
   FGrepFinalization := Settings.ReadBool(ConfigurationKey, 'Finalization', True);
-  FGrepSearch := Settings.ReadInteger(ConfigurationKey, 'Search', 0);
+  FGrepSearch := Settings.ReadInteger(ConfigurationKey, 'Search', 2);
   FGrepSub := Settings.ReadBool(ConfigurationKey, 'SubDirectories', True);
   FGrepExpandAll := Settings.ReadBool(ConfigurationKey, 'ExpandAll', False);
   FGrepWholeWord := Settings.ReadBool(ConfigurationKey, 'Whole Word', False);

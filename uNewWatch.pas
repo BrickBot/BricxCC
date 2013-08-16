@@ -310,7 +310,7 @@ var
 begin
   fname := GetActiveEditorFilename;
   // is there a program running on the NXT?
-  if BrickComm.NXTGetCurrentProgramName(name) and (name <> '') then
+  if BrickComm.DCGetCurrentProgramName(name) and (name <> '') then
   begin
     tmp := ExtractFileName(fname);
     if Pos(ChangeFileExt(name, ''), tmp) > 0 then

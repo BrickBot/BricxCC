@@ -185,6 +185,7 @@ const
   kNXT_SystemCmdNoReply = $81;
   kNXT_MaxBytes         = 64;
   kNXT_NameMaxLen       = 15;
+  kEV3_MaxBytes         = 1024;
 
   // NXT direct commands
   kNXT_DCStartProgram          = $00;

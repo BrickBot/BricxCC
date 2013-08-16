@@ -43,6 +43,19 @@ type
     next : PHidDeviceInfo;
   end;
 
+  THidDevice = record
+		device_handle : THandle;
+		blocking : Cardinal;
+		output_report_length : word;
+		input_report_length : word;
+		last_error_str : Pointer;
+		last_error_num : Cardinal;
+		read_pending : Cardinal;
+		read_buf : PChar;
+//		OVERLAPPED ol;
+  end;
+
+
 var
 	hid_init : function() : integer; cdecl;
   hid_exit : function() : integer; cdecl;

@@ -32,6 +32,14 @@ const
   MAX_COMPORT   = 8;
   MAX_USBPORT   = MAX_COMPORT+4;
 
+const
+  SOUND_CLICK       = 0; //*!< Play the standard key click sound
+  SOUND_DOUBLE_BEEP = 1; //*!< Play the standard double beep sound
+  SOUND_DOWN        = 2; //*!< Play the standard sweep down sound
+  SOUND_UP          = 3; //*!< Play the standard sweep up sound
+  SOUND_LOW_BEEP    = 4; //*!< Play the standard low beep sound
+  SOUND_FAST_UP     = 5; //*!< Play the standard fast up sound
+
 type
 //  TBrickType = rtRCX..rtNXT;
   TDownloadStatusEvent = procedure(Sender : TObject; cur, total : Integer; var Abort : boolean) of object;
@@ -46,14 +54,15 @@ type
     Data : array[0..15] of Byte;
   end;
 
-  NXTMessage = record
+  PBRMessage = record
     Inbox : byte;
     Size : byte;
     Data : array[0..58] of Byte;
   end;
 
-  NXTDataBuffer = record
-    Data : array[0..kNXT_MaxBytes-1] of Byte;
+  PBRDataBuffer = record
+    Data : array[0..1023] of Byte;
+//    Data : array[0..kNXT_MaxBytes-1] of Byte;
   end;
 
   NXTConnection = packed record
@@ -88,8 +97,11 @@ type
   TSoundSetNumber = 0..5;
   TGlobalOutAction = (goaFloat, goaOff, goaOn);
   TGlobalDirAction = (gdaBackward, gdaSwitch, gdaForward);
-  TMotorsNum = 1..7;
+  TMotorsNum = 1..15;
   TInstalledFirmware = (ifUnknown, ifStandard, ifEnhanced);
+
+  TTransportType = (ttUSB, ttSER, ttBTH, ttTCP, ttSSH, ttAny);
+  TTransportTypes = set of TTransportType; 
 
   EEPROMBlock = record
     Data : array[0..15] of Byte;
@@ -98,6 +110,10 @@ type
   TBrickComm = class
   private
   protected
+    fPowerScaleFactor : byte;
+    fLayer : byte;
+    fSoundMuted : boolean;
+    fBrickFolder: string;
     fNXTUseMailbox: boolean;
     fNXTMailboxNum: integer;
     fSearchBT: boolean;
@@ -127,11 +143,11 @@ type
     fTowerExistsSleep: Word;
     fUseBT: boolean;
     fVerbose: boolean;
-    fMotorPower : array[0..2] of byte;
-    fMotorForward : array[0..2] of boolean;
-    fMotorOn : array[0..2] of boolean;
-    fSensorType : array[0..3] of Byte;
-    fSensorMode : array[0..3] of Byte;
+    fMotorPower : array[0..15] of byte;
+    fMotorForward : array[0..15] of boolean;
+    fMotorOn : array[0..15] of boolean;
+    fSensorType : array[0..15] of Byte;
+    fSensorMode : array[0..15] of Byte;
     fStatus : integer;
     function GetBrickTypeName: string; virtual;
     function GetDownloadWaitTime: Integer; virtual; abstract;
@@ -182,6 +198,8 @@ type
     function  Open : boolean; virtual; abstract;
     function  Close : boolean; virtual;
 
+    function TransportTypes : TTransportTypes; virtual;
+
     procedure FlushReceiveBuffer; virtual; abstract;
     procedure SendRawData(Data : array of byte); virtual; abstract;
 
@@ -217,6 +235,7 @@ type
     function Shutdown : boolean; virtual; abstract;
     function Sleep(aVal : integer) : boolean; virtual; abstract;
 	  function Version(var rom : Cardinal; var ram : Cardinal) : boolean; virtual; abstract;
+    function VersionString : string; virtual;
     function TransmitPower(aLevel : TTransmitLevel) : boolean; virtual; abstract;
 
     function Poll(aSrc, aNum : integer) : variant; virtual; abstract;
@@ -319,99 +338,100 @@ type
 
     // NXT only methods
     // NXT direct commands
-    function NXTStartProgram(const filename : string) : boolean; virtual; abstract;
-    function NXTStopProgram : boolean; virtual; abstract;
-    function NXTPlaySoundFile(const filename : string; bLoop : boolean) : boolean; virtual; abstract;
-    function GetNXTOutputState(const port : byte; var power : integer;
+    function DCStartProgram(const filename : string) : boolean; virtual; abstract;
+    function DCStopProgram : boolean; virtual; abstract;
+    function DCPlaySoundFile(const filename : string; bLoop : boolean) : boolean; virtual; abstract;
+    function DCGetOutputState(const port : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
       blocktachocount, rotationcount : longint) : boolean; virtual; abstract;
-    function SetNXTOutputState(const port : byte; const power : integer;
+    function DCSetOutputState(const port : byte; const power : integer;
       const mode, regmode : byte; const turnratio : integer;
       const runstate : byte; const tacholimit : cardinal) : boolean; virtual; abstract;
-    function GetNXTInputValues(const port : byte; var valid, calibrated : boolean;
+    function DCGetInputValues(const port : byte; var valid, calibrated : boolean;
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; virtual; abstract;
-    function SetNXTInputMode(const port, stype, smode : byte) : boolean; virtual; abstract;
-    function NXTResetInputScaledValue(const port : byte) : boolean; virtual; abstract;
-    function NXTResetOutputPosition(const port : byte; const Relative : boolean) : boolean; virtual; abstract;
-    function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; virtual; abstract;
-    function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; virtual; abstract;
-    function NXTLSGetStatus(port : byte; var bytesReady : byte; var lsstate: byte) : boolean; virtual; abstract;
-    function NXTGetCurrentProgramName(var name : string) : boolean; virtual; abstract;
-    function NXTGetButtonState(const idx : byte; const reset : boolean;
+    function DCSetInputMode(const port, stype, smode : byte) : boolean; virtual; abstract;
+    function DCResetInputScaledValue(const port : byte) : boolean; virtual; abstract;
+    function DCResetOutputPosition(const port : byte; const Relative : boolean) : boolean; virtual; abstract;
+    function DCMessageWrite(const inbox : byte; const msg : string) : boolean; virtual; abstract;
+    function DCKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; virtual; abstract;
+    function DCLSGetStatus(port : byte; var bytesReady : byte; var lsstate: byte) : boolean; virtual; abstract;
+    function DCGetCurrentProgramName(var name : string) : boolean; virtual; abstract;
+    function DCGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; virtual; abstract;
-    function NXTMessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; virtual; abstract;
-    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; virtual; abstract;
-    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; virtual; abstract;
-    function NXTSetVMState(const state : byte) : boolean; virtual; abstract;
-    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
-    function NXTGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
+    function DCMessageRead(const remote, local : byte; const remove : boolean; var Msg : PBRMessage) : boolean; virtual; abstract;
+    function DCSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; virtual; abstract;
+    function DCGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; virtual; abstract;
+    function DCSetVMState(const state : byte) : boolean; virtual; abstract;
+    function DCSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
+    function DCGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : FantomHandle;
+    function SCOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; virtual; abstract;
-    function NXTOpenWrite(const filename : string; const size : cardinal;
+    function SCOpenWrite(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; virtual; abstract;
-    function NXTRead(var handle : FantomHandle; var count : word;
-      var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTWrite(var handle : FantomHandle; const buffer : NXTDataBuffer;
+    function SCRead(var handle : FantomHandle; var count : word;
+      var buffer : PBRDataBuffer) : boolean; virtual; abstract;
+    function SCWrite(var handle : FantomHandle; const buffer : PBRDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; virtual; abstract;
-    function NXTCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; virtual; abstract;
-    function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; virtual; abstract;
-    function NXTFindClose(var IterHandle : FantomHandle) : boolean; virtual; abstract;
-    function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
-    function NXTFirmwareVersion : word; virtual;
-    function NXTInstalledFirmware : TInstalledFirmware; virtual;
-    function NXTOpenWriteLinear(const filename : string; const size : cardinal;
+    function SCCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; virtual; abstract;
+    function SCFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; virtual; abstract;
+    function SCFindClose(var IterHandle : FantomHandle) : boolean; virtual; abstract;
+    function SCGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
+    function SCOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; virtual; abstract;
-    function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
+    function SCOpenReadLinear(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; virtual; abstract;
-    function NXTOpenWriteData(const filename : string; const size : cardinal;
+    function SCOpenWriteData(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; virtual; abstract;
-    function NXTOpenAppendData(const filename : string; var size : cardinal;
+    function SCOpenAppendData(const filename : string; var size : cardinal;
       var handle : FantomHandle) : boolean; virtual; abstract;
-    function NXTCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTBootCommand(const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTGetBrickName : string;
-    function NXTGetDeviceInfo(var name : string; var BTAddress : string;
+    function SCCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCBootCommand(const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCGetDeviceInfo(var name : string; var BTAddress : string;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; virtual; abstract;
-    function NXTFreeMemory : integer; virtual; abstract;
-    function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTBTFactoryReset(const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTPollCommandLen(const bufNum : byte; var count : byte) : boolean; virtual; abstract;
-    function NXTPollCommand(const bufNum : byte; var count : byte;
-      var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; overload; virtual; abstract;
-    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
+    function SCFreeMemory : integer; virtual;
+    function SCDeleteUserFlash(const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCBTFactoryReset(const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCPollCommandLen(const bufNum : byte; var count : byte) : boolean; virtual; abstract;
+    function SCPollCommand(const bufNum : byte; var count : byte;
+      var buffer : PBRDataBuffer) : boolean; virtual; abstract;
+    function SCWriteIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; const buffer : PBRDataBuffer; chkResponse : Boolean = False) : boolean; overload; virtual; abstract;
+    function SCWriteIOMap(var ModID : Cardinal; const Offset : Word;
       var count : Word; buffer : PChar; chkResponse : Boolean = False) : boolean; overload; virtual; abstract;
-    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; var buffer : NXTDataBuffer) : boolean; overload; virtual; abstract;
-    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
+    function SCReadIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; var buffer : PBRDataBuffer) : boolean; overload; virtual; abstract;
+    function SCReadIOMap(var ModID : Cardinal; const Offset : Word;
       var count : Word; buffer : PChar) : boolean; overload; virtual; abstract;
-    function NXTFindFirstModule(var ModName : string; var Handle : FantomHandle;
+    function SCFindFirstModule(var ModName : string; var Handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
-    function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
+    function SCFindNextModule(var Handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
-    function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
-    function NXTUploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
-    function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; virtual; abstract;
-    function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
-    function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; virtual; abstract;
-    function NXTListBricks(Bricks : TStrings) : boolean; virtual; abstract;
-    function NXTInitializeResourceNames : boolean; virtual; abstract;
-    function NXTUpdateResourceNames : boolean; virtual; abstract;
-    function NXTDefragmentFlash : Boolean; virtual;
-    function NXTBTDeviceCount : integer;
-    function NXTBTDeviceNameCount : integer;
-    function NXTBTDevice(idx : byte) : NXTDevice;
-    function NXTBTConnection(conn : byte) : NXTConnection;
+    function DownloadFile(const filename : string; const filetype : TPBRFileType) : boolean; virtual; abstract;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TPBRFileType) : boolean; virtual; abstract;
+    function UploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
+    function UploadFileToStream(const filename : string; aStream : TStream) : boolean; virtual; abstract;
+    function ListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
+    function ListModules(const searchPattern : string; Modules : TStrings) : boolean; virtual; abstract;
+    function ListBricks(Bricks : TStrings) : boolean; virtual; abstract;
+    function InitializeResourceNames : boolean; virtual;
+    function UpdateResourceNames : boolean; virtual;
+    function SCDefragmentFlash : Boolean; virtual;
+    function SCBTDeviceCount : integer;
+    function SCBTDeviceNameCount : integer;
+    function SCBTDevice(idx : byte) : NXTDevice;
+    function SCBTConnection(conn : byte) : NXTConnection;
+    function SCFirmwareVersion : word; virtual;
+    function SCInstalledFirmware : TInstalledFirmware; virtual;
+    function SCGetBrickName : string;
+    function PlayDownloadCompletedSound : boolean; virtual;
 
     // properties
     property  EEPROM[addr : Byte] : Byte read GetEEPROM write SetEEPROM;
@@ -445,6 +465,9 @@ type
     property  NXTUseMailbox : boolean read fNXTUseMailbox write fNXTUseMailbox;
     property  NXTMailboxNum : integer read fNXTMailboxNum write fNXTMailboxNum;
     property  ErrorStatus : integer read GetErrorStatus;
+    property  BrickFolder : string read fBrickFolder write fBrickFolder;
+    property  Layer : byte read fLayer write fLayer;
+    property  PowerScaleFactor : byte read fPowerScaleFactor write fPowerScaleFactor;
     property  OnDownloadStart : TNotifyEvent read fOnDownloadStart write fOnDownloadStart;
     property  OnDownloadDone : TNotifyEvent read fOnDownloadDone write fOnDownloadDone;
     property  OnDownloadStatus : TDownloadStatusEvent read fOnDownloadStatus write fOnDownloadStatus;
@@ -458,9 +481,10 @@ type
 function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
 function FantomAPIAvailable : boolean;
-procedure LoadNXTPorts(aStrings : TStrings);
+procedure LoadKnownPorts(aStrings : TStrings);
 function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
 procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; str : string; rxCount : integer);
+function PortIsUSB(const aPort : string) : Boolean;
 
 implementation
 
@@ -476,6 +500,11 @@ uses
   {$ENDIF}
   {$ENDIF};
 
+function PortIsUSB(const aPort : string) : Boolean;
+begin
+  Result := (aPort = 'usb') or (Pos('usb', LowerCase(aPort)) = 1);
+end;
+
 function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
 const
   FWSTR : array[TInstalledFirmware] of string = ('unknown', 'standard', 'enhanced');
@@ -488,7 +517,7 @@ begin
   Result := FantomAPILoaded;
 end;
 
-procedure LoadNXTPorts(aStrings : TStrings);
+procedure LoadKnownPorts(aStrings : TStrings);
 var
   i : integer;
   SL : TStringList;
@@ -556,15 +585,19 @@ begin
   fSearchBT  := True;
   fNXTUseMailbox := False;
   fNXTMailboxNum := 9;
-
-  for i := 0 to 2 do
+  fBrickFolder := '';
+  fSoundMuted := False;
+  fLayer := 0;
+  fPowerScaleFactor := 0;
+  
+  for i := 0 to 15 do
   begin
     fMotorPower[i] := 4;
     fMotorForward[i] := True;
     fMotorOn[i] := False;
   end;
 
-  for i := 0 to 3 do
+  for i := 0 to 15 do
   begin
     fSensorType[i] := 0;
     fSensorMode[i] := 0;
@@ -817,7 +850,7 @@ begin
     Result := 1;
 end;
 
-function TBrickComm.NXTDefragmentFlash: Boolean;
+function TBrickComm.SCDefragmentFlash: Boolean;
 var
   origFileList : TStringList;
   i : integer;
@@ -825,12 +858,12 @@ var
 begin
   origFileList := TStringList.Create;
   try
-    Result := NXTListFiles('*.*', origFileList);
+    Result := ListFiles('*.*', origFileList);
     // if there aren't any files then we are nearly done.
     if origFileList.Count > 0 then
     begin
       // upload all files
-      Result := NXTUploadFile('*.*', UserDataLocalPath);
+      Result := UploadFile('*.*', UserDataLocalPath);
       if Result then
       begin
         // in theory we have all the files in our list now
@@ -855,7 +888,7 @@ begin
           // now download these files in order
           for i := 0 to origFileList.Count - 1 do begin
             filename := origFileList.Names[i];
-            Result := NXTDownloadFile(UserDataLocalPath + filename, NameToNXTFileType(filename));
+            Result := DownloadFile(UserDataLocalPath + filename, NXTNameToPBRFileType(filename));
             if not Result then begin
               // do something clever here
               Exit;
@@ -880,7 +913,7 @@ begin
   end;
 end;
 
-function TBrickComm.NXTGetBrickName: string;
+function TBrickComm.SCGetBrickName: string;
 var
   btsig, memfree : Cardinal;
   tmpAddr : string;
@@ -889,15 +922,20 @@ begin
   tmpAddr := '';
   memfree := 0;
   btsig   := 0;
-  NXTGetDeviceInfo(Result, tmpAddr, btsig, memfree);
+  SCGetDeviceInfo(Result, tmpAddr, btsig, memfree);
+end;
+
+function TBrickComm.PlayDownloadCompletedSound : boolean;
+begin
+  Result := False;
 end;
 
 function GetInitFilename: string;
 begin
-  Result := UserDataLocalPath+'nxt.dat';
+  Result := UserDataLocalPath+'bricks.dat';
 end;
 
-function TBrickComm.NXTFirmwareVersion: word;
+function TBrickComm.SCFirmwareVersion: word;
 var
   pmin, pmaj, fmin, fmaj : byte;
 begin
@@ -905,13 +943,13 @@ begin
   if Result = 0 then
   begin
     pmin := 0; pmaj := 0; fmin := 0; fmaj := 0;
-    if NXTGetVersions(pmin, pmaj, fmin, fmaj) then
+    if SCGetVersions(pmin, pmaj, fmin, fmaj) then
       Result := fmaj*100 + fmin;
     fLocalFV := Result;
   end;
 end;
 
-function TBrickComm.NXTInstalledFirmware: TInstalledFirmware;
+function TBrickComm.SCInstalledFirmware: TInstalledFirmware;
 var
   state, clump : byte;
   pc : word;
@@ -922,7 +960,7 @@ begin
     // if we can call a direct command that only exists in the enhanced firmware
     // then we know that it is enhanced.
     state := 0; clump := 0; pc := 0; 
-    if NXTGetVMState(state, clump, pc) then
+    if DCGetVMState(state, clump, pc) then
       Result := ifEnhanced
     else
       Result := ifStandard;
@@ -937,9 +975,9 @@ begin
   fLocalIFW := ifUnknown;
 end;
 
-function TBrickComm.NXTBTDeviceCount: integer;
+function TBrickComm.SCBTDeviceCount: integer;
 var
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
   modID : Cardinal;
   count : Word;
 begin
@@ -948,13 +986,13 @@ begin
   modID := kNXT_ModuleComm;
   count := 1;
   buffer.Data[0] := 0;
-  if NXTReadIOMap(modID, CommOffsetBtDeviceCnt, count, buffer) then
+  if SCReadIOMap(modID, CommOffsetBtDeviceCnt, count, buffer) then
     Result := buffer.Data[0];
 end;
 
-function TBrickComm.NXTBTDeviceNameCount: integer;
+function TBrickComm.SCBTDeviceNameCount: integer;
 var
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
   modID : Cardinal;
   count : Word;
 begin
@@ -963,13 +1001,13 @@ begin
   modID := kNXT_ModuleComm;
   count := 1;
   buffer.Data[0] := 0;
-  if NXTReadIOMap(modID, CommOffsetBtDeviceNameCnt, count, buffer) then
+  if SCReadIOMap(modID, CommOffsetBtDeviceNameCnt, count, buffer) then
     Result := buffer.Data[0];
 end;
 
-function TBrickComm.NXTBTConnection(conn: byte): NXTConnection;
+function TBrickComm.SCBTConnection(conn: byte): NXTConnection;
 var
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
   modID : Cardinal;
   count : Word;
 begin
@@ -978,13 +1016,13 @@ begin
   modID := kNXT_ModuleComm;
   count := SizeOf(Result);
   buffer.Data[0] := 0;
-  if NXTReadIOMap(modID, CommOffsetBtConnectTableName(conn), count, buffer) then
+  if SCReadIOMap(modID, CommOffsetBtConnectTableName(conn), count, buffer) then
     Move(PByte(@(buffer.Data[0]))^, Result, count);
 end;
 
-function TBrickComm.NXTBTDevice(idx: byte): NXTDevice;
+function TBrickComm.SCBTDevice(idx: byte): NXTDevice;
 var
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
   modID : Cardinal;
   count : Word;
 begin
@@ -993,13 +1031,92 @@ begin
   modID := kNXT_ModuleComm;
   count := SizeOf(Result);
   buffer.Data[0] := 0;
-  if NXTReadIOMap(modID, CommOffsetBtDeviceTableName(idx), count, buffer) then
+  if SCReadIOMap(modID, CommOffsetBtDeviceTableName(idx), count, buffer) then
     Move(PByte(@(buffer.Data[0]))^, Result, count);
 end;
 
 function TBrickComm.GetErrorStatus: integer;
 begin
   Result := Abs(fStatus);
+end;
+
+function TBrickComm.VersionString: string;
+var
+  rom, ram : cardinal;
+begin
+  rom := 0;
+  ram := 0;
+  Version(rom, ram);
+  Result := Format('%d%d.%d%d / %d%d.%d%d',
+    [(rom and $FF000000) shr 24, (rom and $00FF0000) shr 16,
+     (rom and $0000FF00) shr 8,  (rom and $000000FF),
+     (ram and $FF000000) shr 24, (ram and $00FF0000) shr 16,
+     (ram and $0000FF00) shr 8,  (ram and $000000FF)]);
+
+end;
+
+function TBrickComm.SCFreeMemory: integer;
+var
+  memFree, BTSig : Cardinal;
+  nxtName, nxtAddr : string;
+begin
+  Result  := 0;
+  memFree := 0;
+  BTSig   := 0;
+  nxtName := '';
+  nxtAddr := '';
+  if SCGetDeviceInfo(nxtName, nxtAddr, BTSig, memFree) then
+  begin
+    Result := memFree;
+  end;
+end;
+
+function TBrickComm.TransportTypes: TTransportTypes;
+begin
+  Result := [ttUSB, ttSER];
+end;
+
+function TBrickComm.InitializeResourceNames : boolean;
+var
+  SL : TStringList;
+  name : string;
+begin
+  SL := TStringList.Create;
+  try
+    Result := ListBricks(SL);
+    name := GetInitFilename;
+    ForceDirectories(ExtractFilePath(name));
+    SL.Sort;
+    SL.SaveToFile(name);
+  finally
+    SL.Free;
+  end;
+end;
+
+function TBrickComm.UpdateResourceNames : boolean;
+var
+  SL, tmpSL : TStringList;
+  fname : string;
+begin
+  SL := TStringList.Create;
+  try
+    SL.Sorted := True;
+    SL.Duplicates := dupIgnore;
+    tmpSL := TStringList.Create;
+    try
+      Result := ListBricks(tmpSL);
+      fname := GetInitFilename;
+      if FileExists(fname) then
+        SL.LoadFromFile(fname);
+      SL.AddStrings(tmpSL);
+      ForceDirectories(ExtractFilePath(fname));
+      SL.SaveToFile(fname);
+    finally
+      tmpSL.Free;
+    end;
+  finally
+    SL.Free;
+  end;
 end;
 
 end.

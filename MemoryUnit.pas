@@ -207,8 +207,8 @@ begin
       MemoryMemo.Lines.Add(Format(sTotalUsed   + K_FMTS[PF],[StrToIntDef(memdata[65], 0)]));
       MemoryMemo.Lines.Add(Format(sTopOfMemory + K_FMTS[PF],[K_SPY_TOP]));
       MemoryMemo.Lines.Add(Format(sFreeMemLeft + K_FMTS[pfDecimal],[K_SPY_TOP-StrToIntDef(memdata[65], 0)]));
-    end else if IsNXT then begin
-      // NXT memory map == very different from other bricks
+    end else if IsNXT or IsEv3 then begin
+      // NXT/EV3 memory map == very different from other bricks
       j := 0;
       while j < memdata.Count do
       begin

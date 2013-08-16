@@ -165,17 +165,7 @@ begin
       except
         BatStatus.Caption := K_DEFAULT_CAPTION;
       end;
-      BrickComm.Version(rom, ram);
-//      Version.Caption := Format('%8.8x/%8.8x', [rom, ram]);
-      Version.Caption := Format('%d%d.%d%d / %d%d.%d%d',
-                                [(rom and $FF000000) shr 24,
-                                 (rom and $00FF0000) shr 16,
-                                 (rom and $0000FF00) shr 8,
-                                 (rom and $000000FF),
-                                 (ram and $FF000000) shr 24,
-                                 (ram and $00FF0000) shr 16,
-                                 (ram and $0000FF00) shr 8,
-                                 (ram and $000000FF)]);
+      Version.Caption := Brickcomm.VersionString;
       if IsRCX then
       begin
         try
@@ -190,11 +180,11 @@ begin
           Watch.Caption := K_DEFAULT_WATCH;
         end;
       end
-      else if IsNXT then
+      else if IsNXT or IsEV3 then
       begin
-        if BrickComm.NXTGetCurrentProgramName(name) then
+        if BrickComm.DCGetCurrentProgramName(name) then
           ProgramNumb.Caption := name;
-        if BrickComm.NXTKeepAlive(time, True) then
+        if BrickComm.DCKeepAlive(time, True) then
         begin
           time := time div 60 div 1000; // convert to minutes
           PowerDown.SilentValue := time;
@@ -252,11 +242,11 @@ begin
   DisplayGroup.Visible := IsRCX;
   WatchGroup.Visible := IsRCX;
   IRGroup.Visible := IsRCX or IsScout;
-  grpNXTDiag.Visible := IsNXT;
+  grpNXTDiag.Visible := IsNXT or IsEV3;
   MakeDisplayOptionsVisible(False);
   AdjustFormSize;
   RefreshBtnClick(Self);
-  if IsNXT then
+  if IsNXT or IsEV3 then
     btnRefreshNXTClick(Self);
   if IsRCX or IsScout then
   begin
@@ -284,7 +274,7 @@ begin
   begin
     Height := WatchGroup.Top + GetWindowTitleBarHeight() + V_FUDGE + V_HELP;
   end
-  else if IsNXT then
+  else if IsNXT or IsEV3 then
   begin
     Height := grpNXTDiag.Top + grpNXTDiag.Height + 7 +
               GetWindowTitleBarHeight() + V_FUDGE + V_HELP;
@@ -407,7 +397,7 @@ var
   memFree : Cardinal;
   bname, baddr : string;
 begin
-  if BrickComm.NXTGetDeviceInfo(bname, baddr, btsig, memFree) then
+  if BrickComm.SCGetDeviceInfo(bname, baddr, btsig, memFree) then
   begin
     NXTName.Caption   := bname;
     BTAddress.Caption := baddr;
@@ -426,7 +416,7 @@ begin
     F.edtNXTName.Text := NXTName.Caption;
     if F.ShowModal = mrOK then
     begin
-      BrickComm.NXTSetBrickName(F.edtNXTName.Text, True);
+      BrickComm.SCSetBrickName(F.edtNXTName.Text, True);
       NXTName.Caption := F.edtNXTName.Text;
     end;
   finally

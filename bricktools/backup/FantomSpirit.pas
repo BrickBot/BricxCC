@@ -189,17 +189,17 @@ type
     function StartProgram(const filename : string) : boolean; override;
     function StopProgram : boolean; override;
     function PlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
-    function GetNXTOutputState(const aPort : byte; var power : integer;
+    function DCGetOutputState(const aPort : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
       blocktachocount, rotationcount : longint) : boolean; override;
-    function SetNXTOutputState(const aPort : byte; const power : integer;
+    function DCSetOutputState(const aPort : byte; const power : integer;
       const mode, regmode : byte; const turnratio : integer;
       const runstate : byte; const tacholimit : cardinal) : boolean; override;
-    function GetNXTInputValues(const aPort : byte; var valid, calibrated : boolean;
+    function DCGetInputValues(const aPort : byte; var valid, calibrated : boolean;
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; override;
-    function SetNXTInputMode(const aPort, stype, smode : byte) : boolean; override;
+    function DCSetInputMode(const aPort, stype, smode : byte) : boolean; override;
     function ResetInputScaledValue(const aPort : byte) : boolean; override;
     function ResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
     function MessageWrite(const inbox : byte; const msg : string) : boolean; overload; override;
@@ -208,60 +208,60 @@ type
     function GetCurrentProgramName(var name : string) : boolean; override;
     function GetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
-    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
+    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : PBRMessage) : boolean; override;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : cardinal;
+    function SCOpenRead(const filename : string; var handle : cardinal;
       var size : cardinal) : boolean; override;
-    function NXTOpenWrite(const filename : string; const size : cardinal;
+    function SCOpenWrite(const filename : string; const size : cardinal;
       var handle : cardinal) : boolean; override;
-    function NXTRead(var handle : cardinal; var count : word;
-      var buffer : NXTDataBuffer) : boolean; override;
-    function NXTWrite(var handle : cardinal; const buffer : NXTDataBuffer;
+    function SCRead(var handle : cardinal; var count : word;
+      var buffer : PBRDataBuffer) : boolean; override;
+    function SCWrite(var handle : cardinal; const buffer : PBRDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; override;
-    function NXTCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
-    function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTFindFirstFile(var filename : string; var handle : cardinal; var filesize : cardinal) : boolean; override;
-    function NXTFindNextFile(var handle : cardinal; var filename : string; var filesize : cardinal) : boolean; override;
-    function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
-    function NXTOpenWriteLinear(const filename : string; const size : cardinal;
+    function SCCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
+    function SCDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; override;
+    function SCFindFirstFile(var filename : string; var handle : cardinal; var filesize : cardinal) : boolean; override;
+    function SCFindNextFile(var handle : cardinal; var filename : string; var filesize : cardinal) : boolean; override;
+    function SCGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
+    function SCOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : cardinal) : boolean; override;
-    function NXTOpenReadLinear(const filename : string; var handle : cardinal;
+    function SCOpenReadLinear(const filename : string; var handle : cardinal;
       var size : cardinal) : boolean; override;
-    function NXTOpenWriteData(const filename : string; const size : cardinal;
+    function SCOpenWriteData(const filename : string; const size : cardinal;
       var handle : cardinal) : boolean; override;
-    function NXTOpenAppendData(const filename : string; var size : cardinal;
+    function SCOpenAppendData(const filename : string; var size : cardinal;
       var handle : cardinal) : boolean; override;
-    function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
-    function NXTBootCommand(const chkResponse: boolean = false) : boolean; override;
-    function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTGetDeviceInfo(var name : string; BTAddress : PByte;
+    function SCCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
+    function SCBootCommand(const chkResponse: boolean = false) : boolean; override;
+    function SCSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
+    function SCGetDeviceInfo(var name : string; BTAddress : PByte;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; override;
-    function NXTFreeMemory : integer; override;
-    function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; override;
-    function NXTBTFactoryReset(const chkResponse: boolean = false) : boolean; override;
-    function NXTPollCommandLen(const bufNum : byte; var count : byte) : boolean; override;
-    function NXTPollCommand(const bufNum : byte; var count : byte;
-      var buffer : NXTDataBuffer) : boolean; override;
-    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; override;
-    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; var buffer : NXTDataBuffer) : boolean; override;
-    function NXTFindFirstModule(var ModName : string; var Handle : cardinal;
+    function SCFreeMemory : integer; override;
+    function SCDeleteUserFlash(const chkResponse: boolean = false) : boolean; override;
+    function SCBTFactoryReset(const chkResponse: boolean = false) : boolean; override;
+    function SCPollCommandLen(const bufNum : byte; var count : byte) : boolean; override;
+    function SCPollCommand(const bufNum : byte; var count : byte;
+      var buffer : PBRDataBuffer) : boolean; override;
+    function SCWriteIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; const buffer : PBRDataBuffer; chkResponse : Boolean = False) : boolean; override;
+    function SCReadIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; var buffer : PBRDataBuffer) : boolean; override;
+    function SCFindFirstModule(var ModName : string; var Handle : cardinal;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
-    function NXTFindNextModule(var Handle : cardinal; var ModName : string;
+    function SCFindNextModule(var Handle : cardinal; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
-    function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
+    function SCRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
 {
   kNXT_SCGetBTAddress          = $9A;
 }
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
-    function NXTUploadFile(const filename : string; const dir : string = '') : boolean; override;
-    function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
-    function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
-    function NXTListBricks(Bricks : TStrings) : boolean; override;
-    procedure NXTInitializeResourceNames; override;
+    function DownloadFile(const filename : string; const filetype : TPBRFileType) : boolean; override;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TPBRFileType) : boolean; override;
+    function UploadFile(const filename : string; const dir : string = '') : boolean; override;
+    function ListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
+    function ListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
+    function ListBricks(Bricks : TStrings) : boolean; override;
+    procedure InitializeResourceNames; override;
   end;
 
 implementation
@@ -331,7 +331,7 @@ function TFantomSpirit.Shutdown: boolean;
 var
   modID : Cardinal;
   count : Word;
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -339,7 +339,7 @@ begin
   count := 2;
   buffer.Data[0] := $0;
   buffer.Data[1] := $5a;
-  Result := NXTWriteIOMap(modID, IOCtrlOffsetPowerOn, count, buffer);
+  Result := SCWriteIOMap(modID, IOCtrlOffsetPowerOn, count, buffer);
 end;
 
 const
@@ -360,7 +360,7 @@ begin
     if (MotorBits[i] and aMotorList) = MotorBits[i] then
     begin
       fMotorOn[i] := True;
-      Result := Result and GetNXTOutputState(i, oldpower, mode, regmode, turnratio,
+      Result := Result and DCGetOutputState(i, oldpower, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blocktachocount, rotationcount);
       power := fMotorPower[i] * 14;
       if not fMotorForward[i] then
@@ -371,7 +371,7 @@ begin
       begin
         mode := OUT_MODE_MOTORON+OUT_MODE_BRAKE;
         runstate := OUT_RUNSTATE_RUNNING;
-        Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+        Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
           runstate, tacholimit);
       end;
     end;
@@ -399,7 +399,7 @@ begin
       runstate := OUT_RUNSTATE_RUNNING;
       turnratio := 0; // straight (side effect of stopping motors is to reset turn ratio)
       tacholimit := 0; // no limit (side effect of stopping motors is to reset tacho limit)
-      Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+      Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
         runstate, tacholimit);
     end;
     if not Result then Break;
@@ -426,7 +426,7 @@ begin
       runstate := 0; // OUT_RUNSTATE_IDLE;
       turnratio := 0; // straight (side effect of stopping motors is to reset turn ratio)
       tacholimit := 0; // no limit (side effect of stopping motors is to reset tacho limit)
-      Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+      Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
         runstate, tacholimit);
     end;
     if not Result then Break;
@@ -448,7 +448,7 @@ begin
     if (MotorBits[i] and aMotorList) = MotorBits[i] then
     begin
       fMotorForward[i] := True;
-      Result := Result and GetNXTOutputState(i, power, mode, regmode, turnratio,
+      Result := Result and DCGetOutputState(i, power, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blocktachocount, rotationcount);
       if power < 0 then
       begin
@@ -460,7 +460,7 @@ begin
           regmode := 0;
           runstate := 0;
         end;
-        Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+        Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
           runstate, tacholimit);
       end;
     end;
@@ -483,7 +483,7 @@ begin
     if (MotorBits[i] and aMotorList) = MotorBits[i] then
     begin
       fMotorForward[i] := False;
-      Result := Result and GetNXTOutputState(i, power, mode, regmode, turnratio,
+      Result := Result and DCGetOutputState(i, power, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blocktachocount, rotationcount);
       if power > 0 then
       begin
@@ -495,7 +495,7 @@ begin
           regmode := 0;
           runstate := 0;
         end;
-        Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+        Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
           runstate, tacholimit);
       end;
     end;
@@ -518,10 +518,10 @@ begin
     if (MotorBits[i] and aMotorList) = MotorBits[i] then
     begin
       fMotorForward[i] := not fMotorForward[i];
-      Result := Result and GetNXTOutputState(i, power, mode, regmode, turnratio,
+      Result := Result and DCGetOutputState(i, power, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blocktachocount, rotationcount);
       power := power * -1;
-      Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+      Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
         runstate, tacholimit);
     end;
     if not Result then Break;
@@ -550,7 +550,7 @@ begin
       if (MotorBits[i] and aMotorList) = MotorBits[i] then
       begin
         fMotorPower[i] := Abs(aNum) mod 8;
-        Result := Result and GetNXTOutputState(i, oldpower, mode, regmode, turnratio,
+        Result := Result and DCGetOutputState(i, oldpower, mode, regmode, turnratio,
           runstate, tacholimit, tachocount, blocktachocount, rotationcount);
         power := fMotorPower[i] * 14;
         if fMotorPower[i] = 7 then
@@ -566,7 +566,7 @@ begin
             regmode := 0;
             runstate := 0;
           end;
-          Result := Result and SetNXTOutputState(i, power, mode, regmode, turnratio,
+          Result := Result and DCSetOutputState(i, power, mode, regmode, turnratio,
             runstate, tacholimit);
         end;
       end;
@@ -598,7 +598,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   fSensorType[aNum] := aType;
-  Result := SetNXTInputMode(aNum, aType, fSensorMode[aNum]);
+  Result := DCSetInputMode(aNum, aType, fSensorMode[aNum]);
 end;
 
 function TFantomSpirit.SetSensorMode(aNum, aMode, aSlope: integer): boolean;
@@ -606,7 +606,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   fSensorMode[aNum] := ((aMode and $7) shl 5) or (aSlope and $F);
-  Result := SetNXTInputMode(aNum, fSensorType[aNum], fSensorMode[aNum]);
+  Result := DCSetInputMode(aNum, fSensorType[aNum], fSensorMode[aNum]);
 end;
 
 function TFantomSpirit.ClearSensorValue(aNum: integer): boolean;
@@ -718,7 +718,7 @@ end;
 
 function TFantomSpirit.ClearMemory: boolean;
 begin
-  Result := NXTDeleteUserFlash(True);
+  Result := SCDeleteUserFlash(True);
 end;
 
 function TFantomSpirit.Sleep(aVal: integer): boolean;
@@ -763,7 +763,7 @@ begin
     try
       MS.LoadFromFile(aFile);
       DoDownloadStart;
-      Result := NXTDownloadStream(MS, aFile, nftFirmware);
+      Result := DownloadStream(MS, aFile, nftFirmware);
       DoDownloadDone;
     finally
       MS.Free;
@@ -917,7 +917,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.GetNXTOutputState(const aPort: byte; var power: integer;
+function TFantomSpirit.DCGetOutputState(const aPort: byte; var power: integer;
   var mode, regmode: byte; var turnratio: integer; var runstate: byte;
   var tacholimit: cardinal; var tachocount, blocktachocount, rotationcount: Integer): boolean;
 var
@@ -949,7 +949,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.SetNXTOutputState(const aPort: byte;
+function TFantomSpirit.DCSetOutputState(const aPort: byte;
   const power: integer; const mode, regmode: byte;
   const turnratio: integer; const runstate: byte;
   const tacholimit: cardinal): boolean;
@@ -971,7 +971,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.GetNXTInputValues(const aPort: byte; var valid,
+function TFantomSpirit.DCGetInputValues(const aPort: byte; var valid,
   calibrated: boolean; var stype, smode: byte; var raw, normalized: word;
   var scaled, calvalue: smallint): boolean;
 var
@@ -1002,7 +1002,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.SetNXTInputMode(const aPort, stype, smode: byte): boolean;
+function TFantomSpirit.DCSetInputMode(const aPort, stype, smode: byte): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -1272,7 +1272,7 @@ begin
 end;
 
 function TFantomSpirit.MessageRead(const remote, local: byte;
-  const remove: boolean; var Msg: NXTMessage): boolean;
+  const remove: boolean; var Msg: PBRMessage): boolean;
 var
   cmd : TNINxtCmd;
   i : integer;
@@ -1301,7 +1301,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTOpenRead(const filename: string; var handle: cardinal;
+function TFantomSpirit.SCOpenRead(const filename: string; var handle: cardinal;
   var size: cardinal): boolean;
 var
   status : integer;
@@ -1328,13 +1328,13 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTOpenReadLinear(const filename: string;
+function TFantomSpirit.SCOpenReadLinear(const filename: string;
   var handle: cardinal; var size: cardinal): boolean;
 begin
-  Result := NXTOpenRead(filename, handle, size);
+  Result := SCOpenRead(filename, handle, size);
 end;
 
-function TFantomSpirit.NXTOpenAppendData(const filename: string;
+function TFantomSpirit.SCOpenAppendData(const filename: string;
   var size: cardinal; var handle: cardinal): boolean;
 var
   status : integer;
@@ -1361,7 +1361,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTOpenWrite(const filename: string;
+function TFantomSpirit.SCOpenWrite(const filename: string;
   const size: cardinal; var handle: cardinal): boolean;
 var
   status : integer;
@@ -1383,7 +1383,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTOpenWriteData(const filename: string;
+function TFantomSpirit.SCOpenWriteData(const filename: string;
   const size: cardinal; var handle: cardinal): boolean;
 var
   status : integer;
@@ -1405,7 +1405,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTOpenWriteLinear(const filename: string;
+function TFantomSpirit.SCOpenWriteLinear(const filename: string;
   const size: cardinal; var handle: cardinal): boolean;
 var
   status : integer;
@@ -1427,8 +1427,8 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTRead(var handle: cardinal; var count: word;
-  var buffer: NXTDataBuffer): boolean;
+function TFantomSpirit.SCRead(var handle: cardinal; var count: word;
+  var buffer: PBRDataBuffer): boolean;
 var
   status : integer;
 begin
@@ -1439,7 +1439,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTWrite(var handle: cardinal; const buffer: NXTDataBuffer;
+function TFantomSpirit.SCWrite(var handle: cardinal; const buffer: PBRDataBuffer;
   var count: word; const chkResponse: boolean): boolean;
 var
   status : integer;
@@ -1451,7 +1451,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTCloseFile(var handle: cardinal; const chkResponse: boolean): boolean;
+function TFantomSpirit.SCCloseFile(var handle: cardinal; const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1467,7 +1467,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTDeleteFile(var filename: string; const chkResponse: boolean): boolean;
+function TFantomSpirit.SCDeleteFile(var filename: string; const chkResponse: boolean): boolean;
 var
   handle : cardinal;
   status : integer;
@@ -1486,7 +1486,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindFirstFile(var filename: string;
+function TFantomSpirit.SCFindFirstFile(var filename: string;
   var handle: cardinal; var filesize : cardinal): boolean;
 var
   status : integer;
@@ -1506,7 +1506,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindNextFile(var handle: cardinal; var filename: string;
+function TFantomSpirit.SCFindNextFile(var handle: cardinal; var filename: string;
   var filesize : cardinal): boolean;
 var
   status : integer;
@@ -1534,7 +1534,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte): boolean;
+function TFantomSpirit.SCGetVersions(var protmin, protmaj, firmmin, firmmaj : byte): boolean;
 var
   status : integer;
 begin
@@ -1545,7 +1545,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTCloseModuleHandle(var handle: cardinal; const chkResponse: boolean): boolean;
+function TFantomSpirit.SCCloseModuleHandle(var handle: cardinal; const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1556,7 +1556,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTBootCommand(const chkResponse: boolean): boolean;
+function TFantomSpirit.SCBootCommand(const chkResponse: boolean): boolean;
 var
   status : integer;
   resBuf : array[0..60] of Char;
@@ -1573,7 +1573,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTSetBrickName(const name: string; const chkResponse: boolean): boolean;
+function TFantomSpirit.SCSetBrickName(const name: string; const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1584,7 +1584,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTGetDeviceInfo(var name: string;
+function TFantomSpirit.SCGetDeviceInfo(var name: string;
   BTAddress : PByte; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
 var
   status : integer;
@@ -1598,7 +1598,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTDeleteUserFlash(const chkResponse: boolean): boolean;
+function TFantomSpirit.SCDeleteUserFlash(const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1609,7 +1609,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTBTFactoryReset(const chkResponse: boolean): boolean;
+function TFantomSpirit.SCBTFactoryReset(const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1629,7 +1629,7 @@ type
     Name : string;
   end;
 
-function TFantomSpirit.NXTUploadFile(const filename: string; const dir : string): boolean;
+function TFantomSpirit.UploadFile(const filename: string; const dir : string): boolean;
 var
   handle : cardinal;
   size, totalSize, availableSize : Cardinal;
@@ -1734,7 +1734,7 @@ begin
         finally
           MS.Free;
         end;
-        NXTCloseFile(handle);
+        SCCloseFile(handle);
       end;
     end;
   finally
@@ -1742,7 +1742,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTListFiles(const searchPattern: string; Files: TStrings): boolean;
+function TFantomSpirit.ListFiles(const searchPattern: string; Files: TStrings): boolean;
 var
   size : Cardinal;
   tmpfilename : string;
@@ -1768,7 +1768,7 @@ begin
   iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
 end;
 
-function TFantomSpirit.NXTListModules(const searchPattern: string;
+function TFantomSpirit.ListModules(const searchPattern: string;
   Modules: TStrings): boolean;
 var
   size, mID, NXTModuleIteratorHandle, handle : Cardinal;
@@ -1803,8 +1803,8 @@ begin
   iNXT_destroyModuleIterator(fNXTHandle, NXTModuleIteratorHandle, status);
 end;
 
-function TFantomSpirit.NXTDownloadFile(const filename: string;
-  const filetype: TNXTFileType): boolean;
+function TFantomSpirit.DownloadFile(const filename: string;
+  const filetype: TPBRFileType): boolean;
 var
   MS : TMemoryStream;
 begin
@@ -1817,7 +1817,7 @@ begin
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(filename);
-      Result := NXTDownloadStream(MS, filename, filetype);
+      Result := DownloadStream(MS, filename, filetype);
     finally
       MS.Free;
     end;
@@ -1926,8 +1926,8 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
-  const filetype: TNXTFileType): boolean;
+function TFantomSpirit.DownloadStream(aStream: TStream; const dest : string;
+  const filetype: TPBRFileType): boolean;
 var
   size : Cardinal;
   handle : cardinal;
@@ -1950,13 +1950,13 @@ begin
     // make destination filename a valid NXT filename (15.3)
     nxtFilename := MakeValidNXTFilename(dest);
     delname := nxtFilename;
-    NXTDeleteFile(delname, True);
+    SCDeleteFile(delname, True);
     if filetype in [nftProgram, nftGraphics] then
-      Result := NXTOpenWriteLinear(nxtFilename, size, handle)
+      Result := SCOpenWriteLinear(nxtFilename, size, handle)
     else if filetype = nftData then
-      Result := NXTOpenWriteData(nxtFilename, size, handle)
+      Result := SCOpenWriteData(nxtFilename, size, handle)
     else
-      Result := NXTOpenWrite(nxtFilename, size, handle);
+      Result := SCOpenWrite(nxtFilename, size, handle);
     if Result then
     begin
       GetMem(buf, size);
@@ -1969,12 +1969,12 @@ begin
       finally
         FreeMem(buf);
       end;
-      Result := NXTCloseFile(handle) and Result;
+      Result := SCCloseFile(handle) and Result;
     end;
   end;
 end;
 
-function TFantomSpirit.NXTPollCommandLen(const bufNum : byte; var count: byte): boolean;
+function TFantomSpirit.SCPollCommandLen(const bufNum : byte; var count: byte): boolean;
 var
   status : integer;
 begin
@@ -1986,8 +1986,8 @@ begin
     count := 0;
 end;
 
-function TFantomSpirit.NXTPollCommand(const bufNum: byte; var count: byte;
-  var buffer: NXTDataBuffer): boolean;
+function TFantomSpirit.SCPollCommand(const bufNum: byte; var count: byte;
+  var buffer: PBRDataBuffer): boolean;
 var
   dataBuffer : PByte;
   status : Integer;
@@ -2003,8 +2003,8 @@ begin
     count := 0;
 end;
 
-function TFantomSpirit.NXTWriteIOMap(var ModID: Cardinal;
-  const Offset: Word; var count: Word; const buffer: NXTDataBuffer;
+function TFantomSpirit.SCWriteIOMap(var ModID: Cardinal;
+  const Offset: Word; var count: Word; const buffer: PBRDataBuffer;
   chkResponse : Boolean): boolean;
 var
   status : integer;
@@ -2027,8 +2027,8 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTReadIOMap(var ModID: Cardinal;
-  const Offset: Word; var Count: Word; var buffer: NXTDataBuffer): boolean;
+function TFantomSpirit.SCReadIOMap(var ModID: Cardinal;
+  const Offset: Word; var Count: Word; var buffer: PBRDataBuffer): boolean;
 var
   status : integer;
   mh : Cardinal;
@@ -2052,7 +2052,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindNextModule(var Handle: cardinal;
+function TFantomSpirit.SCFindNextModule(var Handle: cardinal;
   var ModName: string; var ModID, ModSize: Cardinal;
   var IOMapSize: Word): boolean;
 var
@@ -2090,7 +2090,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindFirstModule(var ModName: string; var Handle: cardinal;
+function TFantomSpirit.SCFindFirstModule(var ModName: string; var Handle: cardinal;
   var ModID, ModSize: Cardinal; var IOMapSize: Word): boolean;
 var
   status : integer;
@@ -2150,7 +2150,7 @@ begin
   Result := Word(BytesToCardinal(GetReplyByte(index), GetReplyByte(index+1)));
 end;
 
-function TFantomSpirit.NXTListBricks(Bricks: TStrings): boolean;
+function TFantomSpirit.ListBricks(Bricks: TStrings): boolean;
 var
   nih : Cardinal;
   status, status2 : integer;
@@ -2385,7 +2385,7 @@ begin
   try
     fMemMap.Add('Files');
     fMemMap.Add('');
-    if NXTListFiles('*.*', SL) then
+    if ListFiles('*.*', SL) then
     begin
       for i := 0 to SL.Count - 1 do
       begin
@@ -2398,7 +2398,7 @@ begin
     fMemMap.Add('');
     fMemMap.Add('Modules');
     fMemMap.Add('');
-    if NXTListModules('*.*', SL) then
+    if ListModules('*.*', SL) then
     begin
       for i := 0 to SL.Count - 1 do
       begin
@@ -2415,7 +2415,7 @@ begin
     end;
     fMemMap.Add('');
     fMemMap.Add('');
-    i := NXTFreeMemory;
+    i := SCFreeMemory;
     fMemMap.Add('Free Memory');
     fMemMap.Add(IntToStr(i));
   finally
@@ -2449,7 +2449,7 @@ var
   bBrake : boolean;
 begin
   Result := 0;
-  res := GetNXTOutputState(aOut, power, mode, regmode, turnratio, runstate,
+  res := DCGetOutputState(aOut, power, mode, regmode, turnratio, runstate,
     tacholimit, tachocount, blocktachocount, rotationcount);
   if res then
   begin
@@ -2527,7 +2527,7 @@ var
   scaled, calvalue : smallint;
   modID : Cardinal;
   count : Word;
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
   power, turnratio, tachocount, blocktachocount, rotationcount : integer;
   mode, regmode, runstate : byte;
   tacholimit : cardinal;
@@ -2545,7 +2545,7 @@ begin
       Result := Random(aNum);
     end;
     kRCX_TachCounterType : begin
-      res := GetNXTOutputState(aNum, power, mode, regmode, turnratio, runstate,
+      res := DCGetOutputState(aNum, power, mode, regmode, turnratio, runstate,
         tacholimit, tachocount, blocktachocount, rotationcount);
       if res then
         Result := rotationcount;
@@ -2554,7 +2554,7 @@ begin
       // IOMapRead CommandOffsetTick
       modID := kNXT_ModuleCmd;
       count := 4;
-      res := NXTReadIOMap(modID, CommandOffsetTick, count, buffer);
+      res := SCReadIOMap(modID, CommandOffsetTick, count, buffer);
       if res then
       begin
         Result := BytesToCardinal(buffer.Data[0], buffer.Data[1], buffer.Data[2], buffer.Data[3]);
@@ -2564,7 +2564,7 @@ begin
       Result := BatteryLevel;
     end;
     kRCX_FirmwareVersionType : begin
-      if NXTGetVersions(protmin, protmaj, firmmin, firmmaj) then
+      if SCGetVersions(protmin, protmaj, firmmin, firmmaj) then
       begin
         // 1.03 => 1030
         Result := (firmmaj * 100) + firmmin;
@@ -2574,7 +2574,7 @@ begin
     kRCX_InputValueType, kRCX_InputRawType,
     kRCX_InputBooleanType : begin
       // get input type or input mode
-      res := GetNXTInputValues(aNum, valid, calibrated, stype, smode,
+      res := DCGetInputValues(aNum, valid, calibrated, stype, smode,
         raw, normalized, scaled, calvalue);
       if res then
       begin
@@ -2709,14 +2709,14 @@ function TFantomSpirit.PowerDownTime(aTime: integer): boolean;
 var
   modID : Cardinal;
   count : Word;
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
 begin
   Result := Open;
   if not Result then Exit;
   modID := kNXT_ModuleUI;
   count := 1;
   buffer.Data[0] := Byte(abs(aTime) mod $FF);
-  Result := NXTWriteIOMap(modID, UIOffsetSleepTimeout, count, buffer);
+  Result := SCWriteIOMap(modID, UIOffsetSleepTimeout, count, buffer);
 end;
 
 function TFantomSpirit.PrepareBrick: boolean;
@@ -2939,7 +2939,7 @@ function TFantomSpirit.Version(var rom, ram: Cardinal): boolean;
 var
   protmin, protmaj, firmmin, firmmaj : byte;
 begin
-  Result := NXTGetVersions(protmin, protmaj, firmmin, firmmaj);
+  Result := SCGetVersions(protmin, protmaj, firmmin, firmmaj);
   rom := (protmin shl 8) + (protmaj shl 16);
   ram := (firmmin shl 0) + (firmmaj shl 16);
 end;
@@ -2956,14 +2956,14 @@ begin
     fUseBT := True;
 end;
 
-procedure TFantomSpirit.NXTInitializeResourceNames;
+procedure TFantomSpirit.InitializeResourceNames;
 var
   SL : TStringList;
   name : string;
 begin
   SL := TStringList.Create;
   try
-    NXTListBricks(SL);
+    ListBricks(SL);
     name := GetInitFilename;
     ForceDirectories(ExtractFilePath(name));
     SL.SaveToFile(name);
@@ -2972,7 +2972,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFreeMemory: integer;
+function TFantomSpirit.SCFreeMemory: integer;
 var
   BTAddr : PByte;
   memFree, BTSig : Cardinal;
@@ -2981,7 +2981,7 @@ begin
   Result := 0;
   GetMem(BTAddr, 7);
   try
-    if NXTGetDeviceInfo(nxtName, BTAddr, BTSig, memFree) then
+    if SCGetDeviceInfo(nxtName, BTAddr, BTSig, memFree) then
     begin
       Result := memFree;
     end;
@@ -2990,7 +2990,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTRenameFile(const old, new: string;
+function TFantomSpirit.SCRenameFile(const old, new: string;
   const chkResponse: boolean): boolean;
 var
   cmd : TNxtCmd;

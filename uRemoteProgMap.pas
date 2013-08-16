@@ -68,7 +68,7 @@ implementation
 {$ENDIF}
 
 uses
-  brick_common, uGlobals;
+  SysUtils, brick_common, uGlobals;
 
 { TfrmRemoteProgMap }
 
@@ -115,30 +115,31 @@ procedure TfrmRemoteProgMap.FormCreate(Sender: TObject);
 var
   SL : TStringList;
   i : integer;
-  tmp : string;
+  tmp, ext : string;
 begin
-  if BrickComm.BrickType = SU_NXT then
+  if BrickComm.BrickType in [SU_NXT, SU_EV3] then
   begin
     SL := TStringList.Create;
     try
-      BrickComm.NXTListFiles('*.rxe', SL);
-      for i := 0 to SL.Count - 1 do
-      begin
-        tmp := SL.Names[i];
-        edtP1.Items.Add(tmp);
-        edtP2.Items.Add(tmp);
-        edtP3.Items.Add(tmp);
-        edtP4.Items.Add(tmp);
-        edtP5.Items.Add(tmp);
-      end;
-      SL.Clear;
-      BrickComm.NXTListFiles('*.rso', SL);
-      BrickComm.NXTListFiles('*.rmd', SL);
+      BrickComm.ListFiles('*.*', SL);
       edtTone.Items.Add('default');
       for i := 0 to SL.Count - 1 do
       begin
         tmp := SL.Names[i];
-        edtTone.Items.Add(tmp);
+        ext := LowerCase(ExtractFileExt(tmp));
+        if (ext = '.rxe') or (ext = '.rbf') then
+        begin
+          edtP1.Items.Add(tmp);
+          edtP2.Items.Add(tmp);
+          edtP3.Items.Add(tmp);
+          edtP4.Items.Add(tmp);
+          edtP5.Items.Add(tmp);
+        end;
+        if (ext = '.rso') or (ext = '.rsf') or
+           ((BrickComm.BrickType = SU_NXT) and (ext = '.rmd')) then
+        begin
+          edtTone.Items.Add(tmp);
+        end;
       end;
     finally
       SL.Free;

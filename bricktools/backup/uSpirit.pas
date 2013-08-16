@@ -67,17 +67,17 @@ type
     Data : array[0..15] of Byte;
   end;
 
-  NXTMessage = record
+  PBRMessage = record
     Inbox : byte;
     Size : byte;
     Data : array[0..58] of Byte;
   end;
 
-  NXTDataBuffer = record
+  PBRDataBuffer = record
     Data : array[0..kNXT_MaxBytes-1] of Byte;
   end;
 
-  TNXTFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware);
+  TPBRFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware);
 
   TTransmitLevel = (tlNear, tlFar);
   TLSSource = (lsVariable, lsError, lsConstant);
@@ -302,17 +302,17 @@ type
     function StartProgram(const filename : string) : boolean; virtual; abstract;
     function StopProgram : boolean; virtual; abstract;
     function PlaySoundFile(const filename : string; bLoop : boolean) : boolean; virtual; abstract;
-    function GetNXTOutputState(const port : byte; var power : integer;
+    function DCGetOutputState(const port : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
       blocktachocount, rotationcount : longint) : boolean; virtual; abstract;
-    function SetNXTOutputState(const port : byte; const power : integer;
+    function DCSetOutputState(const port : byte; const power : integer;
       const mode, regmode : byte; const turnratio : integer;
       const runstate : byte; const tacholimit : cardinal) : boolean; virtual; abstract;
-    function GetNXTInputValues(const port : byte; var valid, calibrated : boolean;
+    function DCGetInputValues(const port : byte; var valid, calibrated : boolean;
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; virtual; abstract;
-    function SetNXTInputMode(const port, stype, smode : byte) : boolean; virtual; abstract;
+    function DCSetInputMode(const port, stype, smode : byte) : boolean; virtual; abstract;
     function ResetInputScaledValue(const port : byte) : boolean; virtual; abstract;
     function ResetOutputPosition(const port : byte; const Relative : boolean) : boolean; virtual; abstract;
     function MessageWrite(const inbox : byte; const msg : string) : boolean; overload; virtual; abstract;
@@ -321,62 +321,62 @@ type
     function GetCurrentProgramName(var name : string) : boolean; virtual; abstract;
     function GetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; virtual; abstract;
-    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; virtual; abstract;
+    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : PBRMessage) : boolean; virtual; abstract;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : cardinal;
+    function SCOpenRead(const filename : string; var handle : cardinal;
       var size : cardinal) : boolean; virtual; abstract;
-    function NXTOpenWrite(const filename : string; const size : cardinal;
+    function SCOpenWrite(const filename : string; const size : cardinal;
       var handle : cardinal) : boolean; virtual; abstract;
-    function NXTRead(var handle : cardinal; var count : word;
-      var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTWrite(var handle : cardinal; const buffer : NXTDataBuffer;
+    function SCRead(var handle : cardinal; var count : word;
+      var buffer : PBRDataBuffer) : boolean; virtual; abstract;
+    function SCWrite(var handle : cardinal; const buffer : PBRDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; virtual; abstract;
-    function NXTCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTFindFirstFile(var filename : string; var handle : cardinal; var filesize : cardinal) : boolean; virtual; abstract;
-    function NXTFindNextFile(var handle : cardinal; var filename : string; var filesize : cardinal) : boolean; virtual; abstract;
-    function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
-    function NXTOpenWriteLinear(const filename : string; const size : cardinal;
+    function SCCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCFindFirstFile(var filename : string; var handle : cardinal; var filesize : cardinal) : boolean; virtual; abstract;
+    function SCFindNextFile(var handle : cardinal; var filename : string; var filesize : cardinal) : boolean; virtual; abstract;
+    function SCGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
+    function SCOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : cardinal) : boolean; virtual; abstract;
-    function NXTOpenReadLinear(const filename : string; var handle : cardinal;
+    function SCOpenReadLinear(const filename : string; var handle : cardinal;
       var size : cardinal) : boolean; virtual; abstract;
-    function NXTOpenWriteData(const filename : string; const size : cardinal;
+    function SCOpenWriteData(const filename : string; const size : cardinal;
       var handle : cardinal) : boolean; virtual; abstract;
-    function NXTOpenAppendData(const filename : string; var size : cardinal;
+    function SCOpenAppendData(const filename : string; var size : cardinal;
       var handle : cardinal) : boolean; virtual; abstract;
-    function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTBootCommand(const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTGetBrickName : string;
-    function NXTGetDeviceInfo(var name : string; BTAddress : PByte;
+    function SCCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCBootCommand(const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCGetBrickName : string;
+    function SCGetDeviceInfo(var name : string; BTAddress : PByte;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; virtual; abstract;
-    function NXTFreeMemory : integer; virtual; abstract;
-    function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTBTFactoryReset(const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTPollCommandLen(const bufNum : byte; var count : byte) : boolean; virtual; abstract;
-    function NXTPollCommand(const bufNum : byte; var count : byte;
-      var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; virtual; abstract;
-    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTFindFirstModule(var ModName : string; var Handle : cardinal;
+    function SCFreeMemory : integer; virtual; abstract;
+    function SCDeleteUserFlash(const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCBTFactoryReset(const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCPollCommandLen(const bufNum : byte; var count : byte) : boolean; virtual; abstract;
+    function SCPollCommand(const bufNum : byte; var count : byte;
+      var buffer : PBRDataBuffer) : boolean; virtual; abstract;
+    function SCWriteIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; const buffer : PBRDataBuffer; chkResponse : Boolean = False) : boolean; virtual; abstract;
+    function SCReadIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; var buffer : PBRDataBuffer) : boolean; virtual; abstract;
+    function SCFindFirstModule(var ModName : string; var Handle : cardinal;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
-    function NXTFindNextModule(var Handle : cardinal; var ModName : string;
+    function SCFindNextModule(var Handle : cardinal; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
-    function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function SCRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
 {
   kNXT_SCGetBTAddress          = $9A;
 }
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
-    function NXTUploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
-    function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
-    function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; virtual; abstract;
-    function NXTListBricks(Bricks : TStrings) : boolean; virtual; abstract;
-    procedure NXTInitializeResourceNames; virtual; abstract;
-    function NXTDefragmentFlash : Boolean; virtual;
+    function DownloadFile(const filename : string; const filetype : TPBRFileType) : boolean; virtual; abstract;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TPBRFileType) : boolean; virtual; abstract;
+    function UploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
+    function ListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
+    function ListModules(const searchPattern : string; Modules : TStrings) : boolean; virtual; abstract;
+    function ListBricks(Bricks : TStrings) : boolean; virtual; abstract;
+    procedure InitializeResourceNames; virtual; abstract;
+    function SCDefragmentFlash : Boolean; virtual;
 
     // properties
     property  EEPROM[addr : Byte] : Byte read GetEEPROM write SetEEPROM;
@@ -411,7 +411,7 @@ type
     property  OnOpenStateChanged : TNotifyEvent read fOnOpenStateChanged write fOnOpenStateChanged;
   end;
 
-function NameToNXTFileType(name : string) : TNXTFileType;
+function NXTNameToPBRFileType(name : string) : TPBRFileType;
 function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
 function FantomAPIAvailable : boolean;
@@ -437,14 +437,14 @@ end;
 
 function GetInitFilename: string;
 begin
-  Result := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\nxt.dat';
+  Result := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\bricks.dat';
 end;
 
 {$ELSE}
 
 function GetInitFilename: string;
 begin
-  Result := ExtractFilePath(ParamStr(0))+'nxt.dat';
+  Result := ExtractFilePath(ParamStr(0))+'bricks.dat';
 end;
 
 {$ENDIF}
@@ -477,7 +477,7 @@ begin
   end;
 end;
 
-function NameToNXTFileType(name : string) : TNXTFileType;
+function NXTNameToPBRFileType(name : string) : TPBRFileType;
 var
   ext : string;
 begin
@@ -675,7 +675,7 @@ begin
     Result := 1;
 end;
 
-function TBrickComm.NXTDefragmentFlash: Boolean;
+function TBrickComm.SCDefragmentFlash: Boolean;
 var
   origFileList : TStringList;
   i : integer;
@@ -683,11 +683,11 @@ var
 begin
   origFileList := TStringList.Create;
   try
-    Result := NXTListFiles('*.*', origFileList);
+    Result := ListFiles('*.*', origFileList);
     // if there aren't any files then we are done.
     if origFileList.Count = 0 then Exit;
     // upload all files
-    Result := NXTUploadFile('*.*');
+    Result := UploadFile('*.*');
     if Result then
     begin
       // in theory we have all the files in our list now
@@ -705,7 +705,7 @@ begin
 {
       for i := 0 to origFileList.Count - 1 do begin
         filename := origFileList.Names[i];
-        Result := NXTDeleteFile(filename, True);
+        Result := SCDeleteFile(filename, True);
         if not Result then begin
           // something clever here
           Exit;
@@ -722,7 +722,7 @@ begin
         // now download these files in order
         for i := 0 to origFileList.Count - 1 do begin
           filename := origFileList.Names[i];
-          Result := NXTDownloadFile(filename, NameToNXTFileType(filename));
+          Result := DownloadFile(filename, NXTNameToPBRFileType(filename));
           if not Result then begin
             // do something clever here
             Exit;
@@ -741,13 +741,13 @@ begin
   end;
 end;
 
-function TBrickComm.NXTGetBrickName: string;
+function TBrickComm.SCGetBrickName: string;
 var
   bt : array[0..5] of byte;
   btsig, memfree : Cardinal;
 begin
   Result := '';
-  NXTGetDeviceInfo(Result, @bt[0], btsig, memfree);
+  SCGetDeviceInfo(Result, @bt[0], btsig, memfree);
 end;
 
 end.

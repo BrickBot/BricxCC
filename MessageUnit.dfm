@@ -1,11 +1,11 @@
 object MessageForm: TMessageForm
   Left = 313
-  Top = 108
+  Top = 107
   HelpContext = 18
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Messages'
-  ClientHeight = 275
+  ClientHeight = 276
   ClientWidth = 296
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET

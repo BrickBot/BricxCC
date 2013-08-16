@@ -306,10 +306,10 @@ var
 begin
   Result := commandstr;
   redir := ' > ';
-  if FileIsCPP then
-    redir := ' 2> ';
+//  if FileIsCPP then
+//    redir := ' 2> ';
   if sTempDir <> '' then
-    Result := Result + redir + '"' + sTempdir + 'temp.log"';
+    Result := Result + redir + '"' + sTempdir + 'temp.log" 2>&1';
   cmdFile := ChangeFileExt(sFilename, '.bat');
   if FileExists(cmdFile) then
     DeleteFile(cmdFile);
@@ -408,8 +408,8 @@ begin
     fwVer := 0;
     if NXTAutoFWVersion then
     begin
-      fwVer := BrickComm.NXTFirmwareVersion;
-      ifw   := BrickComm.NXTInstalledFirmware;
+      fwVer := BrickComm.SCFirmwareVersion;
+      ifw   := BrickComm.SCInstalledFirmware;
     end;
     if NXTAutoFWVersion and (ifw <> ifUnknown) then
     begin
@@ -568,19 +568,26 @@ var
 begin
   MainSource := ExtractFileName(aPath);
   ext := ExtractFileExt(MainSource);
-  dobjects := GetProjectFiles(aPath, '.o');
+  if EV3UseSharedLib then
+    dobjects := ''
+  else
+    dobjects := GetProjectFiles(aPath, '.o');
   H := GetActiveEditorHighlighter;
   SL := TStringList.Create;
   try
+    mfStr := StringReplace(EV3MakefileTemplate, '%PROGRAM%', ChangeFileExt(MainSource, ''), [rfReplaceAll]);
+    mfStr := StringReplace(mfStr, '%DOBJECTS%', dobjects, [rfReplaceAll]);
+
+    // if we are using a shared library add it to gcc command line
+    if EV3UseSharedLib then
+      dobjects := ' -L. -lev3';
+
     if not FileIsCPP(H) then
     begin
       // FPC makefile for EV3
-      mfStr := StringReplace(EV3MakefileTemplate, '%PROGRAM%', ChangeFileExt(MainSource, ''), [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%DOBJECTS%', dobjects, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%TOOLPREFIX%', EV3FPCPrefix, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%FLAGS%', EV3FPCFlags, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%CCNAME%', 'fpc', [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%MAINSRC%', MainSource, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%LINKONLY%', '', [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%LINKOBJS%', '', [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%EXT%', '.pas', [rfReplaceAll]);
@@ -589,19 +596,20 @@ begin
     begin
       // is this a C file or a CPP file?
       // GCC makefile for EV3
-      mfStr := StringReplace(EV3MakefileTemplate, '%PROGRAM%', ChangeFileExt(MainSource, ''), [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%DOBJECTS%', dobjects, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%TOOLPREFIX%', EV3GCCPrefix, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%FLAGS%', EV3GCCFlags, [rfReplaceAll]);
       if ext = '.cpp' then
         mfStr := StringReplace(mfStr, '%CCNAME%', 'g++', [rfReplaceAll])
       else
         mfStr := StringReplace(mfStr, '%CCNAME%', 'gcc', [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%MAINSRC%', MainSource, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%LINKONLY%', '-c', [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%LINKOBJS%', dobjects, [rfReplaceAll]);
       mfStr := StringReplace(mfStr, '%EXT%', ext, [rfReplaceAll]);
     end;
+    mfStr := StringReplace(mfStr, '%MAINSRC%', MainSource, [rfReplaceAll]);
+//    mfStr := StringReplace(mfStr, '%PW%', EV3RootPassword, [rfReplaceAll]);
+//    mfStr := StringReplace(mfStr, '%IPADDR%', EV3IPAddress, [rfReplaceAll]);
+//    mfStr := StringReplace(mfStr, '%FOLDER%', EV3Folder, [rfReplaceAll]);
     SL.Text := mfStr;
     SL.SaveToFile(ChangeFileExt(aPath, '.mak'));
   finally
@@ -703,36 +711,45 @@ end;
 function HandleGCCErrors(fname : string; tmpSL : TStrings; lstErrors : TStrings) : boolean;
 var
   i, p, j, lineNo : integer;
-  tmpstr, errMsg : string;
+  tmpstr, errMsg, curLine, tmpLine : string;
 begin
   Result := True;
-  for i := 0 to tmpSL.Count - 1 do
+//  for i := 0 to tmpSL.Count - 1 do
+  i := 0;
+  while i < tmpSL.Count do
   begin
+    curLine := tmpSL[i];
     // cpp and java
-    if Pos('warning:', tmpSL[i]) = 0 then
+    if Pos('error: (Each undeclared identifier', curLine) > 0 then
+    begin
+      inc(i, 2);
+      Continue;
+    end;
+    if Pos('warning:', curLine) = 0 then
     begin
       // not a warning.
-      p := Pos(':', tmpSL[i]);
-      tmpstr := Copy(tmpSL[i], 1, p-1);
+      p := Pos(':', curLine);
+      tmpstr := Copy(curLine, 1, p-1);
       if (Pos(tmpstr, fname) <> 0) or
          (Pos(ChangeFileExt(ExtractFileName(fname), '.o'), tmpstr) <> 0) then
       begin
-        tmpstr := Copy(tmpSL[i], p+1, Length(tmpSL[i]));
+        tmpstr := Copy(curLine, p+1, Length(curLine));
         j := i;
         while (j < tmpSL.Count-1) do begin
-          p := Pos(':', tmpSL[j+1]);
-          if Pos(Copy(tmpSL[j+1], 1, p-1), ChangeFileExt(fname, '.o')) = 0 then
+          tmpLine := tmpSL[j+1];
+          p := Pos(':', tmpLine);
+          if Pos(Copy(tmpLine, 1, p-1), ChangeFileExt(fname, '.o')) = 0 then
           begin
             // linker error
             Break;
           end
-          else if Pos(Copy(tmpSL[j+1], 1, p-1), fname) = 0 then
+          else if Pos(Copy(tmpLine, 1, p-1), fname) = 0 then
           begin
             // the line following the current line is not a new error message
             // but, rather, a continuation of this error message
             // unless - that is - it starts with the word "make"
-            if Pos('make', LowerCase(tmpSL[j+1])) <> 1 then
-              tmpstr := tmpstr + ' ' + tmpSL[j+1];
+            if Pos('make', LowerCase(tmpLine)) <> 1 then
+              tmpstr := tmpstr + ' ' + tmpLine;
           end
           else begin
             // the next line is a new error message so break
@@ -766,6 +783,7 @@ begin
         end;
       end;
     end;
+    inc(i);
   end;
 end;
 
@@ -1065,7 +1083,7 @@ function CompileIt(DisplayErrorsProc : TDisplayErrorsProc;
   osHandler : TNotifyEvent): boolean;
 var
   ext, SaveDir, tempDir, newDir, commandstr : string;
-  wd, statusStr, outStr, cmdname : string;
+  wd, statusStr, outStr, tmpname : string;
   i : Integer;
   NQC_Result : Longint;
   execError : Boolean;
@@ -1186,7 +1204,9 @@ begin
     begin
       {Execute the command, and wait}
       DebugLog('CompileIt: launching an external compiler');
-      if download then begin
+      if download and not (IsEV3 and FileIsCPPOrPascalOrJava(H)) then
+      begin
+        // close communication except for EV3 Pascal/CPP/Java
         BrickComm.Ping;
         DebugLog('CompileIt: closing connection so that external compiler can use it');
         BrickComm.Close;
@@ -1199,8 +1219,17 @@ begin
       finally
         if download then
         begin
-          DebugLog('CompileIt: reopening connection now that the external compiler is finished with it');
-          BrickComm.Open;
+          if IsEV3 and FileIsCPPOrPascalOrJava(H) then
+          begin
+            tmpname := ChangeFileExt(fName, '');
+            if FileExists(tmpname) then
+              BrickComm.DownloadFile(tmpname, nftProgram);
+          end
+          else
+          begin
+            DebugLog('CompileIt: reopening connection now that the external compiler is finished with it');
+            BrickComm.Open;
+          end;
         end;
         // make sure the toolbar refreshes no matter what
         osHandler(nil);
@@ -1259,14 +1288,17 @@ begin
     end;
   finally
     {Clean up}
+    tmpname := ChangeFileExt(fName, '');
+    if not SaveBinaryOutput and FileExists(tmpname) then
+      DeleteFile(tmpname);
     if not KeepMakefiles then
       DeleteFile(ChangeFileExt(fName, '.mak'));
-    cmdname := ChangeFileExt(fName, '.cmd');
-    if FileExists(cmdname) then
-      DeleteFile(cmdname);
-    cmdname := ChangeFileExt(fName, '.bat');
-    if FileExists(cmdname) then
-      DeleteFile(cmdname);
+    tmpname := ChangeFileExt(fName, '.cmd');
+    if FileExists(tmpname) then
+      DeleteFile(tmpname);
+    tmpname := ChangeFileExt(fName, '.bat');
+    if FileExists(tmpname) then
+      DeleteFile(tmpname);
     DeleteFile(tempDir + 'temp.log');
     DeleteFile(tempDir + 'temp.lst');
     DeleteFile(tempDir + 'temp' + ext);

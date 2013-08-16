@@ -28,7 +28,7 @@ uses
 var
   LCDBackgroundColor : TColor = clMoneyGreen;
   DefaultNXTImageFileExt : string = '.png';
-  BaseNXTImageFilenameFormat : string = 'nxtimage_';
+  BaseNXTImageFilenameFormat : string = 'image_';
   DefaultNXTImageDirectory : string;
   NXTImageIndex : integer = 0;
   NXTImageUseIndex : boolean = True;
@@ -36,6 +36,7 @@ var
   NXTImageMaxFramesPerMovie : integer = 1000;
   NXTImageDefaultRefreshRate : integer = 1000;
 
+function GetPixelColor(b: byte; bit: integer): TColor;
 
 procedure LoadNXTImageValues(reg : TRegistry);
 procedure SaveNXTImageValues(reg : TRegistry);
@@ -49,6 +50,16 @@ uses
   Windows,
 {$ENDIF}
   SysUtils, uNXTImage, uRegUtils, uGlobals;
+
+function GetPixelColor(b: byte; bit: integer): TColor;
+var
+  val : byte;
+begin
+  Result := LCDBackgroundColor;
+  val := 1 shl bit;
+  if (b and val) = val then
+    Result := clBlack;
+end;
 
 procedure LoadNXTImageValues(reg : TRegistry);
 begin

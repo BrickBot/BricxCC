@@ -108,6 +108,12 @@ type
     lblSensor3: TLabel;
     SensorType3: TComboBox;
     SensorMode3: TComboBox;
+    lblMotorD: TLabel;
+    FwdDBtn: TSpeedButton;
+    RevDBtn: TSpeedButton;
+    OffDBtn: TSpeedButton;
+    FloatDBtn: TSpeedButton;
+    SpeedD: TTrackBar;
     procedure SpeedChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure RunTask0Click(Sender: TObject);
@@ -153,28 +159,28 @@ const
 {$IFDEF FPC}
 {$IFDEF Darwin}
   K_FUDGE      = -40;
-  K_HEIGHT     = 530+80; //498;
+  K_HEIGHT     = 560+80; //498;
   K_MOTORS_TOP = 146+40; //118;
-  K_VARS_TOP   = 262+40; //234;
-  K_TASKS_TOP  = 338+40; //310;
+  K_VARS_TOP   = 292+40; //234;
+  K_TASKS_TOP  = 368+40; //310;
   K_SENS_DELTA = 32;
   K_SENS_H     = 140+40;
 {$ENDIF}
 {$IFNDEF Darwin}
   K_FUDGE      = 4;
-  K_HEIGHT     = 530; //498;
+  K_HEIGHT     = 560; //498;
   K_MOTORS_TOP = 146; //118;
-  K_VARS_TOP   = 262; //234;
-  K_TASKS_TOP  = 338; //310;
+  K_VARS_TOP   = 292; //234;
+  K_TASKS_TOP  = 368; //310;
   K_SENS_DELTA = 32;
   K_SENS_H     = 140;
 {$ENDIF}
 {$ELSE}
   K_FUDGE      = 4;
-  K_HEIGHT     = 530; //498;
+  K_HEIGHT     = 560; //498;
   K_MOTORS_TOP = 146; //118;
-  K_VARS_TOP   = 262; //234;
-  K_TASKS_TOP  = 338; //310;
+  K_VARS_TOP   = 292; //234;
+  K_TASKS_TOP  = 368; //310;
   K_SENS_DELTA = 32;
   K_SENS_H     = 140;
 {$ENDIF}
@@ -208,8 +214,9 @@ begin
   case tag of
     0 : result := 1;
     1 : result := 2;
+    2 : result := 4;
   else
-    result := 4;
+    result := 8; // D
   end;
 end;
 
@@ -429,9 +436,15 @@ begin
     SensorType2.Visible  := not IsSpybotic;
     SensorMode2.Visible  := not IsSpybotic;
     lblSensor2.Visible   := not IsSpybotic;
-    SensorType3.Visible  := IsNXT;
-    SensorMode3.Visible  := IsNXT;
-    lblSensor3.Visible   := IsNXT;
+    SensorType3.Visible  := IsNXT or IsEV3;
+    SensorMode3.Visible  := IsNXT or IsEV3;
+    lblSensor3.Visible   := IsNXT or IsEV3;
+    lblMotorD.Visible    := IsEV3;
+    FwdDBtn.Visible      := IsEV3;
+    RevDBtn.Visible      := IsEV3;
+    OffDBtn.Visible      := IsEV3;
+    FloatDBtn.Visible    := IsEV3;
+    SpeedD.Visible       := IsEV3;
     if IsRCX then
     begin
       SensorGroup.Height  := V_SENS_H - V_SENS_DELTA;
@@ -463,14 +476,16 @@ begin
       SensorType0.Items.Assign(tmpSL);
       SensorType1.Items.Assign(tmpSL);
       SensorType2.Items.Assign(tmpSL);
-    end else if IsScout then begin
+    end
+    else if IsScout then begin
       // scout
       SensorGroup.Visible := False;
       grpMotors.Top       := V_MOTORS_TOP - SensorGroup.Height - V_FUDGE;
       grpVariables.Top    := V_VARS_TOP - SensorGroup.Height - V_FUDGE;
       grpTasks.Top        := V_TASKS_TOP - SensorGroup.Height - V_FUDGE;
       Height              := V_HEIGHT  - SensorGroup.Height - V_FUDGE;
-    end else if IsNXT then begin
+    end
+    else if IsNXT then begin
       Height               := V_HEIGHT - grpVariables.Height - grpTasks.Height - V_FUDGE;
       SensorGroup.Height   := V_SENS_H;
       grpVariables.Visible := False;
@@ -512,6 +527,83 @@ begin
       tmpSL.Append(sColorGreen);
       tmpSL.Append(sColorBlue);
       tmpSL.Append(sColorNone);
+      SensorType0.Items.Assign(tmpSL);
+      SensorType1.Items.Assign(tmpSL);
+      SensorType2.Items.Assign(tmpSL);
+      SensorType3.Items.Assign(tmpSL);
+    end
+    else if IsEV3 then begin
+      Height               := V_HEIGHT - grpVariables.Height - grpTasks.Height - V_FUDGE;
+      SensorGroup.Height   := V_SENS_H;
+      grpVariables.Visible := False;
+      grpTasks.Visible     := False;
+      SensorGroup.Visible  := True;
+      SensorType0.Enabled  := true;
+      SensorType1.Enabled  := true;
+      SensorType2.Enabled  := true;
+      SensorType3.Enabled  := true;
+      // blech
+      // EV3 mode names depend on the type
+      tmpSL.Clear;
+      tmpSL.Append('0');
+      tmpSL.Append('1');
+      tmpSL.Append('2');
+      tmpSL.Append('3');
+      tmpSL.Append('4');
+      tmpSL.Append('5');
+      tmpSL.Append('6');
+      tmpSL.Append('7');
+      SensorMode0.Items.Assign(tmpSL);
+      SensorMode1.Items.Assign(tmpSL);
+      SensorMode2.Items.Assign(tmpSL);
+      SensorMode3.Items.Assign(tmpSL);
+      // sensor types
+      tmpSL.Clear;
+      tmpSL.Append(sNone);            // 0
+      tmpSL.Append('NXT Touch');
+      tmpSL.Append('NXT Light');
+      tmpSL.Append('NXT Sound');
+      tmpSL.Append('NXT Color');
+      tmpSL.Append('NXT Ultrasonic'); // 5
+      tmpSL.Append('NXT Temperature');
+      tmpSL.Append('Large Motor');
+      tmpSL.Append('Medium Motor');
+      tmpSL.Append('Free');
+      tmpSL.Append('Output #2');      // 10
+      tmpSL.Append('Output #3');
+      tmpSL.Append('Output #4');
+      tmpSL.Append('Output #5');
+      tmpSL.Append('Output 3rd Party');
+      tmpSL.Append('Input #1');       // 15
+      tmpSL.Append('EV3 Touch');
+      tmpSL.Append('Input #3');
+      tmpSL.Append('Input #4');
+      tmpSL.Append('Input #5');
+      tmpSL.Append('Input #6');       // 20
+      tmpSL.Append('Test');
+      tmpSL.Append('Input #8');
+      tmpSL.Append('Input #9');
+      tmpSL.Append('Input #10');
+      tmpSL.Append('Input #11');      // 25
+      tmpSL.Append('Input #12');
+      tmpSL.Append('Input #13');
+      tmpSL.Append('Input 3rd Party');
+      tmpSL.Append('EV3 Color');
+      tmpSL.Append('EV3 Ultrasonic'); // 30
+      tmpSL.Append('EV3 31');
+      tmpSL.Append('EV3 Gyro');
+      tmpSL.Append('EV3 InfraRed');   // 33
+      for i := 34 to 49 do
+        tmpSL.Append(Format('EV3 LEGO %d', [i]));
+      tmpSL.Append('HT PIR');         // 50
+      tmpSL.Append('HT Barometer');
+      tmpSL.Append('HT IRSeeker V2');
+      for i := 53 to 98 do
+        tmpSL.Append(Format('EV3 3rdP %d', [i]));
+      tmpSL.Append('LEGO EMeter'); // 99
+      tmpSL.Append('IIC');
+      tmpSL.Append('NXT Test');
+
       SensorType0.Items.Assign(tmpSL);
       SensorType1.Items.Assign(tmpSL);
       SensorType2.Items.Assign(tmpSL);
@@ -594,6 +686,16 @@ begin
     FloatCBtn.Down  :=  (ttt div 128 = 0) and ((ttt mod 128) div 64 = 0);
     SpeedC.Position := ttt mod 8;
 
+    if IsEV3 then
+    begin
+      ttt := BrickComm.GetOutputStatus(3);
+      FwdDBtn.Down    :=  (ttt div 128 = 1) and ((ttt mod 16) div 8 = 1);
+      RevDBtn.Down    :=  (ttt div 128 = 1) and ((ttt mod 16) div 8 = 0);
+      OffDBtn.Down    :=  (ttt div 128 = 0) and ((ttt mod 128) div 64 = 1);
+      FloatDBtn.Down  :=  (ttt div 128 = 0) and ((ttt mod 128) div 64 = 0);
+      SpeedD.Position := ttt mod 8;
+    end;
+    
     if not IsScout then
     begin
       { Set the sensor Items }
@@ -603,7 +705,7 @@ begin
         SensorType1.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,1);
         SensorType2.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,2);
       end
-      else if IsNXT then
+      else if IsNXT or IsEV3 then
       begin
         SensorType0.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,0);
         SensorType1.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,1);
@@ -623,7 +725,7 @@ begin
         SensorMode1.ItemIndex := ttt div 32;
       if not IsSpybotic then
         SensorMode2.ItemIndex := BrickComm.Poll(kRCX_InputModeType,2) div 32;
-      if IsNXT then
+      if IsNXT or IsEV3 then
         SensorMode3.ItemIndex := BrickComm.Poll(kRCX_InputModeType,3) div 32;
     end;
   except

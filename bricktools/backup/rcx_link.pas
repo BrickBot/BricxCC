@@ -173,8 +173,6 @@ type
     function DownloadProgress(soFar, total : integer) : boolean; override;
   end;
 
-function PortIsUSB(const aPort : string) : Boolean;
-
 implementation
 
 uses
@@ -265,11 +263,6 @@ const
 const
   USB_TOWER = '\\.\LEGOTOWER1';
   COM_PORT  = '\\.\';
-
-function PortIsUSB(const aPort : string) : Boolean;
-begin
-  Result := aPort = 'usb';
-end;
 
 function RCX_ERROR(res : integer) : boolean;
 begin

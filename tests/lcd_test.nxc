@@ -1,0 +1,10 @@
+task main()
+{
+  CircleOut(50, 40, 10);
+  CircleOut(30, 24, 10, DRAW_OPT_FILL_SHAPE);
+  LineOut(10, 10, 80, 60);
+  RectOut(20, 20, 40, 40);
+  RectOut(65, 25, 20, 30, DRAW_OPT_FILL_SHAPE);
+  EllipseOut(70, 30, 15, 20);
+  while(true);
+}

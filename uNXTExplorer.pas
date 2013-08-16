@@ -75,11 +75,13 @@ type
     actEditSelectAll: TAction;
     actFileDefrag: TAction;
     actFileView: TAction;
+    lblPath: TLabel;
+    barProgress: TProgressBar;
 {$IFNDEF FPC}
     pnlTopLeft: TPanel;
     pnlRight: TPanel;
     Splitter1: TSplitter;
-{$ENDIF}    
+{$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure actViewToolbarExecute(Sender: TObject);
     procedure actViewStyleExecute(Sender: TObject);
@@ -98,11 +100,13 @@ type
       var AllowEdit: Boolean);
     procedure NXTFilesEdited(Sender: TObject; Item: TListItem;
       var S: String);
+    procedure NXTFilesDblClick(Sender: TObject);
     procedure actEditSelectAllExecute(Sender: TObject);
     procedure actFileDefragExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actFileViewExecute(Sender: TObject);
     procedure actPCViewStyleExecute(Sender: TObject);
+    procedure lblPathDblClick(Sender: TObject);
 {$IFNDEF FPC}
     procedure NXTFilesDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -204,11 +208,15 @@ type
     osbEraseAll: TOfficeSpeedButton;
     osbDefrag: TOfficeSpeedButton;
     osbView: TOfficeSpeedButton;
+    fCurrentBrickFolder : string;
     procedure CreateToolbar;
     procedure CreateMainMenu;
     procedure CreatePopupMenu;
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
+    procedure SetCurrentBrickFolder(const Value: string);
+    procedure SetCurrent(const Value: integer);
+    procedure SetTotal(const Value: integer);
   public
 {$IFNDEF FPC}
     cboMask: TFilterComboBox;
@@ -229,6 +237,8 @@ type
 {$ENDIF}
   private
     { Private declarations }
+    fTotal : integer;
+    fCur : integer;
     fMasks : TStringList;
     procedure PopulateMaskList;
     procedure cboMaskChange(Sender: TObject);
@@ -244,10 +254,18 @@ type
     function SelectedFileIsExecutable : boolean;
     function SelectedFileIsSound : boolean;
     function IsInMask(const ext: string): boolean;
+    function DoUploadFile(const aFile : string) : boolean;
     function DoDownloadFile(const aFile : string) : boolean;
     function GetLocalFilePath : string;
+    procedure ChangeFolder(aFolder : string);
+    procedure HandleDownloadStart(Sender : TObject);
+    procedure HandleDownloadDone(Sender : TObject);
+    procedure HandleDownloadStatus(Sender : TObject; cur, total : Integer; var Abort : boolean);
+    property ProgressTotal : integer read fTotal write SetTotal;
+    property Current : integer read fCur write SetCurrent;
   public
     { Public declarations }
+    property CurrentBrickFolder : string read fCurrentBrickFolder write SetCurrentBrickFolder;
   end;
 
 var
@@ -267,8 +285,8 @@ uses
 {$ELSE}
   FileUtil,
 {$ENDIF}
-  brick_common, uGuiUtils, uCompCommon,
-  uSpirit, uNXTExplorerSettings, uLocalizedStrings,
+  brick_common, uGuiUtils, uCompCommon, uMiscDefines, uGlobals, uProgress,
+  uSpirit, uNXTExplorerSettings, uLocalizedStrings, uDebugLogging,
   uTextViewer;
 
 const
@@ -289,7 +307,9 @@ const
     'EV3 Sound files (*.rsf)|*.rsf|' +
     'EV3 Graphic files (*.rgf)|*.rgf|' +
     'NXT Menu files (*.rms)|*.rms';
+    
   K_NXT_MAX_MEM = 128000;
+  K_EV3_MAX_MEM = 1024*1024*600; // 600 mb
 
 procedure TfrmNXTExplorer.SetColorScheme;
 begin
@@ -304,33 +324,49 @@ end;
 
 procedure TfrmNXTExplorer.RefreshNXTFiles;
 var
-  SL : TStringList;
+  SL, maskSL : TStringList;
   i, p : integer;
   LI : TListItem;
-  curMask : string;
-  ft : TNXTFileType;
+  curMask, sizeStr : string;
+  ft : TPBRFileType;
 begin
   NXTFiles.Items.BeginUpdate;
   try
     NXTFiles.Items.Clear;
     SL := TStringList.Create;
     try
+      SL.Sorted := True;
+      SL.Duplicates := dupIgnore;
       for p := 0 to fMasks.Count - 1 do
       begin
         curMask := fMasks[p];
-        SL.Clear;
-        BrickComm.NXTListFiles(curMask, SL);
-        for i := 0 to SL.Count - 1 do
-        begin
-          LI := NXTFiles.Items.Add;
-          LI.Caption := SL.Names[i];
-          LI.SubItems.Add(SL.Values[LI.Caption]);
-          ft := NameToNXTFileType(LI.Caption);
-          if ft = nftOther then
-            LI.ImageIndex := Ord(NameToEV3FileType(LI.Caption))
-          else
-            LI.ImageIndex := Ord(ft);
+        maskSL := TStringList.Create;
+        try
+          BrickComm.ListFiles(CurrentBrickFolder + curMask, maskSL);
+          SL.AddStrings(maskSL);
+        finally
+          maskSL.Free;
         end;
+      end;
+      for i := 0 to SL.Count - 1 do
+      begin
+        LI := NXTFiles.Items.Add;
+        LI.Caption := SL.Names[i];
+        ft := NXTNameToPBRFileType(LI.Caption);
+        if ft = nftOther then
+          ft := EV3NameToPBRFileType(LI.Caption);
+        sizeStr := SL.Values[LI.Caption];
+        if sizeStr = '-1' then
+        begin
+          sizeStr := '';
+          ft := nftFolder;
+        end;
+        if (ft = nftOther) and
+           (LocalFirmwareType = ftLinux) and
+           (ExtractFileExt(Li.Caption) = '') then
+          ft := nftProgram;
+        LI.SubItems.Add(sizeStr);
+        LI.ImageIndex := Ord(ft);
       end;
     finally
       SL.Free;
@@ -350,6 +386,8 @@ begin
   dlgOpen.Options := [ofAllowMultiSelect, ofEnableSizing, ofViewDetail];
   dlgDirectory := TSelectDirectoryDialog.Create(Self);
 {$ENDIF}
+  fTotal := -1;
+  fCur := -1;
   fMasks := TStringList.Create;
   PopulateMaskList;
   CreateMainMenu;
@@ -427,6 +465,8 @@ begin
   actNXTViewStyleList.Checked      := NXTFiles.ViewStyle = vsList;
   actNXTViewStyleDetails.Checked   := NXTFiles.ViewStyle = vsReport;
   // nxt-side
+  actFileDefrag.Enabled   := IsNXT;
+  actFileEraseAll.Enabled := True;
   sc := NXTFiles.SelCount;
   actFileExecute.Enabled  := (sc = 1) and SelectedFileIsExecutable;
   actFileStop.Enabled     := True;
@@ -461,6 +501,8 @@ end;
 
 procedure TfrmNXTExplorer.FormShow(Sender: TObject);
 begin
+  lblPath.Visible := IsEV3;
+  CurrentBrickFolder := BrickComm.BrickFolder;
 {$IFNDEF FPC}
   treShell.OnChange := nil;
   try
@@ -472,7 +514,7 @@ begin
   NXTFiles.ViewStyle := vsReport;
 {$ENDIF}
   ConfigureForm;
-  RefreshNXTFiles;
+//  RefreshNXTFiles;
 {$IFNDEF FPC}
   RefreshLocalFileList;
 {$ENDIF}
@@ -487,17 +529,21 @@ procedure TfrmNXTExplorer.actFileDeleteExecute(Sender: TObject);
 var
   i : integer;
   filename : string;
+  item : TListItem;
 begin
   if (MessageDlg(sConfirmDel, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
   begin
     Screen.Cursor := crHourGlass;
     try
       for i := 0 to NXTFiles.Items.Count - 1 do
-        if NXTFiles.Items[i].Selected then
+      begin
+        item := NXTFiles.Items[i];
+        if item.Selected then
         begin
-          filename := NXTFiles.Items[i].Caption;
-          BrickComm.NXTDeleteFile(filename, False);
+          filename := CurrentBrickFolder + item.Caption;
+          BrickComm.SCDeleteFile(filename, IsEV3);
         end;
+      end;
       RefreshNXTFiles;
     finally
       Screen.Cursor := crDefault;
@@ -508,22 +554,37 @@ end;
 procedure TfrmNXTExplorer.actFileUploadExecute(Sender: TObject);
 var
   i : integer;
+  item : TListItem;
+  oldCursor : TCursor;
 begin
-{$IFNDEF FPC}
-  for i := 0 to NXTFiles.Items.Count - 1 do
-    if NXTFiles.Items[i].Selected then
-      BrickComm.NXTUploadFile(NXTFiles.Items[i].Caption, GetLocalFilePath);
-  RefreshLocalFileList;
-{$ELSE}
-  dlgDirectory.InitialDir := fLastLocalPath;
-  if dlgDirectory.Execute then
-  begin
-    fLastLocalPath := IncludeTrailingPathDelimiter(dlgDirectory.Filename);
+  Application.ProcessMessages;
+  try
+    oldCursor := Screen.Cursor;
+    Screen.Cursor := crHourGlass;
+  {$IFNDEF FPC}
     for i := 0 to NXTFiles.Items.Count - 1 do
-      if NXTFiles.Items[i].Selected then
-        BrickComm.NXTUploadFile(NXTFiles.Items[i].Caption, GetLocalFilePath);
+    begin
+      item := NXTFiles.Items[i];
+      if item.Selected then
+        DoUploadFile(CurrentBrickFolder + item.Caption);
+    end;
+    RefreshLocalFileList;
+  {$ELSE}
+    dlgDirectory.InitialDir := fLastLocalPath;
+    if dlgDirectory.Execute then
+    begin
+      fLastLocalPath := IncludeTrailingPathDelimiter(dlgDirectory.Filename);
+      for i := 0 to NXTFiles.Items.Count - 1 do
+      begin
+        item := NXTFiles.Items[i];
+        if item.Selected then
+          DoUploadFile(CurrentBrickFolder + item.Caption);
+      end;
+    end;
+  {$ENDIF}
+  finally
+    Screen.Cursor := oldCursor;
   end;
-{$ENDIF}
 end;
 
 function SizeOfFile(const filename : string) : Int64;
@@ -553,47 +614,78 @@ procedure TfrmNXTExplorer.actFileDownloadExecute(Sender: TObject);
 var
   i : integer;
   fname : string;
+  oldCursor : TCursor;
 begin
-{$IFNDEF FPC}
-  for i := 0 to lstFiles.Items.Count - 1 do
-  begin
-    if lstFiles.Items[i].Selected then
+  Application.ProcessMessages;
+  try
+    oldCursor := Screen.Cursor;
+    Screen.Cursor := crHourGlass;
+  {$IFNDEF FPC}
+    for i := 0 to lstFiles.Items.Count - 1 do
     begin
-      fname := lstFiles.GetPathFromIndex(i);
-      if not DoDownloadFile(fname) then
-        break;
+      if lstFiles.Items[i].Selected then
+      begin
+        fname := lstFiles.GetPathFromIndex(i);
+        if not DoDownloadFile(fname) then
+          break;
+      end;
     end;
-  end;
-{$ELSE}
-  // use open dialog to select PC files to download to NXT
-  if dlgOpen.Execute then
-  begin
-    for i := 0 to dlgOpen.Files.Count - 1 do
+  {$ELSE}
+    // use open dialog to select PC files to download to NXT
+    if dlgOpen.Execute then
     begin
-      fname := dlgOpen.Files[i];
-      if not DoDownloadFile(fname) then
-        break;
+      for i := 0 to dlgOpen.Files.Count - 1 do
+      begin
+        fname := dlgOpen.Files[i];
+        if not DoDownloadFile(fname) then
+          break;
+      end;
     end;
+  {$ENDIF}
+    RefreshNXTFiles;
+  finally
+    Screen.Cursor := oldCursor;
   end;
-{$ENDIF}
-  RefreshNXTFiles;
 end;
 
 procedure TfrmNXTExplorer.actFileExecuteExecute(Sender: TObject);
 begin
   if (NXTFiles.SelCount = 1) and SelectedFileIsExecutable then
-    BrickComm.NXTStartProgram(NXTFiles.Selected.Caption);
+    BrickComm.DCStartProgram(CurrentBrickFolder + NXTFiles.Selected.Caption);
 end;
 
 function TfrmNXTExplorer.SelectedFileIsExecutable: boolean;
+var
+  item : TListItem;
+  name : string;
 begin
-  Result := (NameToNXTFileType(NXTFiles.Selected.Caption) = nftProgram) or
-            (LowerCase(ExtractFileExt(NXTFiles.Selected.Caption)) = '.rpg');
+  Result := False;
+  item := NXTFiles.Selected;
+  if not Assigned(item) then
+    Exit;
+  name := item.Caption;
+  Result := (IsNXT and (NXTNameToPBRFileType(name) = nftProgram) or
+                       (LowerCase(ExtractFileExt(name)) = '.rpg')) or
+            (IsEV3 and (EV3NameToPBRFileType(name) = nftProgram));
+end;
+
+function TfrmNXTExplorer.SelectedFileIsSound: boolean;
+var
+  item : TListItem;
+  name : string;
+begin
+  Result := False;
+  item := NXTFiles.Selected;
+  if not Assigned(item) then
+    Exit;
+  name := item.Caption;
+  Result := (IsNXT and (NXTNameToPBRFileType(name) = nftSound)) or
+            (IsEV3 and (EV3NameToPBRFileType(name) = nftSound));
 end;
 
 procedure TfrmNXTExplorer.actFileStopExecute(Sender: TObject);
 begin
-  BrickComm.NXTStopProgram;
+  BrickComm.DCStopProgram;
 end;
 
 {$IFNDEF FPC}
@@ -633,20 +725,19 @@ end;
 {$ENDIF}
 
 procedure TfrmNXTExplorer.actFilePlayExecute(Sender: TObject);
+var
+  filename : string;
 begin
   if (NXTFiles.SelCount = 1) and SelectedFileIsSound then
-    BrickComm.NXTPlaySoundFile(NXTFiles.Selected.Caption, False);
+  begin
+    filename := CurrentBrickFolder + NXTFiles.Selected.Caption;
+    BrickComm.DCPlaySoundFile(filename, False);
+  end;
 end;
 
 procedure TfrmNXTExplorer.actFileMuteExecute(Sender: TObject);
 begin
-  BrickComm.MuteSound;
-end;
-
-function TfrmNXTExplorer.SelectedFileIsSound: boolean;
-begin
-  Result := (NameToNXTFileType(NXTFiles.Selected.Caption) = nftSound) or
-            (NameToEV3FileType(NXTFiles.Selected.Caption) = eftSound);
+  BrickComm.ClearSound;
 end;
 
 procedure TfrmNXTExplorer.Exit1Click(Sender: TObject);
@@ -668,12 +759,20 @@ begin
 end;
 
 procedure TfrmNXTExplorer.actFileEraseAllExecute(Sender: TObject);
+var
+  bf : string;
 begin
   if (MessageDlg(sConfirmErase, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
   begin
     Screen.Cursor := crHourGlass;
     try
-      BrickComm.ClearMemory;
+      bf := BrickComm.BrickFolder;
+      try
+        BrickComm.BrickFolder := fCurrentBrickFolder;
+        BrickComm.ClearMemory;
+      finally
+        BrickComm.BrickFolder := bf;
+      end;
       RefreshNXTFiles;
     finally
       Screen.Cursor := crDefault;
@@ -684,17 +783,19 @@ end;
 procedure TfrmNXTExplorer.NXTFilesEditing(Sender: TObject; Item: TListItem;
   var AllowEdit: Boolean);
 begin
-  AllowEdit := ExtractFileExt(Item.Caption) <> '.sys';
+  AllowEdit := (ExtractFileExt(Item.Caption) <> '.sys') and
+               (TPBRFileType(Item.ImageIndex) <> nftFolder);
 end;
 
 procedure TfrmNXTExplorer.NXTFilesEdited(Sender: TObject; Item: TListItem;
   var S: String);
 var
-  old : string;
+  old, tmp : string;
 begin
   S := MakeValidNXTFilename(S);
-  old := Item.Caption;
-  BrickComm.NXTRenameFile(old, S, True);
+  tmp := CurrentBrickFolder + S;
+  old := CurrentBrickFolder + Item.Caption;
+  BrickComm.SCRenameFile(old, tmp, True);
 //  RefreshNXTFiles;
 end;
 
@@ -725,9 +826,9 @@ begin
       if bl > K_BATTERY_DEFRAG_MIN then
       begin
         // make sure the brick stays awake
-        if BrickComm.NXTKeepAlive(c) then
+        if BrickComm.DCKeepAlive(c) then
         begin
-          if not BrickComm.NXTDefragmentFlash then
+          if not BrickComm.SCDefragmentFlash then
             MessageDlg(sDefragError, mtError, [mbOK], 0)
           else
             MessageDlg(sDefragSuccess, mtInformation, [mbOK], 0);
@@ -850,24 +951,80 @@ begin
 end;
 {$ENDIF}
 
+function MaxFileSize : integer;
+begin
+  if IsNXT then
+    Result := K_NXT_MAX_MEM
+  else
+    Result := K_EV3_MAX_MEM;
+end;
+
+(*
+        Result := frm.ShowModal;
+*)
+
 function TfrmNXTExplorer.DoDownloadFile(const aFile: string) : boolean;
 var
+  D1 : TNotifyEvent;
+  DD : TNotifyEvent;
+  DS : TDownloadStatusEvent;
   fsize : Int64;
+  oldBF : string;
 begin
   Result := True;
   fsize := SizeOfFile(aFile);
-  if fsize < K_NXT_MAX_MEM then
-  begin
-    if not BrickComm.NXTDownloadFile(aFile, NameToNXTFileType(aFile)) then
+  oldBF := BrickComm.BrickFolder;
+  try
+    BrickComm.BrickFolder := CurrentBrickFolder;
+    if fsize < MaxFileSize then
     begin
-      MessageDlg(sDownloadFailed, mtError, [mbOK], 0);
+      D1 := BrickComm.OnDownloadStart;
+      DD := BrickComm.OnDownloadDone;
+      DS := BrickComm.OnDownloadStatus;
+      try
+        BrickComm.OnDownloadStart  := HandleDownloadStart;
+        BrickComm.OnDownloadDone   := HandleDownloadDone;
+        BrickComm.OnDownloadStatus := HandleDownloadStatus;
+        if not BrickComm.DownloadFile(aFile, NXTNameToPBRFileType(aFile)) then
+        begin
+          MessageDlg(sDownloadFailed, mtError, [mbOK], 0);
+          Result := False;
+        end;
+      finally
+        BrickComm.OnDownloadStart  := D1;
+        BrickComm.OnDownloadDone   := DD;
+        BrickComm.OnDownloadStatus := DS;
+      end;
+    end
+    else
+    begin
+      MessageDlg(Format(sTooBig, [fsize, aFile]), mtError, [mbOK], 0);
       Result := False;
     end;
-  end
-  else
-  begin
-    MessageDlg(Format(sTooBig, [fsize, aFile]), mtError, [mbOK], 0);
-    Result := False;
+  finally
+    BrickComm.BrickFolder := oldBF;
+  end;
+end;
+
+function TfrmNXTExplorer.DoUploadFile(const aFile: string): boolean;
+var
+  D1 : TNotifyEvent;
+  DD : TNotifyEvent;
+  DS : TDownloadStatusEvent;
+begin
+  Result := True;
+  D1 := BrickComm.OnDownloadStart;
+  DD := BrickComm.OnDownloadDone;
+  DS := BrickComm.OnDownloadStatus;
+  try
+    BrickComm.OnDownloadStart  := HandleDownloadStart;
+    BrickComm.OnDownloadDone   := HandleDownloadDone;
+    BrickComm.OnDownloadStatus := HandleDownloadStatus;
+    Result := BrickComm.UploadFile(aFile, GetLocalFilePath);
+  finally
+    BrickComm.OnDownloadStart  := D1;
+    BrickComm.OnDownloadDone   := DD;
+    BrickComm.OnDownloadStatus := DS;
   end;
 end;
 
@@ -892,17 +1049,31 @@ begin
 end;
 {$ENDIF}
 
+function FileIsText(const ext : string) : boolean;
+begin
+  Result := (ext = '.txt') or
+            (ext = '.log') or
+            (ext = '.sh') or
+            (ext = '.h') or
+            (ext = '.c') or
+            (ext = '.pas') or
+            (ext = '.rs') or
+            (ext = '.nbc') or
+            (ext = '.nxc');
+end;
+
 procedure TfrmNXTExplorer.actFileViewExecute(Sender: TObject);
 var
   MS : TMemoryStream;
-  fname : string;
+  fname, ext : string;
 begin
   MS := TMemoryStream.Create;
   try
-    fname := NXTFiles.Selected.Caption;
-    if BrickComm.NXTUploadFileToStream(fname, MS) then
+    fname := CurrentBrickFolder + NXTFiles.Selected.Caption;
+    if BrickComm.UploadFileToStream(fname, MS) then
     begin
-      if Lowercase(ExtractFileExt(fname)) = '.txt' then
+      ext := Lowercase(ExtractFileExt(fname));
+      if FileIsText(ext) then
         frmTextView.ShowStreamData(fname, MS)
 {$IFNDEF FPC}
       else
@@ -1779,8 +1950,133 @@ begin
 end;
 {$ENDIF}
 
-{$IFDEF FPC}
+procedure TfrmNXTExplorer.ChangeFolder(aFolder: string);
+var
+  bRelative : boolean;
+  len, i : integer;
+  tmpPath, tmpCF : string;
+begin
+  if aFolder = '' then Exit;
+  len := Length(aFolder);
+  if (len > 1) and (aFolder[1] <> '/') and (aFolder[len] = '/') then
+  begin
+    System.Delete(aFolder, len, 1);
+    dec(len);
+  end;
+  if aFolder = '.' then Exit;
+  bRelative := aFolder[1] <> '/';
+  if bRelative then
+  begin
+    // is is a .. ?
+    if aFolder = '..' then
+    begin
+      // remove from path
+      tmpCF := CurrentBrickFolder;
+      System.Delete(tmpCF, Length(tmpCF), 1);
+      tmpPath := '';
+      i := Pos('/', tmpCF);
+      while i > 0 do
+      begin
+        tmpPath := tmpPath + Copy(tmpCF, 1, i);
+        System.Delete(tmpCF, 1, i);
+        i := Pos('/', tmpCF);
+      end;
+      if tmpPath = '' then
+        tmpPath := '/';
+      CurrentBrickFolder := tmpPath;
+    end
+    else
+    begin
+      // add to path
+      CurrentBrickFolder := CurrentBrickFolder + aFolder + '/';
+    end;
+  end
+  else
+  begin
+    // replace with new absolute path
+    CurrentBrickFolder := aFolder;
+  end;
+end;
+
+procedure TfrmNXTExplorer.NXTFilesDblClick(Sender: TObject);
+var
+  item : TListItem;
+  fType : TPBRFileType;
+begin
+  item := NXTFiles.Selected;
+  if not Assigned(item) then
+    Exit;
+  fType := TPBRFileType(item.ImageIndex);
+  if (fType = nftFolder) then
+  begin
+    ChangeFolder(item.Caption);
+    RefreshNXTFiles;
+  end
+  else if (fType = nftSound) then
+  begin
+    BrickComm.DCPlaySoundFile(CurrentBrickFolder + item.Caption, False);
+  end
+  else if (fType = nftProgram) then
+  begin
+    BrickComm.DCStartProgram(CurrentBrickFolder + item.Caption);
+  end;
+end;
+
+procedure TfrmNXTExplorer.SetCurrentBrickFolder(const Value: string);
+begin
+  fCurrentBrickFolder := Value;
+  lblPath.Caption := fCurrentBrickFolder;
+end;
+
+procedure TfrmNXTExplorer.HandleDownloadStart(Sender: TObject);
+begin
+  barProgress.Visible := True;
+end;
+
+procedure TfrmNXTExplorer.HandleDownloadDone(Sender: TObject);
+begin
+  barProgress.Visible := False;
+  fTotal := -1;
+end;
+
+procedure TfrmNXTExplorer.HandleDownloadStatus(Sender: TObject; cur,
+  total: Integer; var Abort: boolean);
+begin
+  ProgressTotal := total;
+  Current := cur;
+  Abort := False;
+end;
+
+procedure TfrmNXTExplorer.SetCurrent(const Value: integer);
+begin
+  fCur := Value;
+  barProgress.Position := Value;
+  Application.ProcessMessages;
+end;
+
+procedure TfrmNXTExplorer.SetTotal(const Value: integer);
+begin
+  if fTotal = -1 then
+  begin
+    barProgress.Min := 0;
+    barProgress.Max := Value;
+    Application.ProcessMessages;
+    fTotal := Value;
+  end;
+end;
+
+procedure TfrmNXTExplorer.lblPathDblClick(Sender: TObject);
+var
+  newPath : string;
+begin
+  // prompt for new path
+  newPath := InputBox('Select Path', 'Enter new path', CurrentBrickFolder);
+  ChangeFolder(newPath);
+  RefreshNXTFiles;
+end;
+
 initialization
+{$IFDEF FPC}
   {$i uNXTExplorer.lrs}
 {$ENDIF}
 
