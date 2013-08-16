@@ -88,7 +88,7 @@ begin
   if not FileExists(GetInitFilename) then
     CreateInitFile;
   cboPort.Items.Add('usb');
-  LoadNXTPorts(cboPort.Items);
+  LoadKnownPorts(cboPort.Items);
   SizeComboboxDropdown(cboPort);
   cboPort.Text := 'usb';
 end;

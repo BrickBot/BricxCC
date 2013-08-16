@@ -2,9 +2,9 @@ object frmNXTName: TfrmNXTName
   Left = 192
   Top = 145
   BorderStyle = bsDialog
-  Caption = 'Set NXT Name'
+  Caption = 'Set Brick Name'
   ClientHeight = 62
-  ClientWidth = 187
+  ClientWidth = 256
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,13 +18,13 @@ object frmNXTName: TfrmNXTName
   object lblNXTName: TLabel
     Left = 8
     Top = 10
-    Width = 56
+    Width = 58
     Height = 13
-    Caption = 'NXT &Name:'
+    Caption = 'Brick &Name:'
     FocusControl = edtNXTName
   end
   object btnOK: TButton
-    Left = 16
+    Left = 50
     Top = 33
     Width = 75
     Height = 25
@@ -34,7 +34,7 @@ object frmNXTName: TfrmNXTName
     TabOrder = 1
   end
   object btnCancel: TButton
-    Left = 96
+    Left = 130
     Top = 33
     Width = 75
     Height = 25
@@ -44,9 +44,9 @@ object frmNXTName: TfrmNXTName
     TabOrder = 2
   end
   object edtNXTName: TEdit
-    Left = 85
+    Left = 90
     Top = 6
-    Width = 89
+    Width = 158
     Height = 21
     MaxLength = 8
     TabOrder = 0

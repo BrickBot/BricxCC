@@ -161,6 +161,8 @@ type
     actToolsNXTWatchList: TAction;
     actHelpSPCGuidePDF: TAction;
     actToolsSimpleTerm: TAction;
+    actToolsLiveSensors: TAction;
+    actToolsImageEditor: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -271,6 +273,8 @@ type
     procedure actSearchGrepResultsExecute(Sender: TObject);
     procedure actToolsNXTWatchListExecute(Sender: TObject);
     procedure actToolsSimpleTermExecute(Sender: TObject);
+    procedure actToolsLiveSensorsExecute(Sender: TObject);
+    procedure actToolsImageEditorExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -385,6 +389,8 @@ type
     mniMIDIConversion: TOfficeMenuItem;
     mniSoundConvert: TOfficeMenuItem;
     mniSimpleTerm: TOfficeMenuItem;
+    mniLiveSensors: TOfficeMenuItem;
+    mniImageEditor: TOfficeMenuItem;
     N9: TOfficeMenuItem;
     mniFindRCX: TOfficeMenuItem;
     mniTurnRCXOff: TOfficeMenuItem;
@@ -511,6 +517,8 @@ type
     bvlSearch: TBevel;
     osbGoto: TOfficeSpeedButton;
     osbProcList: TOfficeSpeedButton;
+    osbGrepSearch: TOfficeSpeedButton;
+    osbGrepResults: TOfficeSpeedButton;
     osbCompileBtn: TOfficeSpeedButton;
     osbDownloadBtn: TOfficeSpeedButton;
     bvlSep1: TBevel;
@@ -763,7 +771,8 @@ uses
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp, uSPCCodeComp, 
-  uNXTWatchList, uSpirit, uSimpleTerm;
+  uNXTWatchList, uSpirit, uSimpleTerm, uLiveSensors, ev3RGFedit_MainForm,
+  uBrickImage;
 
 const
   K_NQC_GUIDE = 24;
@@ -866,7 +875,7 @@ begin
     // make sure the port is not held open here
     BrickComm.Close;
   end
-  else if not (IsRCX or IsSpybotic or IsNXT or IsSuperPro) then
+  else if not (IsRCX or IsSpybotic or IsNXT or IsSuperPro or IsEV3) then
   begin
     // scout or cybermaster
     if bTalkToBrick then
@@ -889,6 +898,11 @@ begin
   begin
     // NXT
     MainForm.barStatus.Panels[3].Text := K_NXT;
+  end
+  else if IsEV3 then
+  begin
+    // EV3
+    MainForm.barStatus.Panels[3].Text := K_EV3;
   end
   else if IsSuperPro then
   begin
@@ -1144,10 +1158,10 @@ var
   Fname : string;
   binext : string;
 begin
+  Fname := GetActiveEditorFilename;
   if LocalStandardFirmware then
   begin
     H := GetActiveEditorHighlighter;
-    Fname := GetActiveEditorFilename;
     if Assigned(H) and FileIsROPS(H) then
     begin
       if ce.Running then
@@ -1174,7 +1188,7 @@ begin
         if (binext = '.rxe') and not CurrentProgram.Loaded(Fname) then
           DoCompileAction(False, False);
 
-        BrickComm.NXTStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
+        BrickComm.DCStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
@@ -1185,8 +1199,17 @@ begin
       else
         ShowNXTTools;
     end
+    else if IsEV3 then
+    begin
+      binext := '.rbf';
+      BrickComm.DCStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
+    end
     else
       BrickComm.StartTask(idx);
+  end
+  else if IsEV3 and (LocalFirmwareType = ftLinux) then
+  begin
+    BrickComm.DCStartProgram(ChangeFileExt(ExtractFileName(Fname), ''));
   end;
 end;
 
@@ -2070,7 +2093,7 @@ begin
   E           := ActiveEditorForm;
   bAssigned   := Assigned(E);
   bBrickAlive := BrickComm.IsOpen;
-  bBALSF      := bBrickAlive and LocalStandardFirmware;
+  bBALSF      := bBrickAlive and (LocalStandardFirmware or (IsEV3 and ((BrickComm.TransportTypes*[ttUSB]) <> [])));
   bROPS       := FileIsROPS;
 
   actFileSave.Enabled           := bAssigned and E.TheEditor.Modified;
@@ -2103,7 +2126,7 @@ begin
   actSearchGrepResults.Enabled  := true;
 
   actCompileCompile.Enabled     := bAssigned and FileCanBeCompiled;
-  actCompileDownload.Enabled    := bAssigned and ((bBrickAlive or FileIsForth) and not bROPS);
+  actCompileDownload.Enabled    := bAssigned and ((bBrickAlive or FileIsForth or (IsEV3 and (LocalFirmwareType = ftLinux))) and not bROPS);
   actCompileDownloadRun.Enabled := bAssigned and bBrickAlive and not bROPS;
   actCompileRun.Enabled         := bBALSF or bROPS;
   actCompileStop.Enabled        := bBALSF or bROPS;
@@ -2138,35 +2161,43 @@ begin
   actToolsSetValues.Checked     := frmSetValues.Visible;
   actToolsSpybotEEPROM.Checked  := frmSpybotEEPROM.Visible;
   actToolsNXTExplorer.Checked   := frmNXTExplorer.Visible;
+  actToolsNXTScreen.Checked     := frmNXTImage.Visible;
+  actToolsNXTWatchList.Checked  := frmNXTWatchList.Visible;
   actToolsSyncMotors.Checked    := frmNXTController.Visible;
+  actToolsSimpleTerm.Checked    := frmSimpleTerm.Visible;
+  actToolsLiveSensors.Checked   := frmLiveSensors.Visible;
+  actToolsImageEditor.Checked   := frmEV3RGFEDIT.Visible;
 
   actToolsDirect.Enabled         := bBALSF and not IsSuperPro;
   actToolsDiag.Enabled           := bBALSF and not IsSuperPro;
   actToolsWatch.Enabled          := bBALSF and not IsSuperPro;
   actToolsPiano.Enabled          := bBALSF and not IsSuperPro;
   actToolsJoystick.Enabled       := bBALSF and not IsSuperPro;
-  actToolsRemote.Enabled         := bBALSF and (IsRCX or IsScout or IsNXT);
-  actToolsSendMsg.Enabled        := bBALSF and (IsRCX or IsScout or IsNXT);
+  actToolsRemote.Enabled         := bBALSF and (IsRCX or IsScout or IsNXT or IsEV3);
+  actToolsSendMsg.Enabled        := bBALSF and (IsRCX or IsScout or IsNXT or IsEV3);
   actToolsDatalog.Enabled        := bBALSF and IsRCX;
   actToolsMemory.Enabled         := bBALSF and not IsSuperPro;
   actToolsClearMem.Enabled       := bBALSF and not IsSpybotic;
   actToolsNewWatch.Enabled       := bBALSF and (IsRCX2 or IsSpybotic or IsNXT);
   actToolsSetValues.Enabled      := bBALSF and (IsRCX2 or IsSpybotic);
   actToolsSpybotEEPROM.Enabled   := bBALSF and IsSpybotic;
-  actToolsNXTExplorer.Enabled    := bBALSF and IsNXT;
-  actToolsNXTScreen.Enabled      := bBALSF and IsNXT;
-  actToolsNXTWatchList.Enabled   := bBALSF and IsNXT;
+  actToolsNXTExplorer.Enabled    := bBALSF and (IsNXT or IsEV3);
+  actToolsNXTScreen.Enabled      := bBALSF and (IsNXT or IsEV3);
+  actToolsNXTWatchList.Enabled   := bBALSF and (IsNXT or IsEV3);
   actToolsSyncMotors.Enabled     := bBALSF and IsNXT;
   actToolsSimpleTerm.Enabled     := bBALSF;
+  actToolsLiveSensors.Enabled    := bBALSF and (IsNXT or IsEV3);
+  actToolsImageEditor.Enabled    := True;
+
   actToolsFindBrick.Enabled      := not bBrickAlive;
   actToolsTurnBrickOff.Enabled   := bBALSF;
   actToolsCloseComm.Enabled      := bBrickAlive;
   actToolsFirmware.Enabled       := {bBrickAlive and }(IsRCX or IsNXT);
   actToolsUnlockFirm.Enabled     := bBALSF and IsRCX;
 
-  mniProgramNumber.Enabled       := (bBrickAlive and IsRCX) or (bBrickAlive and IsSuperPro);
-  ProgramBox.Enabled             := (bBrickAlive and IsRCX) or (bBrickAlive and IsSuperPro);
-  mniBrickOS.Visible             := LocalFirmwareType = ftBrickOS;
+  mniProgramNumber.Enabled       := bBrickAlive and (IsRCX or IsSuperPro);
+  ProgramBox.Enabled             := bBrickAlive and (IsRCX or IsSuperPro);
+  mniBrickOS.Visible             := (LocalFirmwareType = ftBrickOS) and IsRCX;
   mniSetLNPAddress.Enabled       := mniBrickOS.Visible and bBrickAlive;
 //  mniDownloadAddress.Enabled     := mniBrickOS.Visible and bBrickAlive;
 //  mniLNPPort.Enabled             := mniBrickOS.Visible and bBrickAlive;
@@ -2477,6 +2508,12 @@ begin
   begin
     dlgOpenFirmware.FileName := 'lejos.srec';
     dlgOpen.FilterIndex      := Highlighters.IndexOf('Java')+1;
+    dlgSave.FilterIndex      := dlgOpen.FilterIndex;
+  end
+  else if LocalFirmwareType = ftLinux then
+  begin
+    dlgOpenFirmware.FileName := 'ev3.rfw';
+    dlgOpen.FilterIndex      := Highlighters.IndexOf('C++')+1;
     dlgSave.FilterIndex      := dlgOpen.FilterIndex;
   end
   else
@@ -3108,6 +3145,10 @@ begin
   BrickComm.Close;
   barStatus.Panels[2].Text := '';
   barStatus.Panels[3].Text := '';
+  if frmBrickImage.Visible then
+    frmBrickImage.Close;
+  if frmNXTImage.Visible then
+    frmNXTImage.Close;
 end;
 
 procedure TMainForm.actToolsFirmwareExecute(Sender: TObject);
@@ -3637,8 +3678,14 @@ begin
 end;
 
 procedure TMainForm.actToolsNXTScreenExecute(Sender: TObject);
+var
+  f : TForm;
 begin
-  with frmNXTImage do begin
+  if IsEV3 then
+    f := frmBrickImage
+  else
+    f := frmNXTImage;
+  with f do begin
     Visible := not Visible;
     if Visible and (WindowState = wsMinimized) then
       WindowState := wsNormal;
@@ -4182,6 +4229,8 @@ begin
   mniMIDIConversion := TOfficeMenuItem.Create(mniTools);
   mniSoundConvert := TOfficeMenuItem.Create(mniTools);
   mniSimpleTerm := TOfficeMenuItem.Create(mniTools);
+  mniLiveSensors := TOfficeMenuItem.Create(mniTools);
+  mniImageEditor := TOfficeMenuItem.Create(mniTools);
   N9 := TOfficeMenuItem.Create(mniTools);
   mniFindRCX := TOfficeMenuItem.Create(mniTools);
   mniTurnRCXOff := TOfficeMenuItem.Create(mniTools);
@@ -4196,7 +4245,8 @@ begin
                 mniRCXJoystick, mniRemote, mniNewWatch, mniSetvalues,
                 mniSpybotEEPROM, mniNXTExplorer, mniNXTScreen, mniNXTWatchList, mniSyncMotors,
                 N7, mniSendMessage, mniDatalog, mniMemoryMap, mniClearMemory,
-                mniMIDIConversion, mniSoundConvert, mniSimpleTerm, N9, mniFindRCX,
+                mniMIDIConversion, mniSoundConvert, mniSimpleTerm,
+                mniLiveSensors, mniImageEditor, N9, mniFindRCX,
                 mniTurnRCXOff, mniCloseComm, N3, mniFirmware,
                 mniUnlockFirmware, mniConfigureTools, N4]);
 
@@ -4984,6 +5034,16 @@ begin
     Name := 'mniSimpleTerm';
     Action := actToolsSimpleTerm;
   end;
+  with mniLiveSensors do
+  begin
+    Name := 'mniLiveSensors';
+    Action := actToolsLiveSensors;
+  end;
+  with mniImageEditor do
+  begin
+    Name := 'mniImageEditor';
+    Action := actToolsImageEditor;
+  end;
   with N9 do
   begin
     Name := 'N9';
@@ -5554,12 +5614,14 @@ begin
     Parent := Self;
     Left := 0;
     Top := 0;
-    Width := 584;
+    Width := 650;
     Height := 54;
     Align := alTop;
     Color := clBtnFace;
     PopupMenu := mnuToolbars;
     TabOrder := 1;
+    AutoDrag := False;
+    AutoDock := False;
     OnDockOver := cbrTopDockOver;
     OnMouseDown := BarMouseDown;
     OnMouseMove := BarMouseMove;
@@ -5591,7 +5653,8 @@ begin
     GradientTo := clBtnFace;
     BorderColor := clBlack;
     Horizontal := False;
-    Constraints.MinWidth := 22;
+    ParentShowHint := False;
+    ShowHint := True;
     TabOrder := 5;
   end;
   // now create tools toolbar buttons
@@ -5914,7 +5977,7 @@ begin
     Name := 'ogpCompile';
     Parent := cbrTop;
     Caption := '';
-    Left := 308;
+    Left := 354;
     Top := 2;
     Width := 198;
     Height := 22;
@@ -5922,7 +5985,6 @@ begin
     GradientTo := clBtnFace;
     BorderColor := clBlack;
     Horizontal := False;
-    Constraints.MinWidth := 82;
     TabOrder := 2;
   end;
   osbCompileBtn := TOfficeSpeedButton.Create(Self);
@@ -6083,7 +6145,6 @@ begin
     GradientTo := clBtnFace;
     BorderColor := clBlack;
     Horizontal := False;
-    Constraints.MinWidth := 22;
     TabOrder := 4;
   end;
   // now create edit toolbar buttons
@@ -6262,7 +6323,6 @@ begin
     GradientTo := clBtnFace;
     BorderColor := clBlack;
     Horizontal := False;
-    Constraints.MinWidth := 22;
     ParentShowHint := False;
     ShowHint := True;
     TabOrder := 0;
@@ -6422,7 +6482,7 @@ begin
     Name := 'ogpHelp';
     Parent := cbrTop;
     Caption := '';
-    Left := 519;
+    Left := 565;
     Top := 2;
     Width := 47;
     Height := 22;
@@ -6430,30 +6490,12 @@ begin
     GradientTo := clBtnFace;
     BorderColor := clBlack;
     Horizontal := False;
-    Constraints.MinHeight := 22;
-    Constraints.MinWidth := 22;
-    TabOrder := 0;
-  end;
-  osbContents := TOfficeSpeedButton.Create(Self);
-  osbInfo := TOfficeSpeedButton.Create(Self);
-  with osbContents do
-  begin
-    Name := 'osbContents';
-    Parent := ogpHelp;
-    Left := 23;
-    Top := 0;
-    Width := 23;
-    Height := 22;
-    Action := actHelpHelp;
-    MenuItem := mniContents;
-    ResourceName := 'IMG_HELP';
-    Align := alLeft;
-    Flat := True;
-    ShowCaption := False;
-    NumGlyphs := 4;
     ParentShowHint := False;
     ShowHint := True;
+    TabOrder := 3;
   end;
+  osbInfo := TOfficeSpeedButton.Create(Self);
+  osbContents := TOfficeSpeedButton.Create(Self);
   with osbInfo do
   begin
     Name := 'osbInfo';
@@ -6465,6 +6507,24 @@ begin
     Action := actHelpInfo;
     MenuItem := mniAbout;
     ResourceName := 'IMG_ABOUT';
+    Align := alLeft;
+    Flat := True;
+    ShowCaption := False;
+    NumGlyphs := 4;
+    ParentShowHint := False;
+    ShowHint := True;
+  end;
+  with osbContents do
+  begin
+    Name := 'osbContents';
+    Parent := ogpHelp;
+    Left := 23;
+    Top := 0;
+    Width := 23;
+    Height := 22;
+    Action := actHelpHelp;
+    MenuItem := mniContents;
+    ResourceName := 'IMG_HELP';
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -6484,13 +6544,12 @@ begin
     Caption := '';
     Left := 194;
     Top := 2;
-    Width := 101;
+    Width := 147;
     Height := 22;
     GradientFrom := clBtnFace;
     GradientTo := clBtnFace;
     BorderColor := clBlack;
     Horizontal := False;
-    Constraints.MinWidth := 22;
     TabOrder := 1;
   end;
   osbFind := TOfficeSpeedButton.Create(Self);
@@ -6498,6 +6557,8 @@ begin
   bvlSearch := TBevel.Create(Self);
   osbGoto := TOfficeSpeedButton.Create(Self);
   osbProcList := TOfficeSpeedButton.Create(Self);
+  osbGrepSearch := TOfficeSpeedButton.Create(Self);
+  osbGrepResults := TOfficeSpeedButton.Create(Self);
   with osbFind do
   begin
     Name := 'osbFind';
@@ -6578,6 +6639,42 @@ begin
     Flat := True;
     ShowCaption := False;
     NumGlyphs := 4;
+    ParentShowHint := False;
+    ShowHint := True;
+  end;
+  with osbGrepSearch do
+  begin
+    Name := 'osbGrepSearch';
+    Parent := ogpSearch;
+    Left := 100;
+    Top := 0;
+    Width := 23;
+    Height := 22;
+    Action := actSearchGrepSearch;
+    MenuItem := mniGrepSearch;
+    ResourceName := 'IMG_GREPSEARCH';
+    Align := alLeft;
+    Flat := True;
+    ShowCaption := False;
+    NumGlyphs := 1;
+    ParentShowHint := False;
+    ShowHint := True;
+  end;
+  with osbGrepResults do
+  begin
+    Name := 'osbGrepResults';
+    Parent := ogpSearch;
+    Left := 123;
+    Top := 0;
+    Width := 23;
+    Height := 22;
+    Action := actSearchGrepResults;
+    MenuItem := mniGrepResults;
+    ResourceName := 'IMG_GREPRESULTS';
+    Align := alLeft;
+    Flat := True;
+    ShowCaption := False;
+    NumGlyphs := 1;
     ParentShowHint := False;
     ShowHint := True;
   end;
@@ -7217,6 +7314,16 @@ end;
 procedure TMainForm.actToolsSimpleTermExecute(Sender: TObject);
 begin
   frmSimpleTerm.Visible := not frmSimpleTerm.Visible;
+end;
+
+procedure TMainForm.actToolsLiveSensorsExecute(Sender: TObject);
+begin
+  frmLiveSensors.Visible := not frmLiveSensors.Visible;
+end;
+
+procedure TMainForm.actToolsImageEditorExecute(Sender: TObject);
+begin
+  frmEV3RGFEDIT.Visible := True;
 end;
 
 procedure TMainForm.UpdateCEPanel;

@@ -30,11 +30,6 @@ uses
 
 type
   TRemoteForm = class(TForm)
-    bclMessage: TBevel;
-    lblMessage: TLabel;
-    lblMsg1: TLabel;
-    lblMsg2: TLabel;
-    lblMsg3: TLabel;
     grpMotorA: TGroupBox;
     grpMotorB: TGroupBox;
     grpMotorC: TGroupBox;
@@ -47,6 +42,27 @@ type
     btnMotorBRwd: TSpeedButton;
     btnMotorCFwd: TSpeedButton;
     btnMotorCRwd: TSpeedButton;
+    tmrMain: TTimer;
+    barASpeed: TTrackBar;
+    barBSpeed: TTrackBar;
+    barCSpeed: TTrackBar;
+    grpMotorD: TGroupBox;
+    btnMotorDFwd: TSpeedButton;
+    btnMotorDRwd: TSpeedButton;
+    barDSpeed: TTrackBar;
+    lblMotorD: TStaticText;
+    pnlTop: TPanel;
+    lblMsg1: TLabel;
+    btnMsg1: TButton;
+    lblMsg2: TLabel;
+    btnMsg2: TButton;
+    lblMsg3: TLabel;
+    btnMsg3: TButton;
+    bclMessage: TBevel;
+    lblMessage: TLabel;
+    imgIcon: TImage;
+    pnlBottom: TPanel;
+    Shape1: TShape;
     lblProgram: TLabel;
     lblP1: TLabel;
     lblP2: TLabel;
@@ -55,23 +71,14 @@ type
     lblP5: TLabel;
     lblStop: TLabel;
     lblBeep: TLabel;
-    imgIcon: TImage;
-    tmrMain: TTimer;
     btnProg1: TButton;
     btnProg5: TButton;
     btnProg4: TButton;
     btnProg3: TButton;
     btnProg2: TButton;
     btnBeep: TButton;
-    btnMsg1: TButton;
-    btnMsg2: TButton;
-    btnMsg3: TButton;
     btnHelp: TButton;
-    Shape1: TShape;
     btnStop: TButton;
-    barASpeed: TTrackBar;
-    barBSpeed: TTrackBar;
-    barCSpeed: TTrackBar;
     procedure tmrMainTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
@@ -103,6 +110,10 @@ uses
   SysUtils, uGlobals, brick_common, rcx_constants, uRemoteProgMap,
   uRemoteGlobals;
 
+const
+  BASE_WIDTH = 190;
+  EV3_DELTA = 58;
+
 procedure TRemoteForm.tmrMainTimer(Sender: TObject);
 var
   msg : Word;
@@ -132,6 +143,17 @@ end;
 
 procedure TRemoteForm.FormShow(Sender: TObject);
 begin
+  Width := BASE_WIDTH;
+  grpMotorD.Visible := False;
+  lblMotorD.Visible := False;
+  if BrickComm.BrickType = SU_EV3 then
+  begin
+    lblMotorD.Visible := True;
+    grpMotorD.Visible := True;
+    Width := BASE_WIDTH + EV3_DELTA;
+    pnlBottom.Left := EV3_DELTA div 2;
+    pnlTop.Left    := EV3_DELTA div 2;
+  end;
   barASpeed.Visible := BrickComm.BrickType in [SU_NXT, SU_EV3];
   barBSpeed.Visible := barASpeed.Visible;
   barCSpeed.Visible := barASpeed.Visible;
@@ -153,6 +175,8 @@ begin
     btnMotorBRwd.GroupIndex := 0;
     btnMotorCFwd.GroupIndex := 0;
     btnMotorCRwd.GroupIndex := 0;
+    btnMotorDFwd.GroupIndex := 0;
+    btnMotorDRwd.GroupIndex := 0;
   end;
 end;
 
@@ -164,9 +188,10 @@ end;
 procedure TRemoteForm.ButtonClicked(Sender: TObject);
 var
   val : integer;
+  filename : string;
 begin
   val := TSpeedButton(Sender).Tag;
-  if BrickComm.BrickType = SU_NXT then
+  if BrickComm.BrickType in [SU_NXT, SU_EV3] then
   begin
     case val of
       1 : BrickComm.SendMessage(1);
@@ -174,11 +199,11 @@ begin
       3 : BrickComm.SendMessage(3);
       4..8 :
         begin
-          BrickComm.NXTStopProgram;
-          BrickComm.NXTStartProgram(RemotePrograms[val-4]);
+          BrickComm.DCStopProgram;
+          BrickComm.DCStartProgram(RemotePrograms[val-4]);
         end;
       9 : begin
-            BrickComm.NXTStopProgram;
+            BrickComm.DCStopProgram;
             BrickComm.MotorsOff(7); // stop all motors
             BrickComm.MuteSound;
           end;
@@ -186,7 +211,10 @@ begin
             if (Lowercase(RemotePrograms[5]) = 'default') or (RemotePrograms[5] = '') then
               BrickComm.PlayTone(1760,10)
             else
-              BrickComm.NXTPlaySoundFile(RemotePrograms[5], False);
+            begin
+              filename := RemotePrograms[5];
+              BrickComm.DCPlaySoundFile(filename, False);
+            end;
           end;
     end;
   end
@@ -218,14 +246,14 @@ procedure TRemoteForm.MotorMouseDown(Sender: TObject;
 var
   mtr : byte;
 begin
-  if BrickComm.BrickType = SU_NXT then
+  if BrickComm.BrickType in [SU_NXT, SU_EV3] then
   begin
     if Button = mbLeft then
     begin
       mtr := TSpeedButton(Sender).Tag;
-      if mtr > 4 then
+      if mtr > 8 then
       begin
-        dec(mtr, 4);
+        dec(mtr, 8);
         BrickComm.SetRwd(mtr);
       end
       else
@@ -241,13 +269,13 @@ procedure TRemoteForm.MotorMouseUp(Sender: TObject;
 var
   mtr : byte;
 begin
-  if BrickComm.BrickType = SU_NXT then
+  if BrickComm.BrickType in [SU_NXT, SU_EV3] then
   begin
     if Button = mbLeft then
     begin
       mtr := TSpeedButton(Sender).Tag;
-      if mtr > 4 then
-        dec(mtr, 4);
+      if mtr > 8 then
+        dec(mtr, 8);
       BrickComm.MotorsOff(mtr);
     end;
   end;
@@ -259,6 +287,7 @@ begin
     1 : Result := 7-barASpeed.Position;
     2 : Result := 7-barBSpeed.Position;
     4 : Result := 7-barCSpeed.Position;
+    8 : Result := 7-barDSpeed.Position;
   else
     Result := 4;
   end;
@@ -270,7 +299,7 @@ var
   F : TfrmRemoteProgMap;
   i : integer;
 begin
-  if (BrickComm.BrickType = SU_NXT) and (Button = mbRight) then
+  if (BrickComm.BrickType in [SU_NXT, SU_EV3]) and (Button = mbRight) then
   begin
     // right click a program button and display the configuration form.
     F := TfrmRemoteProgMap.Create(nil);

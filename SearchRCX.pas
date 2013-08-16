@@ -26,7 +26,7 @@ uses
 {$IFDEF FPC}
   LResources,
 {$ENDIF}
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, uMiscDefines;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, uMiscDefines, uGlobals;
 
 type
   TSearchBrickForm = class(TForm)
@@ -95,7 +95,7 @@ implementation
 
 uses
   SysUtils, Dialogs, Math, FakeSpirit, rcx_link, uSpirit, brick_common,
-  uGuiUtils, uLocalizedStrings, uSearchNXT, uGlobals
+  uGuiUtils, uLocalizedStrings, uSearchNXT
   {$IFNDEF FPC}, Windows{$ENDIF};
 
 const
@@ -372,8 +372,8 @@ begin
   cboPort.Items.Add('Search');
   if bt in [SU_RCX, SU_SCOUT, SU_RCX2, SU_NXT, SU_EV3] then
     cboPort.Items.Add('usb');
-  if bt = SU_NXT then
-    LoadNXTPorts(cboPort.Items);
+  if bt in [SU_NXT, SU_EV3] then
+    LoadKnownPorts(cboPort.Items);
   if not (bt in [SU_NXT, SU_EV3]) then
   begin
     for i := 1 to 8 do
@@ -398,7 +398,7 @@ begin
     try
       F.Text := S_SEARCHING_NXT;
       F.Show;
-      T :=  TUpdaterThread.Create(BrickComm.NXTInitializeResourceNames);
+      T :=  TUpdaterThread.Create(BrickComm.InitializeResourceNames);
       h := T.Handle;
       T.Resume;
       tick := GetTickCount;
@@ -434,7 +434,7 @@ begin
     F.Text := S_SEARCHING_NXT;
     F.Show;
     BrickComm.BrickType := rtNXT;
-    T :=  TUpdaterThread.Create(BrickComm.NXTUpdateResourceNames);
+    T :=  TUpdaterThread.Create(BrickComm.UpdateResourceNames);
     h := T.Handle;
     T.Resume;
     tick := GetTickCount;
@@ -491,12 +491,12 @@ var
   i : integer;
 begin
   Result := False;
-  if IsNXT then // don't try nxt.dat entries for a non-NXT brick type
+  if IsNXT or IsEV3 then // don't try bricks.dat entries for a non-NXT/EV3 brick type
   begin
-    // first try brick resource strings from the nxt.dat file
+    // first try brick resource strings from the bricks.dat file
     SL := TStringList.Create;
     try
-      LoadNXTPorts(SL);
+      LoadKnownPorts(SL);
       for i := 0 to SL.Count - 1 do
       begin
         BrickComm.Port := SL[i];

@@ -193,10 +193,13 @@ end;
 procedure TfmGrepSearch.btnOKClick(Sender: TObject);
 resourcestring
   SSpecifiedDirectoryDoesNotExist = 'The search directory %s does not exist';
+  sEmptySearchText = 'No search pattern specified';
 var
   i: Integer;
   Dirs: TStringList;
 begin
+  if Trim(cbText.Text) = '' then
+    raise Exception.Create(sEmptySearchText);
   if rbDirectories.Checked then
   begin
     if Trim(cbDirectory.Text) = '' then

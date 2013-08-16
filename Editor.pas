@@ -62,6 +62,7 @@ type
     procedure WMMDIActivate(var Message: TWMMDIActivate); message WM_MDIACTIVATE;
     procedure SetFilename(const Value: string);
     procedure OpenFileAtCursor;
+    procedure SwapIntfAndImpl;
     procedure FindDeclaration(const aIdent : string);
     procedure CreatePopupMenu;
     procedure CreateTheEditor;
@@ -696,6 +697,13 @@ begin
   end
   else if ctrldown and (Key = $0D) then begin
     OpenFileAtCursor;
+  end
+  else if ctrldown and shiftdown and (Key in [VK_UP, VK_DOWN]) then
+  begin
+    if FileIsPascal then
+    begin
+      SwapIntfAndImpl;
+    end;
   end;
 end;
 
@@ -1711,8 +1719,10 @@ begin
   if fName[Length(fName)] in [',', ';'] then
     System.Delete(fName, Length(fName), 1);
   // does the file have any extension?
-  if ExtractFileExt(fName) = '' then
+  ext := LowerCase(ExtractFileExt(fname));
+  if ext = '' then
   begin
+    // get the extension of the file in the editor itself
     ext := LowerCase(ExtractFileExt(Filename));
     if (ext = '.dpr') or (ext = '.pas') then
       fName := fName + '.pas';
@@ -1728,6 +1738,23 @@ begin
       MainForm.actFileOpenExecute(nil);
     end;
   end;
+  // if we opened a .h file let's also try to open the .c if it exists
+  if bFound and ((ext = '.h') or (ext = '.hpp')) then
+  begin
+    ext := StringReplace(ext, 'h', 'c', [rfReplaceAll, rfIgnoreCase]);
+    fName := ChangeFileExt(fName, ext);
+    if FileExists(fName) then
+      MainForm.OpenFile(fName)
+    else
+      OpenFileOnPath(fName);
+  end;
+end;
+
+procedure TEditorForm.SwapIntfAndImpl;
+var
+  name : string;
+begin
+  name := TheEditor.TextAtCursor;
 end;
 
 procedure TEditorForm.mniOpenFileAtCursorClick(Sender: TObject);

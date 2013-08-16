@@ -583,8 +583,8 @@ object MainForm: TMainForm
     end
     object actToolsNXTScreen: TAction
       Category = 'Tools'
-      Caption = 'N&XT Screen'
-      Hint = 'NXT Screen'
+      Caption = 'Screen Capture'
+      Hint = 'Brick screen'
       OnExecute = actToolsNXTScreenExecute
     end
     object actCompileTraceInto: TAction
@@ -704,6 +704,18 @@ object MainForm: TMainForm
       Caption = 'Simple Terminal'
       Hint = 'Simple terminal'
       OnExecute = actToolsSimpleTermExecute
+    end
+    object actToolsLiveSensors: TAction
+      Category = 'Tools'
+      Caption = 'Live Sensors'
+      Hint = 'Live sensors'
+      OnExecute = actToolsLiveSensorsExecute
+    end
+    object actToolsImageEditor: TAction
+      Category = 'Tools'
+      Caption = 'Image Editor'
+      Hint = 'Image editor'
+      OnExecute = actToolsImageEditorExecute
     end
   end
   object dlgInsertFile: TOpenDialog

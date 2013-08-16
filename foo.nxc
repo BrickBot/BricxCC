@@ -1,0 +1,6 @@
+task main()
+{
+  OnFwd(OUT_A, 100);
+  while(true); // do not forget the semicolon on this line - an empty while loop
+}
+

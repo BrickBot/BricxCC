@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2011-2013 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -206,89 +206,88 @@ type
 
     // NXT only methods
     // NXT direct commands
-    function NXTStartProgram(const filename : string) : boolean; override;
-    function NXTStopProgram : boolean; override;
-    function NXTPlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
-    function GetNXTOutputState(const aPort : byte; var power : integer;
+    function DCStartProgram(const filename : string) : boolean; override;
+    function DCStopProgram : boolean; override;
+    function DCPlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
+    function DCGetOutputState(const aPort : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
       blocktachocount, rotationcount : longint) : boolean; override;
-    function SetNXTOutputState(const aPort : byte; const power : integer;
+    function DCSetOutputState(const aPort : byte; const power : integer;
       const mode, regmode : byte; const turnratio : integer;
       const runstate : byte; const tacholimit : cardinal) : boolean; override;
-    function GetNXTInputValues(const aPort : byte; var valid, calibrated : boolean;
+    function DCGetInputValues(const aPort : byte; var valid, calibrated : boolean;
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; override;
-    function SetNXTInputMode(const aPort, stype, smode : byte) : boolean; override;
-    function NXTResetInputScaledValue(const aPort : byte) : boolean; override;
-    function NXTResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
-    function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; override;
-    function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
-    function NXTLSGetStatus(aPort : byte; var bytesReady : byte; var lsstate : byte) : boolean; override;
-    function NXTGetCurrentProgramName(var name : string) : boolean; override;
-    function NXTGetButtonState(const idx : byte; const reset : boolean;
+    function DCSetInputMode(const aPort, stype, smode : byte) : boolean; override;
+    function DCResetInputScaledValue(const aPort : byte) : boolean; override;
+    function DCResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
+    function DCMessageWrite(const inbox : byte; const msg : string) : boolean; override;
+    function DCKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
+    function DCLSGetStatus(aPort : byte; var bytesReady : byte; var lsstate : byte) : boolean; override;
+    function DCGetCurrentProgramName(var name : string) : boolean; override;
+    function DCGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
-    function NXTMessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
-    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
-    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
-    function NXTSetVMState(const state : byte) : boolean; override;
-    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
-    function NXTGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
+    function DCMessageRead(const remote, local : byte; const remove : boolean; var Msg : PBRMessage) : boolean; override;
+    function DCSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function DCGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
+    function DCSetVMState(const state : byte) : boolean; override;
+    function DCSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
+    function DCGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : FantomHandle;
+    function SCOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
-    function NXTOpenWrite(const filename : string; const size : cardinal;
+    function SCOpenWrite(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; override;
-    function NXTRead(var handle : FantomHandle; var count : word;
-      var buffer : NXTDataBuffer) : boolean; override;
-    function NXTWrite(var handle : FantomHandle; const buffer : NXTDataBuffer;
+    function SCRead(var handle : FantomHandle; var count : word;
+      var buffer : PBRDataBuffer) : boolean; override;
+    function SCWrite(var handle : FantomHandle; const buffer : PBRDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; override;
-    function NXTCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
-    function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; override;
-    function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; override;
-    function NXTFindClose(var IterHandle : FantomHandle) : boolean; override;
-    function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
-    function NXTFirmwareVersion : word; override;
-    function NXTInstalledFirmware : TInstalledFirmware; override;
-    function NXTOpenWriteLinear(const filename : string; const size : cardinal;
+    function SCCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
+    function SCDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; override;
+    function SCFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; override;
+    function SCFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; override;
+    function SCFindClose(var IterHandle : FantomHandle) : boolean; override;
+    function SCGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
+    function SCFirmwareVersion : word; override;
+    function SCInstalledFirmware : TInstalledFirmware; override;
+    function SCOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; override;
-    function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
+    function SCOpenReadLinear(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
-    function NXTOpenWriteData(const filename : string; const size : cardinal;
+    function SCOpenWriteData(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; override;
-    function NXTOpenAppendData(const filename : string; var size : cardinal;
+    function SCOpenAppendData(const filename : string; var size : cardinal;
       var handle : FantomHandle) : boolean; override;
-    function NXTCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
-    function NXTBootCommand(const chkResponse: boolean = false) : boolean; override;
-    function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTGetDeviceInfo(var name : string; var BTAddress : string;
+    function SCCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
+    function SCBootCommand(const chkResponse: boolean = false) : boolean; override;
+    function SCSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
+    function SCGetDeviceInfo(var name : string; var BTAddress : string;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; override;
-    function NXTFreeMemory : integer; override;
-    function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; override;
-    function NXTBTFactoryReset(const chkResponse: boolean = false) : boolean; override;
-    function NXTPollCommandLen(const bufNum : byte; var count : byte) : boolean; override;
-    function NXTPollCommand(const bufNum : byte; var count : byte;
-      var buffer : NXTDataBuffer) : boolean; override;
-    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; override;
-    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; var buffer : NXTDataBuffer) : boolean; override;
-    function NXTFindFirstModule(var ModName : string; var Handle : FantomHandle;
+    function SCDeleteUserFlash(const chkResponse: boolean = false) : boolean; override;
+    function SCBTFactoryReset(const chkResponse: boolean = false) : boolean; override;
+    function SCPollCommandLen(const bufNum : byte; var count : byte) : boolean; override;
+    function SCPollCommand(const bufNum : byte; var count : byte;
+      var buffer : PBRDataBuffer) : boolean; override;
+    function SCWriteIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; const buffer : PBRDataBuffer; chkResponse : Boolean = False) : boolean; override;
+    function SCReadIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; var buffer : PBRDataBuffer) : boolean; override;
+    function SCFindFirstModule(var ModName : string; var Handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
-    function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
+    function SCFindNextModule(var Handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
-    function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
+    function SCRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
-    function NXTUploadFile(const filename : string; const dir : string = '') : boolean; override;
-    function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; override;
-    function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
-    function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
-    function NXTListBricks(Bricks : TStrings) : boolean; override;
-    function NXTInitializeResourceNames : boolean; override;
-    function NXTUpdateResourceNames : boolean; override;
+    function DownloadFile(const filename : string; const filetype : TPBRFileType) : boolean; override;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TPBRFileType) : boolean; override;
+    function UploadFile(const filename : string; const dir : string = '') : boolean; override;
+    function UploadFileToStream(const filename : string; aStream : TStream) : boolean; override;
+    function ListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
+    function ListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
+    function ListBricks(Bricks : TStrings) : boolean; override;
+    function InitializeResourceNames : boolean; override;
+    function UpdateResourceNames : boolean; override;
   end;
 
 implementation
@@ -545,25 +544,25 @@ begin
   end;
 end;
 
-function TSProSpirit.NXTStartProgram(const filename: string): boolean;
+function TSProSpirit.DCStartProgram(const filename: string): boolean;
 begin
   Result := StartTask(0);
 end;
 
-function TSProSpirit.NXTStopProgram: boolean;
+function TSProSpirit.DCStopProgram: boolean;
 begin
   Result := Open;
   if not Result then Exit;
   Result := MonitorMode(True); // this stops any running program
 end;
 
-function TSProSpirit.NXTPlaySoundFile(const filename: string; bLoop: boolean): boolean;
+function TSProSpirit.DCPlaySoundFile(const filename: string; bLoop: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.GetNXTOutputState(const aPort: byte; var power: integer;
+function TSProSpirit.DCGetOutputState(const aPort: byte; var power: integer;
   var mode, regmode: byte; var turnratio: integer; var runstate: byte;
   var tacholimit: cardinal; var tachocount, blocktachocount, rotationcount: Integer): boolean;
 begin
@@ -580,7 +579,7 @@ begin
   rotationcount := 0;
 end;
 
-function TSProSpirit.SetNXTOutputState(const aPort: byte;
+function TSProSpirit.DCSetOutputState(const aPort: byte;
   const power: integer; const mode, regmode: byte;
   const turnratio: integer; const runstate: byte;
   const tacholimit: cardinal): boolean;
@@ -589,7 +588,7 @@ begin
   if not Result then Exit;
 end;
 
-function TSProSpirit.GetNXTInputValues(const aPort: byte; var valid,
+function TSProSpirit.DCGetInputValues(const aPort: byte; var valid,
   calibrated: boolean; var stype, smode: byte; var raw, normalized: word;
   var scaled, calvalue: smallint): boolean;
 begin
@@ -603,38 +602,38 @@ begin
   calvalue := 0;
 end;
 
-function TSProSpirit.SetNXTInputMode(const aPort, stype, smode: byte): boolean;
+function TSProSpirit.DCSetInputMode(const aPort, stype, smode: byte): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTResetInputScaledValue(const aPort: byte): boolean;
+function TSProSpirit.DCResetInputScaledValue(const aPort: byte): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTResetOutputPosition(const aPort: byte;
+function TSProSpirit.DCResetOutputPosition(const aPort: byte;
   const Relative: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTMessageWrite(const inbox: byte; const msg: string): boolean;
+function TSProSpirit.DCMessageWrite(const inbox: byte; const msg: string): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTKeepAlive(var time: cardinal; const chkResponse : boolean): boolean;
+function TSProSpirit.DCKeepAlive(var time: cardinal; const chkResponse : boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte; var lsstate : byte): boolean;
+function TSProSpirit.DCLSGetStatus(aPort : byte; var bytesReady: byte; var lsstate : byte): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -650,13 +649,13 @@ begin
   if aPort = 0 then Exit;
 end;
 
-function TSProSpirit.NXTGetCurrentProgramName(var name: string): boolean;
+function TSProSpirit.DCGetCurrentProgramName(var name: string): boolean;
 begin
   Result := IsOpen;
   name := '';
 end;
 
-function TSProSpirit.NXTGetButtonState(const idx: byte; const reset: boolean;
+function TSProSpirit.DCGetButtonState(const idx: byte; const reset: boolean;
   var pressed: boolean; var count: byte): boolean;
 begin
   Result := IsOpen;
@@ -664,8 +663,8 @@ begin
   count := 0;
 end;
 
-function TSProSpirit.NXTMessageRead(const remote, local: byte;
-  const remove: boolean; var Msg: NXTMessage): boolean;
+function TSProSpirit.DCMessageRead(const remote, local: byte;
+  const remove: boolean; var Msg: PBRMessage): boolean;
 begin
   Msg.Inbox := 0;
   Msg.Size  := 0;
@@ -673,7 +672,7 @@ begin
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTOpenRead(const filename: string; var handle: FantomHandle;
+function TSProSpirit.SCOpenRead(const filename: string; var handle: FantomHandle;
   var size: cardinal): boolean;
 begin
   Result := IsOpen;
@@ -682,138 +681,142 @@ begin
   size := 0;
 end;
 
-function TSProSpirit.NXTOpenReadLinear(const filename: string;
+function TSProSpirit.SCOpenReadLinear(const filename: string;
   var handle: FantomHandle; var size: cardinal): boolean;
 begin
-  Result := NXTOpenRead(filename, handle, size);
+  Result := SCOpenRead(filename, handle, size);
 end;
 
-function TSProSpirit.NXTOpenAppendData(const filename: string;
+function TSProSpirit.SCOpenAppendData(const filename: string;
   var size: cardinal; var handle: FantomHandle): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTOpenWrite(const filename: string;
+function TSProSpirit.SCOpenWrite(const filename: string;
   const size: cardinal; var handle: FantomHandle): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTOpenWriteData(const filename: string;
+function TSProSpirit.SCOpenWriteData(const filename: string;
   const size: cardinal; var handle: FantomHandle): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTOpenWriteLinear(const filename: string;
+function TSProSpirit.SCOpenWriteLinear(const filename: string;
   const size: cardinal; var handle: FantomHandle): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTRead(var handle: FantomHandle; var count: word;
-  var buffer: NXTDataBuffer): boolean;
+function TSProSpirit.SCRead(var handle: FantomHandle; var count: word;
+  var buffer: PBRDataBuffer): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTWrite(var handle: FantomHandle; const buffer: NXTDataBuffer;
+function TSProSpirit.SCWrite(var handle: FantomHandle; const buffer: PBRDataBuffer;
   var count: word; const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTCloseFile(var handle: FantomHandle; const chkResponse: boolean): boolean;
+function TSProSpirit.SCCloseFile(var handle: FantomHandle; const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTDeleteFile(var filename: string; const chkResponse: boolean): boolean;
+function TSProSpirit.SCDeleteFile(var filename: string; const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTFindFirstFile(var filename: string;
+function TSProSpirit.SCFindFirstFile(var filename: string;
   var IterHandle: FantomHandle; var filesize, availsize : cardinal): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTFindNextFile(var IterHandle: FantomHandle; var filename: string;
+function TSProSpirit.SCFindNextFile(var IterHandle: FantomHandle; var filename: string;
   var filesize, availsize : cardinal): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTFindClose(var IterHandle: FantomHandle): boolean;
+function TSProSpirit.SCFindClose(var IterHandle: FantomHandle): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte): boolean;
+function TSProSpirit.SCGetVersions(var protmin, protmaj, firmmin, firmmaj : byte): boolean;
 begin
-  Result := IsOpen;
-  if not Result then Exit;
   protmin := 0;
   protmaj := 0;
   firmmin := 0;
   firmmaj := 0;
+  Result := IsOpen;
+  if not Result then Exit;
 end;
 
-function TSProSpirit.NXTFirmwareVersion : word;
+function TSProSpirit.SCFirmwareVersion : word;
 begin
   Result := 128;
 end;
 
-function TSProSpirit.NXTInstalledFirmware : TInstalledFirmware;
+function TSProSpirit.SCInstalledFirmware : TInstalledFirmware;
 begin
   result := ifEnhanced;
 end;
 
-function TSProSpirit.NXTCloseModuleHandle(var handle: FantomHandle; const chkResponse: boolean): boolean;
+function TSProSpirit.SCCloseModuleHandle(var handle: FantomHandle; const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTBootCommand(const chkResponse: boolean): boolean;
+function TSProSpirit.SCBootCommand(const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTSetBrickName(const name: string; const chkResponse: boolean): boolean;
+function TSProSpirit.SCSetBrickName(const name: string; const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTGetDeviceInfo(var name: string;
+function TSProSpirit.SCGetDeviceInfo(var name: string;
   var BTAddress : String; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
 begin
+  name := '';
+  BTAddress := '';
+  BTSignal := 0;
+  memFree := 0;
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTDeleteUserFlash(const chkResponse: boolean): boolean;
+function TSProSpirit.SCDeleteUserFlash(const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTBTFactoryReset(const chkResponse: boolean): boolean;
+function TSProSpirit.SCBTFactoryReset(const chkResponse: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -828,35 +831,35 @@ type
     Name : string;
   end;
 
-function TSProSpirit.NXTUploadFile(const filename: string; const dir : string): boolean;
+function TSProSpirit.UploadFile(const filename: string; const dir : string): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTUploadFileToStream(const filename: string; aStream: TStream): boolean;
+function TSProSpirit.UploadFileToStream(const filename: string; aStream: TStream): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTListFiles(const searchPattern: string; Files: TStrings): boolean;
+function TSProSpirit.ListFiles(const searchPattern: string; Files: TStrings): boolean;
 begin
   Result := False;
   Files.Clear;
 end;
 
-function TSProSpirit.NXTListModules(const searchPattern: string;  Modules: TStrings): boolean;
+function TSProSpirit.ListModules(const searchPattern: string;  Modules: TStrings): boolean;
 begin
   Result := False;
   Modules.Clear;
 end;
 
-function TSProSpirit.NXTListBricks(Bricks: TStrings): boolean;
+function TSProSpirit.ListBricks(Bricks: TStrings): boolean;
 begin
   Result := False;
   Bricks.Clear;
 end;
 
-function TSProSpirit.NXTDownloadFile(const filename: string; const filetype: TNXTFileType): boolean;
+function TSProSpirit.DownloadFile(const filename: string; const filetype: TPBRFileType): boolean;
 var
   MS : TMemoryStream;
 begin
@@ -868,15 +871,15 @@ begin
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(filename);
-      Result := NXTDownloadStream(MS, filename, filetype);
+      Result := DownloadStream(MS, filename, filetype);
     finally
       MS.Free;
     end;
   end;
 end;
 
-function TSProSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
-  const filetype: TNXTFileType): boolean;
+function TSProSpirit.DownloadStream(aStream: TStream; const dest : string;
+  const filetype: TPBRFileType): boolean;
 var
   b1, b2, b3 : byte;
   SL : TStringList;
@@ -926,38 +929,38 @@ begin
   end;
 end;
 
-function TSProSpirit.NXTPollCommandLen(const bufNum : byte; var count: byte): boolean;
+function TSProSpirit.SCPollCommandLen(const bufNum : byte; var count: byte): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTPollCommand(const bufNum: byte; var count: byte;
-  var buffer: NXTDataBuffer): boolean;
+function TSProSpirit.SCPollCommand(const bufNum: byte; var count: byte;
+  var buffer: PBRDataBuffer): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTWriteIOMap(var ModID: Cardinal;
-  const Offset: Word; var count: Word; const buffer: NXTDataBuffer;
+function TSProSpirit.SCWriteIOMap(var ModID: Cardinal;
+  const Offset: Word; var count: Word; const buffer: PBRDataBuffer;
   chkResponse : Boolean): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTReadIOMap(var ModID: Cardinal;
-  const Offset: Word; var Count: Word; var buffer: NXTDataBuffer): boolean;
+function TSProSpirit.SCReadIOMap(var ModID: Cardinal;
+  const Offset: Word; var Count: Word; var buffer: PBRDataBuffer): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTFindNextModule(var Handle: FantomHandle;
+function TSProSpirit.SCFindNextModule(var Handle: FantomHandle;
   var ModName: string; var ModID, ModSize: Cardinal;
   var IOMapSize: Word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTFindFirstModule(var ModName: string; var Handle: FantomHandle;
+function TSProSpirit.SCFindFirstModule(var ModName: string; var Handle: FantomHandle;
   var ModID, ModSize: Cardinal; var IOMapSize: Word): boolean;
 begin
   Result := False;
@@ -1334,7 +1337,7 @@ end;
 
 function TSProSpirit.SendMessage(aMsg: integer): boolean;
 begin
-  Result := NXTMessageWrite(0, IntToStr(aMsg));
+  Result := DCMessageWrite(0, IntToStr(aMsg));
 end;
 
 function TSProSpirit.SendRawCommand(aCmd: string; bRetry: boolean): string;
@@ -1500,7 +1503,7 @@ end;
 
 function TSProSpirit.StopAllTasks: boolean;
 begin
-  Result := NXTStopProgram;
+  Result := DCStopProgram;
 end;
 
 function TSProSpirit.StopTask(aTask: integer): boolean;
@@ -1573,49 +1576,44 @@ begin
   if (prec = 0) or (src = 0) or (value = 0) then Exit;
 end;
 
-function TSProSpirit.NXTInitializeResourceNames : boolean;
+function TSProSpirit.InitializeResourceNames : boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTFreeMemory: integer;
-begin
-  Result  := 0;
-end;
-
-function TSProSpirit.NXTRenameFile(const old, new: string; const chkResponse: boolean): boolean;
+function TSProSpirit.SCRenameFile(const old, new: string; const chkResponse: boolean): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTGetVMState(var state: byte; var clump : byte; var pc : word): boolean;
+function TSProSpirit.DCGetVMState(var state: byte; var clump : byte; var pc : word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTSetVMStateEx(var state, clump: byte; var pc: word): boolean;
+function TSProSpirit.DCSetVMStateEx(var state, clump: byte; var pc: word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTSetVMState(const state: byte): boolean;
+function TSProSpirit.DCSetVMState(const state: byte): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTGetPropDebugging(var debugging : boolean; var pauseClump: byte;
+function TSProSpirit.DCGetPropDebugging(var debugging : boolean; var pauseClump: byte;
   var pausePC: Word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTSetPropDebugging(const debugging : boolean; const pauseClump: byte;
+function TSProSpirit.DCSetPropDebugging(const debugging : boolean; const pauseClump: byte;
   const pausePC: Word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.NXTUpdateResourceNames : boolean;
+function TSProSpirit.UpdateResourceNames : boolean;
 begin
   Result := False;
 end;

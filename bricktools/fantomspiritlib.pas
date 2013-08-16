@@ -56,9 +56,9 @@ function FantomSpiritMuteSound(fsh : FantomHandle) : integer; cdecl; export;
 function FantomSpiritNXTStartProgram(fsh : FantomHandle; filename : PChar) : integer; cdecl; export;
 function FantomSpiritNXTStopProgram(fsh : FantomHandle) : integer; cdecl; export;
 function FantomSpiritNXTPlaySoundFile(fsh : FantomHandle; filename : PChar; bLoop : byte) : integer; cdecl; export;
-function FantomSpiritGetNXTOutputState(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl; export;
-function FantomSpiritSetNXTOutputState(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl; export;
-function FantomSpiritGetNXTInputValues(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl; export;
+function FantomSpiritDCGetOutputState(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl; export;
+function FantomSpiritDCSetOutputState(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl; export;
+function FantomSpiritDCGetInputValues(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl; export;
 function FantomSpiritSetNXTInputMode(fsh : FantomHandle; aPort, stype, smode : byte) : integer; cdecl; export;
 function FantomSpiritNXTResetInputScaledValue(fsh : FantomHandle; aPort : byte) : integer; cdecl; export;
 function FantomSpiritNXTResetOutputPosition(fsh : FantomHandle; aPort, Relative : byte) : integer; cdecl; export;
@@ -67,7 +67,7 @@ function FantomSpiritNXTKeepAlive(fsh : FantomHandle; var time : cardinal; chkRe
 function FantomSpiritNXTLSGetStatus(fsh : FantomHandle; aPort : byte; var bready, lsstate : byte) : integer; cdecl; export;
 function FantomSpiritNXTGetCurrentProgramName(fsh : FantomHandle; name : PChar) : integer; cdecl; export;
 function FantomSpiritNXTGetButtonState(fsh : FantomHandle; idx, reset : byte; var pressed, count : byte) : integer; cdecl; export;
-function FantomSpiritNXTMessageRead(fsh : FantomHandle; remote, local, remove : byte; var msg : NXTMessage) : integer; cdecl; export;
+function FantomSpiritNXTMessageRead(fsh : FantomHandle; remote, local, remove : byte; var msg : PBRMessage) : integer; cdecl; export;
 function FantomSpiritNXTSetPropDebugging(fsh : FantomHandle; debug : byte; pauseClump : byte; pausePC : Word) : integer; cdecl; export;
 function FantomSpiritNXTGetPropDebugging(fsh : FantomHandle; var debug : byte; var pauseClump : byte; var pausePC : Word) : integer; cdecl; export;
 function FantomSpiritNXTSetVMState(fsh : FantomHandle; state : byte) : integer; cdecl; export;
@@ -76,8 +76,8 @@ function FantomSpiritNXTGetVMState(fsh : FantomHandle; var state, clump : byte; 
 
 function FantomSpiritNXTOpenRead(fsh : FantomHandle; filename : PChar; var handle : FantomHandle; var size : cardinal) : integer; cdecl; export;
 function FantomSpiritNXTOpenWrite(fsh : FantomHandle; filename : PChar; const size : cardinal; var handle : FantomHandle) : integer; cdecl; export;
-function FantomSpiritNXTRead(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : NXTDataBuffer) : integer; cdecl; export;
-function FantomSpiritNXTWrite(fsh : FantomHandle; var handle : FantomHandle; buffer : NXTDataBuffer; var count : word; chkResponse : byte) : integer; cdecl; export;
+function FantomSpiritNXTRead(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : PBRDataBuffer) : integer; cdecl; export;
+function FantomSpiritNXTWrite(fsh : FantomHandle; var handle : FantomHandle; buffer : PBRDataBuffer; var count : word; chkResponse : byte) : integer; cdecl; export;
 function FantomSpiritNXTCloseFile(fsh : FantomHandle; var handle : FantomHandle; chkResponse: byte) : integer; cdecl; export;
 function FantomSpiritNXTDeleteFile(fsh : FantomHandle; filename : PChar; chkResponse: byte) : integer; cdecl; export;
 function FantomSpiritNXTFindFirstFile(fsh : FantomHandle; filename : PChar; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : integer; cdecl; export;
@@ -96,9 +96,9 @@ function FantomSpiritNXTFreeMemory(fsh : FantomHandle) : integer; cdecl; export;
 function FantomSpiritNXTDeleteUserFlash(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; export;
 function FantomSpiritNXTBTFactoryReset(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; export;
 function FantomSpiritNXTPollCommandLen(fsh : FantomHandle; bufNum : byte; var count : byte) : integer; cdecl; export;
-function FantomSpiritNXTPollCommand(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : NXTDataBuffer) : integer; cdecl; export;
-function FantomSpiritNXTWriteIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : NXTDataBuffer; chkResponse : byte) : integer; cdecl; export;
-function FantomSpiritNXTReadIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : NXTDataBuffer) : integer; cdecl; export;
+function FantomSpiritNXTPollCommand(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : PBRDataBuffer) : integer; cdecl; export;
+function FantomSpiritNXTWriteIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : PBRDataBuffer; chkResponse : byte) : integer; cdecl; export;
+function FantomSpiritNXTReadIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : PBRDataBuffer) : integer; cdecl; export;
 function FantomSpiritNXTFindFirstModule(fsh : FantomHandle; ModName : PChar; var Handle : FantomHandle; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl; export;
 function FantomSpiritNXTFindNextModule(fsh : FantomHandle; var Handle : FantomHandle; ModName : PChar; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl; export;
 function FantomSpiritNXTRenameFile(fsh : FantomHandle; old, new : PChar; chkResponse: byte) : integer; cdecl; export;
@@ -145,7 +145,7 @@ procedure FantomSpiritDownloadMemoryMap(fsh : FantomHandle; value : PChar); cdec
 function FantomSpiritNXTFirmwareVersion(fsh : FantomHandle) : integer; cdecl; export;
 function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; export;
 procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; export;
-function NameToNXTFileType(name : PChar) : integer; cdecl; export;
+function NXTNameToPBRFileType(name : PChar) : integer; cdecl; export;
 procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl; export;
 
 implementation
@@ -406,7 +406,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTStartProgram(String(filename)));
+  Result := Ord(tmp.DCStartProgram(String(filename)));
 end;
 
 function FantomSpiritNXTStopProgram(fsh : FantomHandle) : integer; cdecl; export;
@@ -414,7 +414,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTStopProgram);
+  Result := Ord(tmp.DCStopProgram);
 end;
 
 function FantomSpiritNXTPlaySoundFile(fsh : FantomHandle; filename : PChar; bLoop : byte) : integer; cdecl; export;
@@ -422,32 +422,32 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTPlaySoundFile(String(filename), Boolean(bLoop)));
+  Result := Ord(tmp.DCPlaySoundFile(String(filename), Boolean(bLoop)));
 end;
 
-function FantomSpiritGetNXTOutputState(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl; export;
+function FantomSpiritDCGetOutputState(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.GetNXTOutputState(aPort, pwr, mode, rmode, tratio, rstate, tlimit, tcnt, btcnt, rcnt));
+  Result := Ord(tmp.DCGetOutputState(aPort, pwr, mode, rmode, tratio, rstate, tlimit, tcnt, btcnt, rcnt));
 end;
 
-function FantomSpiritSetNXTOutputState(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl; export;
+function FantomSpiritDCSetOutputState(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.SetNXTOutputState(aPort, pwr, mode, rmode, tratio, rstate, tlimit));
+  Result := Ord(tmp.DCSetOutputState(aPort, pwr, mode, rmode, tratio, rstate, tlimit));
 end;
 
-function FantomSpiritGetNXTInputValues(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl; export;
+function FantomSpiritDCGetInputValues(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
   bValid, bCalib : boolean;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.GetNXTInputValues(aPort, bValid, bCalib, stype, smode, raw, normal, scaled, calvalue));
+  Result := Ord(tmp.DCGetInputValues(aPort, bValid, bCalib, stype, smode, raw, normal, scaled, calvalue));
   valid := Ord(bValid);
   calib := Ord(bCalib);
 end;
@@ -457,7 +457,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.SetNXTInputMode(aPort, stype, smode));
+  Result := Ord(tmp.DCSetInputMode(aPort, stype, smode));
 end;
 
 function FantomSpiritNXTResetInputScaledValue(fsh : FantomHandle; aPort : byte) : integer; cdecl; export;
@@ -465,7 +465,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTResetInputScaledValue(aPort));
+  Result := Ord(tmp.DCResetInputScaledValue(aPort));
 end;
 
 function FantomSpiritNXTResetOutputPosition(fsh : FantomHandle; aPort, Relative : byte) : integer; cdecl; export;
@@ -473,7 +473,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTResetOutputPosition(aPort, Boolean(Relative)));
+  Result := Ord(tmp.DCResetOutputPosition(aPort, Boolean(Relative)));
 end;
 
 function FantomSpiritNXTMessageWrite(fsh : FantomHandle; inbox : byte; msg : PChar) : integer; cdecl; export;
@@ -481,7 +481,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTMessageWrite(inbox, String(msg)));
+  Result := Ord(tmp.DCMessageWrite(inbox, String(msg)));
 end;
 
 function FantomSpiritNXTKeepAlive(fsh : FantomHandle; var time : cardinal; chkResponse : byte) : integer; cdecl; export;
@@ -489,7 +489,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTKeepAlive(time, Boolean(chkResponse)));
+  Result := Ord(tmp.DCKeepAlive(time, Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTLSGetStatus(fsh : FantomHandle; aPort : byte; var bready, lsstate : byte) : integer; cdecl; export;
@@ -497,7 +497,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTLSGetStatus(aPort, bready, lsstate));
+  Result := Ord(tmp.DCLSGetStatus(aPort, bready, lsstate));
 end;
 
 function FantomSpiritNXTGetCurrentProgramName(fsh : FantomHandle; name : PChar) : integer; cdecl; export;
@@ -506,7 +506,7 @@ var
   sname : string;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTGetCurrentProgramName(sname));
+  Result := Ord(tmp.DCGetCurrentProgramName(sname));
   StrCopy(name, PChar(sname));
 end;
 
@@ -516,16 +516,16 @@ var
   bPressed : boolean;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTGetButtonState(idx, Boolean(reset), bPressed, count));
+  Result := Ord(tmp.DCGetButtonState(idx, Boolean(reset), bPressed, count));
   pressed := Ord(bPressed);
 end;
 
-function FantomSpiritNXTMessageRead(fsh : FantomHandle; remote, local, remove : byte; var msg : NXTMessage) : integer; cdecl; export;
+function FantomSpiritNXTMessageRead(fsh : FantomHandle; remote, local, remove : byte; var msg : PBRMessage) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTMessageRead(remote, local, Boolean(remove), msg));
+  Result := Ord(tmp.DCMessageRead(remote, local, Boolean(remove), msg));
 end;
 
 function FantomSpiritNXTSetPropDebugging(fsh : FantomHandle; debug : byte; pauseClump : byte; pausePC : Word) : integer; cdecl; export;
@@ -533,7 +533,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTSetPropDebugging(Boolean(debug), pauseClump, pausePC));
+  Result := Ord(tmp.DCSetPropDebugging(Boolean(debug), pauseClump, pausePC));
 end;
 
 function FantomSpiritNXTGetPropDebugging(fsh : FantomHandle; var debug : byte; var pauseClump : byte; var pausePC : Word) : integer; cdecl; export;
@@ -542,7 +542,7 @@ var
   bDebug : boolean;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTGetPropDebugging(bDebug, pauseClump, pausePC));
+  Result := Ord(tmp.DCGetPropDebugging(bDebug, pauseClump, pausePC));
   debug := Ord(bDebug);
 end;
 
@@ -551,7 +551,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTSetVMState(state));
+  Result := Ord(tmp.DCSetVMState(state));
 end;
 
 function FantomSpiritNXTSetVMStateEx(fsh : FantomHandle; var state, clump : byte; var pc : word) : integer; cdecl; export;
@@ -559,7 +559,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTSetVMStateEx(state, clump, pc));
+  Result := Ord(tmp.DCSetVMStateEx(state, clump, pc));
 end;
 
 function FantomSpiritNXTGetVMState(fsh : FantomHandle; var state, clump : byte; var pc : word) : integer; cdecl; export;
@@ -567,7 +567,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTGetVMState(state, clump, pc));
+  Result := Ord(tmp.DCGetVMState(state, clump, pc));
 end;
 
 function FantomSpiritNXTOpenRead(fsh : FantomHandle; filename : PChar; var handle : FantomHandle; var size : cardinal) : integer; cdecl; export;
@@ -575,7 +575,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTOpenRead(String(filename), handle, size));
+  Result := Ord(tmp.SCOpenRead(String(filename), handle, size));
 end;
 
 function FantomSpiritNXTOpenWrite(fsh : FantomHandle; filename : PChar; const size : cardinal; var handle : FantomHandle) : integer; cdecl; export;
@@ -583,23 +583,23 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTOpenWrite(String(filename), size, handle));
+  Result := Ord(tmp.SCOpenWrite(String(filename), size, handle));
 end;
 
-function FantomSpiritNXTRead(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : NXTDataBuffer) : integer; cdecl; export;
+function FantomSpiritNXTRead(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : PBRDataBuffer) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTRead(handle, count, buffer));
+  Result := Ord(tmp.SCRead(handle, count, buffer));
 end;
 
-function FantomSpiritNXTWrite(fsh : FantomHandle; var handle : FantomHandle; buffer : NXTDataBuffer; var count : word; chkResponse : byte) : integer; cdecl; export;
+function FantomSpiritNXTWrite(fsh : FantomHandle; var handle : FantomHandle; buffer : PBRDataBuffer; var count : word; chkResponse : byte) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTWrite(handle, buffer, count, Boolean(chkResponse)));
+  Result := Ord(tmp.SCWrite(handle, buffer, count, Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTCloseFile(fsh : FantomHandle; var handle : FantomHandle; chkResponse: byte) : integer; cdecl; export;
@@ -607,7 +607,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTCloseFile(handle, Boolean(chkResponse)));
+  Result := Ord(tmp.SCCloseFile(handle, Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTDeleteFile(fsh : FantomHandle; filename : PChar; chkResponse: byte) : integer; cdecl; export;
@@ -617,7 +617,7 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   sFilename := String(filename);
-  Result := Ord(tmp.NXTDeleteFile(sFilename, Boolean(chkResponse)));
+  Result := Ord(tmp.SCDeleteFile(sFilename, Boolean(chkResponse)));
   StrCopy(filename, PChar(sFilename));
 end;
 
@@ -628,7 +628,7 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   sFilename := String(filename);
-  Result := Ord(tmp.NXTFindFirstFile(sFilename, IterHandle, filesize, availsize));
+  Result := Ord(tmp.SCFindFirstFile(sFilename, IterHandle, filesize, availsize));
   StrCopy(filename, PChar(sFilename));
 end;
 
@@ -639,7 +639,7 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   sFilename := String(filename);
-  Result := Ord(tmp.NXTFindNextFile(IterHandle, sFilename, filesize, availsize));
+  Result := Ord(tmp.SCFindNextFile(IterHandle, sFilename, filesize, availsize));
   StrCopy(filename, PChar(sFilename));
 end;
 
@@ -648,7 +648,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTFindClose(IterHandle));
+  Result := Ord(tmp.SCFindClose(IterHandle));
 end;
 
 function FantomSpiritNXTGetVersions(fsh : FantomHandle; var protmin, protmaj, firmmin, firmmaj : byte) : integer; cdecl; export;
@@ -656,7 +656,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTGetVersions(protmin, protmaj, firmmin, firmmaj));
+  Result := Ord(tmp.SCGetVersions(protmin, protmaj, firmmin, firmmaj));
 end;
 
 function FantomSpiritNXTOpenWriteLinear(fsh : FantomHandle; filename : PChar; size : cardinal; var handle : FantomHandle) : integer; cdecl; export;
@@ -664,7 +664,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTOpenWriteLinear(String(filename), size, handle));
+  Result := Ord(tmp.SCOpenWriteLinear(String(filename), size, handle));
 end;
 
 function FantomSpiritNXTOpenReadLinear(fsh : FantomHandle; filename : PChar; var handle : FantomHandle; var size : cardinal) : integer; cdecl; export;
@@ -672,7 +672,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTOpenReadLinear(String(filename), handle, size));
+  Result := Ord(tmp.SCOpenReadLinear(String(filename), handle, size));
 end;
 
 function FantomSpiritNXTOpenWriteData(fsh : FantomHandle; filename : PChar; size : cardinal; var handle : FantomHandle) : integer; cdecl; export;
@@ -680,7 +680,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTOpenWriteData(String(filename), size, handle));
+  Result := Ord(tmp.SCOpenWriteData(String(filename), size, handle));
 end;
 
 function FantomSpiritNXTOpenAppendData(fsh : FantomHandle; filename : PChar; var size : cardinal; var handle : FantomHandle) : integer; cdecl; export;
@@ -688,7 +688,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTOpenAppendData(String(filename), size, handle));
+  Result := Ord(tmp.SCOpenAppendData(String(filename), size, handle));
 end;
 
 function FantomSpiritNXTCloseModuleHandle(fsh : FantomHandle; var handle : FantomHandle; chkResponse: byte) : integer; cdecl; export;
@@ -696,7 +696,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTCloseModuleHandle(handle, Boolean(chkResponse)));
+  Result := Ord(tmp.SCCloseModuleHandle(handle, Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTBootCommand(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; export;
@@ -704,7 +704,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTBootCommand(Boolean(chkResponse)));
+  Result := Ord(tmp.SCBootCommand(Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTSetBrickName(fsh : FantomHandle; name : PChar; chkResponse: byte) : integer; cdecl; export;
@@ -712,7 +712,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTSetBrickName(String(name), Boolean(chkResponse)));
+  Result := Ord(tmp.SCSetBrickName(String(name), Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTGetDeviceInfo(fsh : FantomHandle; name, btaddr : PChar; var BTSignal : Cardinal; var memFree : Cardinal) : integer; cdecl; export;
@@ -721,7 +721,7 @@ var
   sname, sbtaddr : string;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTGetDeviceInfo(sname, sbtaddr, BTSignal, memFree));
+  Result := Ord(tmp.SCGetDeviceInfo(sname, sbtaddr, BTSignal, memFree));
   StrCopy(name, PChar(sname));
   StrCopy(btaddr, PChar(sbtaddr));
 end;
@@ -731,7 +731,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := tmp.NXTFreeMemory;
+  Result := tmp.SCFreeMemory;
 end;
 
 function FantomSpiritNXTDeleteUserFlash(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; export;
@@ -739,7 +739,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTDeleteUserFlash(Boolean(chkResponse)));
+  Result := Ord(tmp.SCDeleteUserFlash(Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTBTFactoryReset(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; export;
@@ -747,7 +747,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTBTFactoryReset(Boolean(chkResponse)));
+  Result := Ord(tmp.SCBTFactoryReset(Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTPollCommandLen(fsh : FantomHandle; bufNum : byte; var count : byte) : integer; cdecl; export;
@@ -755,31 +755,31 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTPollCommandLen(bufNum, count));
+  Result := Ord(tmp.SCPollCommandLen(bufNum, count));
 end;
 
-function FantomSpiritNXTPollCommand(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : NXTDataBuffer) : integer; cdecl; export;
+function FantomSpiritNXTPollCommand(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : PBRDataBuffer) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTPollCommand(bufNum, count, buffer));
+  Result := Ord(tmp.SCPollCommand(bufNum, count, buffer));
 end;
 
-function FantomSpiritNXTWriteIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : NXTDataBuffer; chkResponse : byte) : integer; cdecl; export;
+function FantomSpiritNXTWriteIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : PBRDataBuffer; chkResponse : byte) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTWriteIOMap(ModID, Offset, count, buffer, Boolean(chkResponse)));
+  Result := Ord(tmp.SCWriteIOMap(ModID, Offset, count, buffer, Boolean(chkResponse)));
 end;
 
-function FantomSpiritNXTReadIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : NXTDataBuffer) : integer; cdecl; export;
+function FantomSpiritNXTReadIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : PBRDataBuffer) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTReadIOMap(ModID, Offset, count, buffer));
+  Result := Ord(tmp.SCReadIOMap(ModID, Offset, count, buffer));
 end;
 
 function FantomSpiritNXTFindFirstModule(fsh : FantomHandle; ModName : PChar; var Handle : FantomHandle; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl; export;
@@ -789,7 +789,7 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   sModName := String(ModName);
-  Result := Ord(tmp.NXTFindFirstModule(sModName, Handle, ModID, ModSize, IOMapSize));
+  Result := Ord(tmp.SCFindFirstModule(sModName, Handle, ModID, ModSize, IOMapSize));
   StrCopy(ModName, PChar(sModName));
 end;
 
@@ -800,7 +800,7 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   sModName := String(ModName);
-  Result := Ord(tmp.NXTFindFirstModule(sModName, Handle, ModID, ModSize, IOMapSize));
+  Result := Ord(tmp.SCFindFirstModule(sModName, Handle, ModID, ModSize, IOMapSize));
   StrCopy(ModName, PChar(sModName));
 end;
 
@@ -809,7 +809,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTRenameFile(String(old), String(new), Boolean(chkResponse)));
+  Result := Ord(tmp.SCRenameFile(String(old), String(new), Boolean(chkResponse)));
 end;
 
 function FantomSpiritNXTDownloadFile(fsh : FantomHandle; filename : PChar; filetype : byte) : integer; cdecl; export;
@@ -817,7 +817,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTDownloadFile(String(filename), TNXTFileType(filetype)));
+  Result := Ord(tmp.DownloadFile(String(filename), TPBRFileType(filetype)));
 end;
 
 function FantomSpiritNXTUploadFile(fsh : FantomHandle; filename, dir : PChar) : integer; cdecl; export;
@@ -825,7 +825,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTUploadFile(String(filename), String(dir)));
+  Result := Ord(tmp.UploadFile(String(filename), String(dir)));
 end;
 
 procedure FantomSpiritNXTInitializeResourceNames(fsh : FantomHandle); cdecl; export;
@@ -833,7 +833,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  tmp.NXTInitializeResourceNames;
+  tmp.InitializeResourceNames;
 end;
 
 procedure FantomSpiritNXTUpdateResourceNames(fsh : FantomHandle); cdecl; export;
@@ -841,7 +841,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  tmp.NXTUpdateResourceNames;
+  tmp.UpdateResourceNames;
 end;
 
 function FantomSpiritNXTDownloadStream(fsh : FantomHandle; aStream : PByte; count : Integer; dest : PChar; filetype : byte) : integer; cdecl; export;
@@ -853,7 +853,7 @@ begin
   tmpStream := TMemoryStream.Create;
   try
     tmpStream.Read(aStream^, count);
-    Result := Ord(tmp.NXTDownloadStream(tmpStream, String(dest), TNXTFileType(filetype)));
+    Result := Ord(tmp.DownloadStream(tmpStream, String(dest), TPBRFileType(filetype)));
   finally
     tmpStream.Free;
   end;
@@ -867,7 +867,7 @@ begin
   tmp := TFantomSpirit(fsh);
   tmpStream := TMemoryStream.Create;
   try
-    Result := Ord(tmp.NXTUploadFileToStream(String(filename), tmpStream));
+    Result := Ord(tmp.UploadFileToStream(String(filename), tmpStream));
     tmpStream.Write(aStream^, tmpStream.Size);
   finally
     tmpStream.Free;
@@ -882,7 +882,7 @@ begin
   tmp := TFantomSpirit(fsh);
   tmpSL := TStringList.Create;
   try
-    Result := Ord(tmp.NXTListFiles(String(searchPattern), tmpSL));
+    Result := Ord(tmp.ListFiles(String(searchPattern), tmpSL));
     StrCopy(Files, PChar(tmpSL.Text));
   finally
     tmpSL.Free;
@@ -897,7 +897,7 @@ begin
   tmp := TFantomSpirit(fsh);
   tmpSL := TStringList.Create;
   try
-    Result := Ord(tmp.NXTListModules(String(searchPattern), tmpSL));
+    Result := Ord(tmp.ListModules(String(searchPattern), tmpSL));
     StrCopy(Modules, PChar(tmpSL.Text));
   finally
     tmpSL.Free;
@@ -912,7 +912,7 @@ begin
   tmp := TFantomSpirit(fsh);
   tmpSL := TStringList.Create;
   try
-    Result := Ord(tmp.NXTListBricks(tmpSL));
+    Result := Ord(tmp.ListBricks(tmpSL));
     StrCopy(Bricks, PChar(tmpSL.Text));
   finally
     tmpSL.Free;
@@ -1126,7 +1126,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTDefragmentFlash);
+  Result := Ord(tmp.SCDefragmentFlash);
 end;
 
 procedure FantomSpiritDownloadMemoryMap(fsh : FantomHandle; value : PChar); cdecl; export;
@@ -1142,7 +1142,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := tmp.NXTFirmwareVersion;
+  Result := tmp.SCFirmwareVersion;
 end;
 
 function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; export;
@@ -1150,7 +1150,7 @@ var
   tmp : TFantomSpirit;
 begin
   tmp := TFantomSpirit(fsh);
-  Result := Ord(tmp.NXTInstalledFirmware);
+  Result := Ord(tmp.SCInstalledFirmware);
 end;
 
 procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; export;
@@ -1159,13 +1159,13 @@ var
   str : string;
 begin
   tmp := TFantomSpirit(fsh);
-  str := tmp.NXTGetBrickName;
+  str := tmp.SCGetBrickName;
   StrCopy(name, PChar(str));
 end;
 
-function NameToNXTFileType(name : PChar) : integer; cdecl; export;
+function NXTNameToPBRFileType(name : PChar) : integer; cdecl; export;
 begin
-  Result := Ord(uSpirit.NameToNXTFileType(String(name)));
+  Result := Ord(uSpirit.NXTNameToPBRFileType(String(name)));
 end;
 
 procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl; export;

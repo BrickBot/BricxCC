@@ -1,11 +1,11 @@
 object PrefForm: TPrefForm
   Left = 193
-  Top = 205
+  Top = 204
   HelpContext = 11
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Preferences'
-  ClientHeight = 352
+  ClientHeight = 353
   ClientWidth = 452
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,9 +21,16 @@ object PrefForm: TPrefForm
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
+  object Label8: TLabel
+    Left = 30
+    Top = 235
+    Width = 63
+    Height = 13
+    Caption = '&Pascal prefix:'
+  end
   object Panel3: TPanel
     Left = 0
-    Top = 321
+    Top = 322
     Width = 452
     Height = 31
     Align = alBottom
@@ -75,7 +82,7 @@ object PrefForm: TPrefForm
     Left = 0
     Top = 0
     Width = 452
-    Height = 321
+    Height = 322
     Align = alClient
     BevelInner = bvLowered
     BevelOuter = bvNone
@@ -85,7 +92,7 @@ object PrefForm: TPrefForm
       Left = 1
       Top = 1
       Width = 450
-      Height = 319
+      Height = 320
       ActivePage = shtGeneral
       Align = alClient
       TabOrder = 0
@@ -390,8 +397,8 @@ object PrefForm: TPrefForm
           Left = 0
           Top = 0
           Width = 442
-          Height = 291
-          ActivePage = shtEditorOptions
+          Height = 292
+          ActivePage = shtPaths
           Align = alClient
           TabOrder = 0
           object shtEditorOptions: TTabSheet
@@ -1099,141 +1106,501 @@ object PrefForm: TPrefForm
               TabOrder = 5
             end
           end
-          object shtCompilerNQC: TTabSheet
-            Caption = 'NQC'
+          object shtCompilerRCX: TTabSheet
+            Caption = 'RCX'
             ImageIndex = 1
-            object lblNQCIncludePath: TLabel
-              Left = 6
-              Top = 7
-              Width = 62
-              Height = 13
-              Caption = '&Include path:'
-            end
-            object lblNQCSwitches: TLabel
-              Left = 6
-              Top = 32
-              Width = 46
-              Height = 13
-              Caption = '&Switches:'
-              FocusControl = edtNQCSwitches
-            end
-            object lblNQCPath: TLabel
-              Left = 6
-              Top = 57
-              Width = 48
-              Height = 13
-              Caption = 'EXE &path:'
-            end
-            object edtNQCSwitches: TEdit
-              Left = 76
-              Top = 28
-              Width = 337
-              Height = 21
-              HelpContext = 11091
-              TabOrder = 1
-            end
-            object edtNQCIncludePath: TComboBox
-              Left = 76
-              Top = 3
-              Width = 337
-              Height = 21
-              HelpContext = 11092
-              DropDownCount = 4
-              ItemHeight = 13
+            object pagRCX: TPageControl
+              Left = 0
+              Top = 0
+              Width = 417
+              Height = 248
+              ActivePage = shtCompilerNQC
+              Align = alClient
               TabOrder = 0
-              OnExit = edtNQCIncludePathExit
-            end
-            object btnGetNQCVersion: TButton
-              Left = 76
-              Top = 80
-              Width = 75
-              Height = 25
-              HelpContext = 11094
-              Caption = '&Version'
-              TabOrder = 3
-              OnClick = btnGetNQCVersionClick
-            end
-            object edtNQCExePath2: TEdit
-              Left = 76
-              Top = 53
-              Width = 337
-              Height = 21
-              HelpContext = 11093
-              AutoSize = False
-              TabOrder = 2
-            end
-            object chkIncludeSrcInList: TCheckBox
-              Left = 76
-              Top = 120
-              Width = 229
-              Height = 17
-              HelpContext = 11024
-              Caption = '&Show source in code listing'
-              TabOrder = 4
-            end
-          end
-          object shtCompilerLCC: TTabSheet
-            Caption = 'LCC'
-            ImageIndex = 2
-            object lblLCCIncludePath: TLabel
-              Left = 6
-              Top = 7
-              Width = 62
-              Height = 13
-              Caption = '&Include path:'
-            end
-            object lblLCCSwitches: TLabel
-              Left = 6
-              Top = 32
-              Width = 46
-              Height = 13
-              Caption = '&Switches:'
-              FocusControl = edtLCCSwitches
-            end
-            object lblLCCExePath: TLabel
-              Left = 6
-              Top = 57
-              Width = 48
-              Height = 13
-              Caption = 'EXE &path:'
-            end
-            object edtLCCSwitches: TEdit
-              Left = 76
-              Top = 28
-              Width = 337
-              Height = 21
-              HelpContext = 11100
-              TabOrder = 1
-            end
-            object edtLCCIncludePath: TComboBox
-              Left = 76
-              Top = 3
-              Width = 337
-              Height = 21
-              HelpContext = 11101
-              DropDownCount = 4
-              ItemHeight = 13
-              TabOrder = 0
-              OnExit = edtLCCIncludePathExit
-            end
-            object btnGetLCCVersion: TButton
-              Left = 76
-              Top = 80
-              Width = 75
-              Height = 25
-              HelpContext = 11103
-              Caption = '&Version'
-              TabOrder = 3
-              OnClick = btnGetLCCVersionClick
-            end
-            object edtLCCExePath2: TEdit
-              Left = 76
-              Top = 53
-              Width = 337
-              Height = 21
-              HelpContext = 11102
-              AutoSize = False
-              TabOrder = 2
+              object shtCompilerNQC: TTabSheet
+                Caption = 'NQC'
+                object lblNQCIncludePath: TLabel
+                  Left = 6
+                  Top = 7
+                  Width = 62
+                  Height = 13
+                  Caption = '&Include path:'
+                end
+                object lblNQCSwitches: TLabel
+                  Left = 6
+                  Top = 32
+                  Width = 46
+                  Height = 13
+                  Caption = '&Switches:'
+                  FocusControl = edtNQCSwitches
+                end
+                object lblNQCPath: TLabel
+                  Left = 6
+                  Top = 57
+                  Width = 48
+                  Height = 13
+                  Caption = 'EXE &path:'
+                end
+                object chkIncludeSrcInList: TCheckBox
+                  Left = 76
+                  Top = 120
+                  Width = 229
+                  Height = 17
+                  HelpContext = 11024
+                  Caption = '&Show source in code listing'
+                  TabOrder = 0
+                end
+                object btnGetNQCVersion: TButton
+                  Left = 76
+                  Top = 80
+                  Width = 75
+                  Height = 25
+                  HelpContext = 11094
+                  Caption = '&Version'
+                  TabOrder = 1
+                  OnClick = btnGetNQCVersionClick
+                end
+                object edtNQCExePath2: TEdit
+                  Left = 72
+                  Top = 53
+                  Width = 332
+                  Height = 21
+                  HelpContext = 11093
+                  AutoSize = False
+                  TabOrder = 2
+                end
+                object edtNQCSwitches: TEdit
+                  Left = 72
+                  Top = 28
+                  Width = 332
+                  Height = 21
+                  HelpContext = 11091
+                  TabOrder = 3
+                end
+                object edtNQCIncludePath: TComboBox
+                  Left = 72
+                  Top = 3
+                  Width = 332
+                  Height = 21
+                  HelpContext = 11092
+                  DropDownCount = 4
+                  ItemHeight = 0
+                  TabOrder = 4
+                  OnExit = edtNQCIncludePathExit
+                end
+              end
+              object shtCompilerLCC: TTabSheet
+                Caption = 'LCC'
+                ImageIndex = 1
+                object lblLCCIncludePath: TLabel
+                  Left = 6
+                  Top = 7
+                  Width = 62
+                  Height = 13
+                  Caption = '&Include path:'
+                end
+                object lblLCCSwitches: TLabel
+                  Left = 6
+                  Top = 32
+                  Width = 46
+                  Height = 13
+                  Caption = '&Switches:'
+                  FocusControl = edtLCCSwitches
+                end
+                object lblLCCExePath: TLabel
+                  Left = 6
+                  Top = 57
+                  Width = 48
+                  Height = 13
+                  Caption = 'EXE &path:'
+                end
+                object btnGetLCCVersion: TButton
+                  Left = 76
+                  Top = 80
+                  Width = 75
+                  Height = 25
+                  HelpContext = 11103
+                  Caption = '&Version'
+                  TabOrder = 0
+                  OnClick = btnGetLCCVersionClick
+                end
+                object edtLCCExePath2: TEdit
+                  Left = 72
+                  Top = 53
+                  Width = 332
+                  Height = 21
+                  HelpContext = 11102
+                  AutoSize = False
+                  TabOrder = 1
+                end
+                object edtLCCSwitches: TEdit
+                  Left = 72
+                  Top = 28
+                  Width = 332
+                  Height = 21
+                  HelpContext = 11100
+                  TabOrder = 2
+                end
+                object edtLCCIncludePath: TComboBox
+                  Left = 72
+                  Top = 3
+                  Width = 332
+                  Height = 21
+                  HelpContext = 11101
+                  DropDownCount = 4
+                  ItemHeight = 0
+                  TabOrder = 3
+                  OnExit = edtLCCIncludePathExit
+                end
+              end
+              object shtCompilerBrickOS: TTabSheet
+                Caption = 'brickOS'
+                ImageIndex = 2
+                object lblCygwin: TLabel
+                  Left = 6
+                  Top = 7
+                  Width = 37
+                  Height = 13
+                  Caption = '&Cygwin:'
+                end
+                object lblOSRoot: TLabel
+                  Left = 6
+                  Top = 32
+                  Width = 39
+                  Height = 13
+                  Caption = '&OS root:'
+                  FocusControl = edtOSRoot
+                end
+                object lblCPPSwitches: TLabel
+                  Left = 6
+                  Top = 57
+                  Width = 46
+                  Height = 13
+                  Caption = '&Switches:'
+                  FocusControl = edtCPPSwitches
+                end
+                object lblBrickOSMakefileTemplate: TLabel
+                  Left = 6
+                  Top = 80
+                  Width = 67
+                  Height = 41
+                  AutoSize = False
+                  Caption = '&Makefile template:'
+                  WordWrap = True
+                end
+                object lblPascalCompilerPrefix: TLabel
+                  Left = 6
+                  Top = 195
+                  Width = 63
+                  Height = 13
+                  Caption = '&Pascal prefix:'
+                  FocusControl = edtPascalCompilerPrefix
+                end
+                object edtCygwin2: TEdit
+                  Left = 80
+                  Top = 3
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11110
+                  AutoSize = False
+                  TabOrder = 0
+                end
+                object edtOSRoot: TEdit
+                  Left = 80
+                  Top = 28
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11111
+                  TabOrder = 1
+                end
+                object edtCPPSwitches: TEdit
+                  Left = 80
+                  Top = 53
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11112
+                  TabOrder = 2
+                end
+                object edtBrickOSMakefileTemplate: TMemo
+                  Left = 80
+                  Top = 80
+                  Width = 326
+                  Height = 105
+                  HelpContext = 11113
+                  ScrollBars = ssBoth
+                  TabOrder = 3
+                  WantTabs = True
+                end
+                object edtPascalCompilerPrefix: TEdit
+                  Left = 80
+                  Top = 191
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 4
+                end
+              end
+              object shtCompilerLeJOS: TTabSheet
+                Caption = 'leJOS'
+                ImageIndex = 3
+                object Label1: TLabel
+                  Left = 6
+                  Top = 7
+                  Width = 47
+                  Height = 13
+                  Caption = '&JDK path:'
+                end
+                object lblLeJOSRoot: TLabel
+                  Left = 6
+                  Top = 32
+                  Width = 39
+                  Height = 13
+                  Caption = '&OS root:'
+                end
+                object lblJavaSwitches: TLabel
+                  Left = 6
+                  Top = 57
+                  Width = 46
+                  Height = 13
+                  Caption = '&Switches:'
+                  FocusControl = edtJavaSwitches
+                end
+                object lblLeJOSMakefileTemplate: TLabel
+                  Left = 6
+                  Top = 80
+                  Width = 67
+                  Height = 41
+                  AutoSize = False
+                  Caption = '&Makefile template:'
+                  WordWrap = True
+                end
+                object edtJavaPath2: TEdit
+                  Left = 80
+                  Top = 3
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11122
+                  AutoSize = False
+                  TabOrder = 0
+                end
+                object edtLeJOSRoot2: TEdit
+                  Left = 80
+                  Top = 28
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11123
+                  AutoSize = False
+                  TabOrder = 1
+                end
+                object edtJavaSwitches: TEdit
+                  Left = 80
+                  Top = 53
+                  Width = 326
+                  Height = 21
+                  HelpContext = 11124
+                  TabOrder = 2
+                end
+                object edtLeJOSMakefileTemplate: TMemo
+                  Left = 80
+                  Top = 80
+                  Width = 326
+                  Height = 133
+                  HelpContext = 11125
+                  ScrollBars = ssBoth
+                  TabOrder = 3
+                  WantTabs = True
+                end
+              end
+              object shtCompilerPBForth: TTabSheet
+                Caption = 'pbForth'
+                ImageIndex = 4
+                object lblInterCharacterDelay: TLabel
+                  Left = 16
+                  Top = 112
+                  Width = 100
+                  Height = 13
+                  Caption = 'Inter-&character delay:'
+                  FocusControl = edtICDelay
+                end
+                object lblInterLineDelay: TLabel
+                  Left = 16
+                  Top = 138
+                  Width = 71
+                  Height = 13
+                  Caption = 'Inter-&line delay:'
+                  FocusControl = edtILDelay
+                end
+                object grpUSB: TGroupBox
+                  Left = 216
+                  Top = 104
+                  Width = 185
+                  Height = 97
+                  Caption = 'USB Tower Settings'
+                  TabOrder = 0
+                  object lblReadFirstTimeout: TLabel
+                    Left = 12
+                    Top = 22
+                    Width = 85
+                    Height = 13
+                    Caption = 'Read &first timeout:'
+                    FocusControl = edtConsoleReadFirstTimeout
+                  end
+                  object lblReadICTimeout: TLabel
+                    Left = 12
+                    Top = 46
+                    Width = 77
+                    Height = 13
+                    Caption = 'Read &ic timeout:'
+                    FocusControl = edtConsoleReadICTimeout
+                  end
+                  object lblWriteTimeout: TLabel
+                    Left = 12
+                    Top = 70
+                    Width = 65
+                    Height = 13
+                    Caption = '&Write timeout:'
+                    FocusControl = edtConsoleWriteTimeout
+                  end
+                  object edtConsoleReadFirstTimeout: TBricxccSpinEdit
+                    Left = 114
+                    Top = 17
+                    Width = 60
+                    Height = 22
+                    HelpContext = 11145
+                    MaxLength = 4
+                    MaxValue = 9999
+                    MinValue = 0
+                    TabOrder = 0
+                    Value = 10
+                  end
+                  object edtConsoleReadICTimeout: TBricxccSpinEdit
+                    Left = 114
+                    Top = 41
+                    Width = 60
+                    Height = 22
+                    HelpContext = 11146
+                    MaxLength = 4
+                    MaxValue = 9999
+                    MinValue = 0
+                    TabOrder = 1
+                    Value = 0
+                  end
+                  object edtConsoleWriteTimeout: TBricxccSpinEdit
+                    Left = 114
+                    Top = 65
+                    Width = 60
+                    Height = 22
+                    HelpContext = 11147
+                    MaxLength = 4
+                    MaxValue = 9999
+                    MinValue = 0
+                    TabOrder = 2
+                    Value = 0
+                  end
+                end
+                object edtILDelay: TBricxccSpinEdit
+                  Left = 126
+                  Top = 133
+                  Width = 60
+                  Height = 22
+                  HelpContext = 11137
+                  MaxLength = 4
+                  MaxValue = 9999
+                  MinValue = 0
+                  TabOrder = 1
+                  Value = 200
+                end
+                object edtICDelay: TBricxccSpinEdit
+                  Left = 126
+                  Top = 107
+                  Width = 60
+                  Height = 22
+                  HelpContext = 11136
+                  MaxLength = 4
+                  MaxValue = 9999
+                  MinValue = 0
+                  TabOrder = 2
+                  Value = 0
+                end
+                object chkStripComments: TCheckBox
+                  Left = 16
+                  Top = 64
+                  Width = 166
+                  Height = 17
+                  HelpContext = 11135
+                  Caption = '&Strip comments'
+                  TabOrder = 3
+                end
+                object chkSkipBlankLines: TCheckBox
+                  Left = 16
+                  Top = 48
+                  Width = 166
+                  Height = 17
+                  HelpContext = 11134
+                  Caption = 'Skip &blank lines'
+                  Checked = True
+                  State = cbChecked
+                  TabOrder = 4
+                end
+                object chkStopOnAborted: TCheckBox
+                  Left = 16
+                  Top = 32
+                  Width = 166
+                  Height = 17
+                  HelpContext = 11133
+                  Caption = 'Stop download on any &error'
+                  TabOrder = 5
+                end
+                object chkShowAllOutput: TCheckBox
+                  Left = 16
+                  Top = 16
+                  Width = 166
+                  Height = 17
+                  HelpContext = 11132
+                  Caption = 'Show all &output'
+                  TabOrder = 6
+                end
+                object chkOutputSeparate: TCheckBox
+                  Left = 198
+                  Top = 16
+                  Width = 211
+                  Height = 17
+                  HelpContext = 11139
+                  Caption = 'Download output in sep&arate window'
+                  TabOrder = 7
+                end
+                object chkShowConsoleLineNumbers: TCheckBox
+                  Left = 198
+                  Top = 32
+                  Width = 211
+                  Height = 17
+                  HelpContext = 11140
+                  Caption = 'Show line &numbers'
+                  TabOrder = 8
+                end
+                object chkConsoleSyntaxHL: TCheckBox
+                  Left = 198
+                  Top = 48
+                  Width = 211
+                  Height = 17
+                  HelpContext = 11138
+                  Caption = 'Syntax &highlighting'
+                  Checked = True
+                  State = cbChecked
+                  TabOrder = 9
+                end
+                object chkConsoleCompProp: TCheckBox
+                  Left = 198
+                  Top = 64
+                  Width = 211
+                  Height = 17
+                  HelpContext = 11148
+                  Caption = 'Code co&mpletion'
+                  Checked = True
+                  State = cbChecked
+                  TabOrder = 10
+                end
+              end
             end
           end
           object shtNBC: TTabSheet
@@ -1301,7 +1668,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -1427,352 +1794,163 @@ object PrefForm: TPrefForm
               TabOrder = 8
             end
           end
-          object shtCompilerBrickOS: TTabSheet
-            Caption = 'C/C++/Pascal'
-            ImageIndex = 3
-            object lblOSRoot: TLabel
-              Left = 6
-              Top = 32
-              Width = 39
-              Height = 13
-              Caption = '&OS root:'
-              FocusControl = edtOSRoot
-            end
-            object lblCPPSwitches: TLabel
-              Left = 6
-              Top = 57
-              Width = 46
-              Height = 13
-              Caption = '&Switches:'
-              FocusControl = edtCPPSwitches
-            end
-            object lblBrickOSMakefileTemplate: TLabel
-              Left = 6
-              Top = 80
-              Width = 67
-              Height = 41
-              AutoSize = False
-              Caption = '&Makefile template:'
-              WordWrap = True
-            end
-            object lblCygwin: TLabel
-              Left = 6
-              Top = 7
-              Width = 37
-              Height = 13
-              Caption = '&Cygwin:'
-            end
-            object lblPascalCompilerPrefix: TLabel
-              Left = 6
-              Top = 220
-              Width = 63
-              Height = 13
-              Caption = '&Pascal prefix:'
-              FocusControl = edtPascalCompilerPrefix
-            end
-            object edtOSRoot: TEdit
-              Left = 76
-              Top = 28
-              Width = 337
-              Height = 21
-              HelpContext = 11111
-              TabOrder = 1
-            end
-            object edtCPPSwitches: TEdit
-              Left = 76
-              Top = 53
-              Width = 337
-              Height = 21
-              HelpContext = 11112
-              TabOrder = 2
-            end
-            object edtBrickOSMakefileTemplate: TMemo
-              Left = 76
-              Top = 80
-              Width = 337
-              Height = 113
-              HelpContext = 11113
-              ScrollBars = ssBoth
-              TabOrder = 3
-              WantTabs = True
-            end
-            object edtPascalCompilerPrefix: TEdit
-              Left = 76
-              Top = 216
-              Width = 337
-              Height = 21
-              HelpContext = 11116
-              TabOrder = 4
-            end
-            object edtCygwin2: TEdit
-              Left = 76
-              Top = 3
-              Width = 337
-              Height = 21
-              HelpContext = 11110
-              AutoSize = False
-              TabOrder = 0
-            end
-          end
-          object shtCompilerLeJOS: TTabSheet
-            Caption = 'Java'
+          object shtCompilerEV3: TTabSheet
+            Caption = 'EV3'
             ImageIndex = 4
-            object lblJavaSwitches: TLabel
-              Left = 6
-              Top = 57
-              Width = 46
-              Height = 13
-              Caption = '&Switches:'
-              FocusControl = edtJavaSwitches
-            end
-            object lblLeJOSMakefileTemplate: TLabel
-              Left = 6
-              Top = 80
-              Width = 67
-              Height = 41
-              AutoSize = False
-              Caption = '&Makefile template:'
-              WordWrap = True
-            end
-            object Label1: TLabel
-              Left = 6
-              Top = 7
-              Width = 47
-              Height = 13
-              Caption = '&JDK path:'
-            end
-            object lblLeJOSRoot: TLabel
-              Left = 6
-              Top = 32
-              Width = 39
-              Height = 13
-              Caption = '&OS root:'
-            end
-            object edtJavaSwitches: TEdit
-              Left = 76
-              Top = 53
-              Width = 337
-              Height = 21
-              HelpContext = 11124
-              TabOrder = 2
-            end
-            object edtLeJOSMakefileTemplate: TMemo
-              Left = 76
-              Top = 80
-              Width = 337
-              Height = 137
-              HelpContext = 11125
-              ScrollBars = ssBoth
-              TabOrder = 3
-              WantTabs = True
-            end
-            object edtJavaPath2: TEdit
-              Left = 76
-              Top = 3
-              Width = 337
-              Height = 21
-              HelpContext = 11122
-              AutoSize = False
+            object pagEV3: TPageControl
+              Left = 0
+              Top = 0
+              Width = 417
+              Height = 248
+              ActivePage = shtEV3BrickOS
+              Align = alClient
               TabOrder = 0
-            end
-            object edtLeJOSRoot2: TEdit
-              Left = 76
-              Top = 28
-              Width = 337
-              Height = 21
-              HelpContext = 11123
-              AutoSize = False
-              TabOrder = 1
-            end
-          end
-          object shtForth: TTabSheet
-            Caption = 'Forth Console'
-            ImageIndex = 5
-            object lblInterCharacterDelay: TLabel
-              Left = 16
-              Top = 112
-              Width = 100
-              Height = 13
-              Caption = 'Inter-&character delay:'
-              FocusControl = edtICDelay
-            end
-            object lblInterLineDelay: TLabel
-              Left = 16
-              Top = 138
-              Width = 71
-              Height = 13
-              Caption = 'Inter-&line delay:'
-              FocusControl = edtILDelay
-            end
-            object chkShowAllOutput: TCheckBox
-              Left = 16
-              Top = 16
-              Width = 166
-              Height = 17
-              HelpContext = 11132
-              Caption = 'Show all &output'
-              TabOrder = 0
-            end
-            object chkStopOnAborted: TCheckBox
-              Left = 16
-              Top = 32
-              Width = 166
-              Height = 17
-              HelpContext = 11133
-              Caption = 'Stop download on any &error'
-              TabOrder = 1
-            end
-            object chkSkipBlankLines: TCheckBox
-              Left = 16
-              Top = 48
-              Width = 166
-              Height = 17
-              HelpContext = 11134
-              Caption = 'Skip &blank lines'
-              Checked = True
-              State = cbChecked
-              TabOrder = 2
-            end
-            object chkStripComments: TCheckBox
-              Left = 16
-              Top = 64
-              Width = 166
-              Height = 17
-              HelpContext = 11135
-              Caption = '&Strip comments'
-              TabOrder = 3
-            end
-            object chkConsoleSyntaxHL: TCheckBox
-              Left = 198
-              Top = 48
-              Width = 211
-              Height = 17
-              HelpContext = 11138
-              Caption = 'Syntax &highlighting'
-              Checked = True
-              State = cbChecked
-              TabOrder = 6
-            end
-            object chkOutputSeparate: TCheckBox
-              Left = 198
-              Top = 16
-              Width = 211
-              Height = 17
-              HelpContext = 11139
-              Caption = 'Download output in sep&arate window'
-              TabOrder = 4
-            end
-            object chkShowConsoleLineNumbers: TCheckBox
-              Left = 198
-              Top = 32
-              Width = 211
-              Height = 17
-              HelpContext = 11140
-              Caption = 'Show line &numbers'
-              TabOrder = 5
-            end
-            object grpUSB: TGroupBox
-              Left = 216
-              Top = 104
-              Width = 185
-              Height = 97
-              Caption = 'USB Tower Settings'
-              TabOrder = 10
-              object lblReadFirstTimeout: TLabel
-                Left = 12
-                Top = 22
-                Width = 85
-                Height = 13
-                Caption = 'Read &first timeout:'
-                FocusControl = edtConsoleReadFirstTimeout
+              object shtEV3BrickOS: TTabSheet
+                Caption = 'brickOS'
+                ImageIndex = 1
+                object Label4: TLabel
+                  Left = 6
+                  Top = 8
+                  Width = 67
+                  Height = 41
+                  AutoSize = False
+                  Caption = '&Makefile template:'
+                  WordWrap = True
+                end
+                object Label7: TLabel
+                  Left = 6
+                  Top = 123
+                  Width = 51
+                  Height = 13
+                  Caption = 'FPC prefix:'
+                  FocusControl = edtFPCPrefix
+                end
+                object Label9: TLabel
+                  Left = 6
+                  Top = 147
+                  Width = 48
+                  Height = 13
+                  Caption = 'FPC flags:'
+                  FocusControl = edtFPCPrefix
+                end
+                object Label10: TLabel
+                  Left = 6
+                  Top = 171
+                  Width = 53
+                  Height = 13
+                  Caption = 'GCC prefix:'
+                  FocusControl = edtGCCPrefix
+                end
+                object Label11: TLabel
+                  Left = 6
+                  Top = 195
+                  Width = 50
+                  Height = 13
+                  Caption = 'GCC flags:'
+                  FocusControl = edtGCCPrefix
+                end
+                object Label12: TLabel
+                  Left = 214
+                  Top = 123
+                  Width = 49
+                  Height = 13
+                  Caption = 'Password:'
+                  FocusControl = edtEV3Password
+                end
+                object Label13: TLabel
+                  Left = 214
+                  Top = 147
+                  Width = 54
+                  Height = 13
+                  Caption = 'IP Address:'
+                  FocusControl = edtEV3Password
+                end
+                object Label14: TLabel
+                  Left = 214
+                  Top = 171
+                  Width = 64
+                  Height = 13
+                  Caption = 'Remote path:'
+                  FocusControl = edtEV3Folder
+                end
+                object edtEV3MakeTemplate: TMemo
+                  Left = 80
+                  Top = 8
+                  Width = 326
+                  Height = 105
+                  HelpContext = 11113
+                  ScrollBars = ssBoth
+                  TabOrder = 0
+                  WantTabs = True
+                end
+                object edtFPCPrefix: TEdit
+                  Left = 80
+                  Top = 119
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 1
+                end
+                object edtFPCFlags: TEdit
+                  Left = 80
+                  Top = 143
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 2
+                end
+                object edtGCCPrefix: TEdit
+                  Left = 80
+                  Top = 167
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 3
+                end
+                object edtGCCFlags: TEdit
+                  Left = 80
+                  Top = 191
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 4
+                end
+                object edtEV3Password: TEdit
+                  Left = 288
+                  Top = 119
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 5
+                end
+                object edtEV3IPAddress: TEdit
+                  Left = 288
+                  Top = 143
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 6
+                end
+                object edtEV3Folder: TEdit
+                  Left = 288
+                  Top = 167
+                  Width = 113
+                  Height = 21
+                  HelpContext = 11116
+                  TabOrder = 7
+                end
+                object chkEV3SharedLib: TCheckBox
+                  Left = 288
+                  Top = 193
+                  Width = 113
+                  Height = 17
+                  Caption = 'Use shared library'
+                  TabOrder = 8
+                end
               end
-              object lblReadICTimeout: TLabel
-                Left = 12
-                Top = 46
-                Width = 77
-                Height = 13
-                Caption = 'Read &ic timeout:'
-                FocusControl = edtConsoleReadICTimeout
+              object shtCompilerEVC: TTabSheet
+                Caption = 'EVC'
               end
-              object lblWriteTimeout: TLabel
-                Left = 12
-                Top = 70
-                Width = 65
-                Height = 13
-                Caption = '&Write timeout:'
-                FocusControl = edtConsoleWriteTimeout
-              end
-              object edtConsoleReadFirstTimeout: TBricxccSpinEdit
-                Left = 114
-                Top = 17
-                Width = 60
-                Height = 22
-                HelpContext = 11145
-                MaxLength = 4
-                MaxValue = 9999
-                MinValue = 0
-                TabOrder = 0
-                Value = 10
-              end
-              object edtConsoleReadICTimeout: TBricxccSpinEdit
-                Left = 114
-                Top = 41
-                Width = 60
-                Height = 22
-                HelpContext = 11146
-                MaxLength = 4
-                MaxValue = 9999
-                MinValue = 0
-                TabOrder = 1
-                Value = 0
-              end
-              object edtConsoleWriteTimeout: TBricxccSpinEdit
-                Left = 114
-                Top = 65
-                Width = 60
-                Height = 22
-                HelpContext = 11147
-                MaxLength = 4
-                MaxValue = 9999
-                MinValue = 0
-                TabOrder = 2
-                Value = 0
-              end
-            end
-            object chkConsoleCompProp: TCheckBox
-              Left = 198
-              Top = 64
-              Width = 211
-              Height = 17
-              HelpContext = 11148
-              Caption = 'Code co&mpletion'
-              Checked = True
-              State = cbChecked
-              TabOrder = 7
-            end
-            object edtICDelay: TBricxccSpinEdit
-              Left = 126
-              Top = 107
-              Width = 60
-              Height = 22
-              HelpContext = 11136
-              MaxLength = 4
-              MaxValue = 9999
-              MinValue = 0
-              TabOrder = 8
-              Value = 0
-            end
-            object edtILDelay: TBricxccSpinEdit
-              Left = 126
-              Top = 133
-              Width = 60
-              Height = 22
-              HelpContext = 11137
-              MaxLength = 4
-              MaxValue = 9999
-              MinValue = 0
-              TabOrder = 9
-              Value = 200
             end
           end
         end
@@ -1784,8 +1962,8 @@ object PrefForm: TPrefForm
           Left = 0
           Top = 0
           Width = 328
-          Height = 291
-          ActivePage = shtNQCAPI
+          Height = 292
+          ActivePage = shtNXCAPI
           Align = alClient
           TabOrder = 2
           object shtNQCAPI: TTabSheet
@@ -1795,7 +1973,7 @@ object PrefForm: TPrefForm
               Top = 6
               Width = 308
               Height = 237
-              ActivePage = shtAPIKeywords
+              ActivePage = shtAPIConstants
               TabOrder = 0
               OnChange = pagNQCAPIChange
               object shtAPIKeywords: TTabSheet
@@ -1882,7 +2060,7 @@ object PrefForm: TPrefForm
               Top = 6
               Width = 308
               Height = 237
-              ActivePage = shtNXCKeywords
+              ActivePage = shtNXCConstants
               TabOrder = 0
               OnChange = pagNQCAPIChange
               object shtNXCKeywords: TTabSheet
@@ -1986,7 +2164,7 @@ object PrefForm: TPrefForm
           Left = 328
           Top = 0
           Width = 114
-          Height = 291
+          Height = 292
           Align = alRight
           BevelOuter = bvNone
           TabOrder = 3
@@ -2313,7 +2491,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnChange = cboLangTempChange
         end
@@ -2543,7 +2721,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnChange = cboLanguagesChange
         end

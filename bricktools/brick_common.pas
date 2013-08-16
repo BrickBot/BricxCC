@@ -30,7 +30,7 @@ implementation
 uses
   SysUtils,
 {$IFNDEF NXT_ONLY}
-  FakeSpirit, Ev3Spirit,
+  FakeSpirit, Ev3Spirit, SSHSpirit,
 {$ENDIF}
   FantomSpirit, SProSpirit, uGlobals;
 
@@ -47,7 +47,13 @@ begin
     else if LocalBrickType = SU_SPRO then
       BC := TSProSpirit.Create()
     else if LocalBrickType = SU_EV3 then
-      BC := TEv3Spirit.Create()
+    begin
+      BC := TEv3Spirit.Create();
+//      if LocalStandardfirmware then
+//        BC := TEv3Spirit.Create()
+//      else
+//        BC := TSSHSpirit.Create();
+    end
     else
       BC := TFakeSpirit.Create();
 {$ELSE}
@@ -72,7 +78,7 @@ begin
     oldbt := LocalBrickType;
     try
       LocalBrickType := rtNXT;
-      BrickComm.NXTInitializeResourceNames;
+      BrickComm.InitializeResourceNames;
     finally
       ReleaseBrickComm;
       LocalBrickType := oldbt;

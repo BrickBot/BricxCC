@@ -1,3 +1,19 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2012-2103 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 unit uPBRSimpleTypes;
 
 interface
@@ -18,6 +34,42 @@ const
 	FileExtensionsBrickImage        = '.rgf';
 	FileExtensionsDataLogData       = '.rdf';
   FileExtensionExecutable         = '.rbf';
+
+  PRIMPAR_SHORT                 = $00;
+  PRIMPAR_LONG                  = $80;
+  PRIMPAR_CONST                 = $00;
+  PRIMPAR_VARIABEL              = $40;
+  PRIMPAR_LOCAL                 = $00;
+  PRIMPAR_GLOBAL                = $20;
+  PRIMPAR_HANDLE                = $10;
+  PRIMPAR_ADDR                  = $08;
+  PRIMPAR_INDEX                 = $1F;
+  PRIMPAR_CONST_SIGN            = $20;
+  PRIMPAR_VALUE                 = $3F;
+  PRIMPAR_BYTES                 = $07;
+  PRIMPAR_STRING_OLD            = 0;
+  PRIMPAR_1_BYTE                = 1;
+  PRIMPAR_2_BYTES               = 2;
+  PRIMPAR_4_BYTES               = 3;
+  PRIMPAR_STRING                = 4;
+  PRIMPAR_LABEL                 = $20;
+  LCS                           = (PRIMPAR_LONG or PRIMPAR_STRING);
+
+  SYSTEM_REPLY_OK               = $03;    //  System command reply
+  SYSTEM_REPLY_ERROR            = $05;    //  System command reply error
+  DIRECT_REPLY_OK               = $02;    //  Direct command reply
+  DIRECT_REPLY_ERROR            = $04;    //  Direct command reply error
+
+  DEVCMD_RESET   = $11; //!< UART device reset
+  DEVCMD_FIRE    = $11; //!< UART device fire   (ultrasonic)
+  DEVCMD_CHANNEL = $12; //!< UART device channel (IR seeker)
+
+  MODE_KEEP      = $FF;
+  TYPE_KEEP      = $00;
+
+  DATA_PCT      = $10; //!< Percent (used in opINPUT_READEXT)
+  DATA_RAW      = $12; //!< Raw     (used in opINPUT_READEXT)
+  DATA_SI       = $13; //!< SI unit (used in opINPUT_READEXT)
 
 type
 	TArgType = (
@@ -44,59 +96,63 @@ type
 	);
 
   TArraySubCommand = (
-		ascDelete, // = 49408,
+		ascDelete, // 0
 		ascCreate8,
 		ascCreate16,
 		ascCreate32,
 		ascCreateF,
-		ascResize,
+		ascResize, // 5
 		ascFill,
 		ascCopy,
 		ascInit8,
 		ascInit16,
-		ascInit32,
+		ascInit32, // 10
 		ascInitF,
 		ascSize,
 		ascReadContent,
 		ascWriteContent,
-		ascReadSize
+		ascReadSize // 15
 	);
 
   TComGetSubCommand = (
-		cgscOnOff,// = 54017,
+    cgscUnused0, // 0
+		cgscOnOff,
 		cgscVisible,
-		cgscUnused2,
-		cgscResult,// = 54020,
-		cgscPin,
-    cgscUnused5,
+		cgscUnused3,
+		cgscResult,
+		cgscPin,   // 5
     cgscUnused6,
-		cgscSearchItems,// = 54024,
+    cgscUnused7,
+		cgscSearchItems,
 		cgscSearchItem,
-		cgscFavorItems,
+		cgscFavorItems, // 10
 		cgscFavorItem,
 		cgscId,
 		cgscBrickName,
 		cgscNetwork,
-		cgscPresent,
+		cgscPresent, // 15
 		cgscEncrypt,
 		cgscConnectItems,
 		cgscConnectItem,
-		cgscIncoming
+		cgscIncoming,
+    cgscMode2 // 20
   );
 
   TComSetSubCommand = (
-		csscOnOff,// = 54273,
+    csscUnused0, // 0
+		csscOnOff,
 		csscVisible,
 		csscSearch,
-    csscUnused3,
-		csscPin,// = 54277,
-    csscUnused5,
-		csscConnection,// = 54279,
+    csscUnused4,
+		csscPin, // 5
+    csscPassKey,
+		csscConnection,
 		csscBrickName,
 		csscMoveUp,
-		csscMoveDown,
+		csscMoveDown, // 10
 		csscEncrypt,
-		csscSSID
+		csscSSID,
+    csscMode2 // 13
   );
 
 	TCommandType = (
@@ -110,38 +166,50 @@ type
 		ctSystemNoReply        // 0z81
 	);
 
+  TFilenameSubCommand = (
+    fnscUnused15 = 15,
+    fnscExist,
+    fnscTotalSize,
+    fnscSplit,
+    fnscMerge,
+    fnscCheck, // 20
+    fnscPack,
+    fnscUnpack,
+    fnscGetFoldername
+  );
+
 	TFileSubCommand = (
-		fscOpenAppend, // = 49152,
+		fscOpenAppend, // 0
 		fscOpenRead,
 		fscOpenWrite,
 		fscReadValue,
 		fscWriteValue,
-		fscReadText,
+		fscReadText, // 5
 		fscWriteText,
 		fscClose,
 		fscLoadImage,
 		fscGetHandle,
-		fscLoadPicture,
+		fscMakeFolder, // 10
 		fscGetPool,
 		fscSetLogSyncTime,
 		fscGetFolders,
 		fscGetLogSyncTime,
-		fscGetSubFolderName,
+		fscGetSubFolderName, // 15
 		fscWriteLog,
 		fscCloseLog,
 		fscGetImage,
 		fscGetItem,
-		fscGetCacheFiles,
+		fscGetCacheFiles, // 20
 		fscPutCacheFile,
 		fscGetCacheFile,
 		fscDelCacheFile,
 		fscDelSubFolder,
-		fscLoadSound,
-		fscGetCacheName,
+		fscGetLogName, // 25
+		fscUnused26,
 		fscOpenLog,
 		fscReadBytes,
 		fscWriteBytes,
-		fscRemove,
+		fscRemove, // 30
 		fscMove
 	);
 
@@ -153,10 +221,12 @@ type
 		fhsNoHandlesAvailable,
 		fhsNoPermission,
 		fhsIllegalPath,
-		fhsFileExits,
+		fhsFileExists,
 		fhsEndOfFile,
 		fhsSizeError,
-		fhsUnknownError
+		fhsUnknownError,
+    fhsIllegalFilename,
+    fhsIllegalConnection
 	);
 
 	THardwareTransportLayer = (
@@ -166,45 +236,51 @@ type
 		htlWifi
 	);
 
+  TInfoSubCommand = (
+    iscUnused0, // 0
+    iscSetError,
+    iscGetError,
+    iscErrorText,
+    iscGetVolume,
+    iscSetVolume, // 5
+    iscGetMinutes,
+    iscSetMinutes
+  );
+
   TInputDeviceSubCommand = (
-		idscGetFormat,// = 39170,
+    idcUnused0, // 0
+    idcUnused1,
+		idscGetFormat,
 		idscCalMinMax,
 		idscCalDefault,
-		idscGetTypeMode,
+		idscGetTypeMode, // 5
 		idscGetSymbol,
 		idscCalMin,
 		idscCalMax,
-    idscUnused7,
-		idscClrAll,// = 39178,
+    idscSetup,
+		idscClrAll, // 10
 		idscGetRaw,
-    idscUnused10,
-    idscUnused11,
-    idscUnused12,
-    idscUnused13,
+    idscGetConnection,
+    idscStopAll,
     idscUnused14,
-    idscUnused15,
+    idscUnused15, // 15
     idscUnused16,
     idscUnused17,
     idscUnused18,
-		idscGetName,// = 39189,
+    idscUnused19,
+    idscUnused20, // 20
+		idscGetName,
 		idscGetModeName,
 		idscSetRaw,
 		idscGetFigures,
-		idscGetChanges,
+		idscGetChanges, // 25
 		idscClrChanges,
 		idscReadyPct,
 		idscReadyRaw,
 		idscReadySI,
-		idscGetMinMax
+		idscGetMinMax, // 30
+    idscGetBumps
   );
-
-	TProgramInfoCommand = (
-		picObjectStop,
-		picObjectStart = 4,
-		picGetStatus = 22,
-		picGetSpeed,
-    picGetProgramResult
-	);
 
 	TLeadByte = (
 		lbZero = 0,
@@ -222,7 +298,8 @@ type
 	);
 
   TMathSubCommand = (
-		mscEToTheX, // 36097
+    mscUnused0, // 0
+		mscEToTheX, 
 		mscModulo,
 		mscFloor,
 		mscCeiling,
@@ -365,6 +442,7 @@ type
 		pbopSELECT16,
 		pbopSELECT32,
 		pbopSELECTF,
+    pbopSystem, // 96
 		pbopPortConverOutput = 97,
 		pbopPortConverInput,
 		pbopNoteToFrequency,
@@ -407,7 +485,7 @@ type
 		pbopMemoryWrite = 126,
 		pbopMemoryRead = 127,
 		pbopUIFLUSH = 128,
-		pbopUIREAD,
+		pbopUIREAD = 129,
 //		pbopUIReadGetVBatt = 33025,
 //		pbopUIReadGetIBatt,
 //		pbopUIReadGetOSVersion,
@@ -566,8 +644,8 @@ type
 		pbopINPUTREADSI,
 		pbopINPUTREADEXT,
 		pbopINPUTWRITE,
-		pbopOUTPUTGETTYPE, // 160
-		pbopOUTPUTSETTYPE,
+		pbopOUTPUTGETTYPE, // 160  // not implemented
+		pbopOUTPUTSETTYPE,         // not really implemented
 		pbopOUTPUTRESET,
 		pbopOUTPUTSTOP,
 		pbopOUTPUTPOWER,
@@ -577,7 +655,7 @@ type
 		pbopOUTPUTREAD,
 		pbopOUTPUTTEST,
 		pbopOUTPUTREADY, // 170
-		pbopOUTPUTPOSITION,
+		pbopOUTPUTPOSITION, // not implemented
 		pbopOUTPUTSTEPPOWER,
 		pbopOUTPUTTIMEPOWER,
 		pbopOUTPUTSTEPSPEED,
@@ -675,6 +753,15 @@ type
 		pwrZeroPower = 0
 	);
 
+	TProgramInfoCommand = (
+		picObjectStop,
+		picObjectStart = 4,
+		picGetStatus = 22,
+		picGetSpeed,
+    picGetProgramResult,
+    picSetInstruction
+	);
+
 	TProgramSlot = (
 		pslGuiSlot,
 		pslUserSlot,
@@ -697,7 +784,7 @@ type
 		pstStopped = 64,
 		pstHalted = 128
 	);
-
+  
 	TRecoveryCommand = (
 		rcNone,
 		rcBeginDownloadWithErase = 240,
@@ -709,151 +796,13 @@ type
 		rcGetVersion     // 246
 	);
 
-	TStringCommand = (
-		stcInvalid,
-		stcGetSize,
-		stcConcat,
-		stcCompare,
-		stcUnused4,
-		stcDuplicate, // 5
-		stcValueToString,
-		stcStringToValue,
-		stcStrip
-	);
-
-	TSystemCommand = (
-		sycIllegalCommand, // 0
-		sycFileDownloadHeader = 146, // ($92) begin download
-		sycFileDownloadBlock, // 147 // ($93) continue download
-		sycBeginUpload,      // 148 ($94)
-		sycContinueUpload,   // 149 ($95)
-		sycBeginGetFile,     // 150 ($96)
-		sycContinueGetFile,  // 151 ($97)
-		sycCloseHandle,      // 152 ($98)
-		sycListFiles,        // 153 ($99)
-		sycContinueListFiles,// 154 ($9a)
-		sycCreateDir,        // 155 ($9b)
-		sycDeleteFile,       // 156 ($9c)
-		sycListOpenHandles,  // 157 ($9d)
-		sycWriteMailbox,     // 158 ($9e)
-		sycBluetoothPin,     // 159 ($9f)
-    sycEnterFirmwareUpdate, // 160 (a0)
-    sycSetBundleID, // 160 ($a1)
-    sycSetBundleSeedID // 161 ($a2)
-	);
-
-	TUiDrawCommand = (
-		udcUpdate,
-		udcClean,
-		udcPixel,
-		udcLine,
-		udcCircle,
-		udcText,
-		udcIcon,
-		udcPicture,
-		udcValue,
-		udcFillRect,
-		udcRect,
-		udcNotification,
-		udcQuestion,
-		udcKeyboard,
-		udcProjectSelect,
-		udcAppSelect,
-		udcInverseRect,
-		udcSelectFont,
-		udcTopLine,
-		udcEraseWindow,
-		udcCacheSelect,
-		udcDotLine,
-		udcViewValue,
-		udcViewUnit,
-		udcFillCircle,
-		udcStore,
-		udcRestore,
-		udcIconQuestion,
-		udcBmpFile,
-		udcFileSelect
-	);
-
-	TUIReadCommand = (
-		urcStyleCopZero,
-		urcGetVBattery,
-		urcGetIBattery,
-		urcGetOSVersion,
-    urcGetEvent,
-    urcUnused5,
-		urcGetTBattery,// 6
-		urcGetIMotor,
-		urcGetString,
-		urcGetHWVersion,
-		urcGetFWVersion,
-		urcGetFWBuild,
-		urcGetOSBuild,
-		urcGetAddress,
-		urcGetCode,
-		urcKey,
-		urcButton0,
-		urcButton1,
-		urcButton2,
-		urcButton3,
-		urcButton4,
-    urcTextBoxRead,
-    urcUnused22,
-    urcUnused23,
-    urcUnused24,
-    urcUnused25,
-		urcGetVersion,// 26
-    urcUnused27,
-    urcUnused28,
-		urcGetPower,// 29
-    urcGetSDCardPresent,
-    urcGetUsbStickPresent,
-		urcButtons
-	);
-
-  TUiWriteCommand = (
-		uwcInvalid, // 0
-    uwcFlush,
-    uwcUnused2,
-    uwcUnused3,
-    uwcUnused4,
-    uwcUnused5,
-    uwcUnused6,
-    uwcUnused7,
-		uwcPutString, // 8
-		uwcValue8,
-		uwcValue16,
-		uwcValue32,
-		uwcValueF,
-		uwcAddress,
-		uwcCode,
-    uwcDownloadEnd,
-    uwcUnused16,
-    uwcUnused17,
-    uwcUnused18,
-    uwcUnused19,
-    uwcUnused20,
-    uwcUnused21,
-    uwcUnused22,
-    uwcUnused23,
-		uwcSetTestPin, // 24
-    uwcInitRun,
-		uwcVersion, // 26
-		uwcLed,
-		uwcPower, // 28
-    uwcGraphSample,
-		uwcTerminal// 30
-{
-		uwcSetTestPin, // 24
-    uwcInitRun,
-		uwcVersion, // 26 
-		uwcLed,
-    uwcUnused28,
-		uwcPower, // 29
-    uwcGraphSample,
-		uwcTerminal// 31
-}
-	);
+  TSoundSubCommand = (
+		sscBreak, // 0
+		sscTone,
+		sscPlayFile,
+		sscRepeat,
+		sscService
+  );
 
 	TStorageClass = (
 		scNone,
@@ -863,13 +812,186 @@ type
 		scConstant
 	);
 
-  TSoundSubCommand = (
-		sscBreak,// = 37888,
-		sscTone,
-		sscPlayFile,
-		sscRepeat,
-		sscService
+	TStringCommand = (
+		stcUnused0, // 0
+		stcGetSize,
+		stcConcat,
+		stcCompare,
+		stcUnused4,
+		stcDuplicate, // 5
+		stcValueToString,
+		stcStringToValue,
+		stcStrip,
+    stcNumberToString,
+    stcSub, // 10
+    stcValueFormatted,
+    stcNumberFormatted
+	);
+
+	TSystemCommand = (
+		sycIllegalCommand,    // 0
+		sycFileDownloadHeader = 146, // ($92) begin download
+		sycFileDownloadBlock, // 147 ($93) continue download
+		sycBeginUpload,       // 148 ($94)
+		sycContinueUpload,    // 149 ($95)
+		sycBeginGetFile,      // 150 ($96)
+		sycContinueGetFile,   // 151 ($97)
+		sycCloseHandle,       // 152 ($98)
+		sycListFiles,         // 153 ($99)
+		sycContinueListFiles, // 154 ($9a)
+		sycCreateDir,         // 155 ($9b)
+		sycDeleteFile,        // 156 ($9c)
+		sycListOpenHandles,   // 157 ($9d)
+		sycWriteMailbox,      // 158 ($9e)
+		sycBluetoothPin,      // 159 ($9f)
+    sycEnterFirmwareUpdate, // 160 (a0)
+    sycSetBundleID,       // 160 ($a1)
+    sycSetBundleSeedID    // 161 ($a2)
+	);
+
+  TTestSubCommand = (
+    tscUnused0, // 0
+    tscTestOpen = 10,   //!< MUST BE GREATER OR EQUAL TO "INFO_SUBCODES"
+    tscTestClose,
+    tscTestReadPins,
+    tscTestWritePins,
+    tscTestReadAdc,
+    tscTestWriteUart, // 15
+    tscTestReadUart,
+    tscTestEnableUart,
+    tscTestDisableUart,
+    tscTestAccuSwitch,
+    tscTestBootMode2, // 20
+    tscTestPollMode2,
+    tscTestCloseMode2,
+    tscTestRamCheck
   );
+
+  TUIButtonCommand = (
+    ubcUnused0, // 0
+    ubcShortPress,
+    ubcLongPress,
+    ubcWaitForPress,
+    ubcFlush,
+    ubcPress, // 5
+    ubcRelease,
+    ubcGetHorz,
+    ubcGetVert,
+    ubcPressed,
+    ubcSetBackBlock, // 10
+    ubcGetBackBlock,
+    ubcTestShortPress,
+    ubcTestLongPress,
+    ubcGetBumped,
+    ubcGetClick // 15
+  );
+
+	TUiDrawCommand = (
+		udcUpdate, // 0
+		udcClean,
+		udcPixel,
+		udcLine,
+		udcCircle,
+		udcText, // 5
+		udcIcon,
+		udcPicture,
+		udcValue,
+		udcFillRect,
+		udcRect, // 10
+		udcNotification,
+		udcQuestion,
+		udcKeyboard,
+		udcBrowse,
+		udcVertBar, // 15
+		udcInverseRect,
+		udcSelectFont,
+		udcTopLine,
+		udcFillWindow,
+		udcScroll, // 20
+		udcDotLine,
+		udcViewValue,
+		udcViewUnit,
+		udcFillCircle,
+		udcStore, // 25
+		udcRestore,
+		udcIconQuestion,
+		udcBmpFile,
+		udcPopup,
+    udcGraphSetup, // 30
+    udcGraphDraw,
+    udcTextBox
+	);
+
+	TUIReadCommand = (
+		urcUnused0, // 0
+		urcGetVBattery,
+		urcGetIBattery,
+		urcGetOSVersion,
+    urcGetEvent,
+    urcGetTBattery, // 5
+		urcGetIInt,
+		urcGetIMotor,
+		urcGetString,
+		urcGetHWVersion,
+		urcGetFWVersion, // 10
+		urcGetFWBuild,
+		urcGetOSBuild,
+		urcGetAddress,
+		urcGetCode,
+		urcGetKey, // 15
+		urcGetShutdown,
+		urcGetWarning,
+		urcGetLBattery,
+		urcUnused19,
+		urcUnused20, // 20
+    urcTextBoxRead,
+    urcUnused22,
+    urcUnused23,
+    urcUnused24,
+    urcUnused25, // 25
+		urcGetVersion,
+    urcGetIPAddress,
+    urcUnused28,
+		urcGetPower,// 29
+    urcGetSDCard,
+    urcGetUsbStick,
+		urcButtons
+	);
+
+  TUiWriteCommand = (
+		uwcUnused0, // 0
+    uwcFlush,
+    uwcFloatValue,
+    uwcStamp,
+    uwcUnused4,
+    uwcUnused5, // 5
+    uwcUnused6,
+    uwcUnused7,
+		uwcPutString,
+		uwcValue8,
+		uwcValue16, // 10
+		uwcValue32,
+		uwcValueF,
+		uwcAddress,
+		uwcCode,
+    uwcDownloadEnd, // 15
+    uwcScreenBlock,
+    uwcUnused17,
+    uwcUnused18,
+    uwcUnused19,
+    uwcUnused20, // 20
+    uwcTextBoxAppend,
+    uwcSetBusy,
+    uwcUnused23,
+		uwcSetTestPin,
+    uwcInitRun, // 25
+		uwcUpdateRun,
+		uwcLed,
+    uwcUnused28,
+		uwcPower,
+    uwcGraphSample, // 30
+		uwcTerminal
+	);
 
 	TPBrickRecoveryState = (
 		pbrsDownloadingImage,
@@ -901,9 +1023,11 @@ function ArrayCommandToStr(aValue : TArraySubCommand) : string;
 function UiWriteCommandToStr(aValue : TUiWriteCommand) : string;
 function UiReadCommandToStr(aValue : TUiReadCommand) : string;
 function UiDrawCommandToStr(aValue : TUiDrawCommand) : string;
+function UiButtonCommandToStr(aValue : TUiButtonCommand) : string;
 
 function MakeOpCode(subcommand : TUIReadCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TUIWriteCommand) : TPBrickOpCode; overload;
+function MakeOpCode(subcommand : TUIButtonCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TUIDrawCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TStringCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TMathSubCommand) : TPBrickOpCode; overload;
@@ -913,6 +1037,10 @@ function MakeOpCode(subcommand : TSoundSubCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TInputDeviceSubCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TFileSubCommand) : TPBrickOpCode; overload;
 function MakeOpCode(subcommand : TArraySubCommand) : TPBrickOpCode; overload;
+function MakeOpCode(subcommand : TProgramInfoCommand) : TPBrickOpCode; overload;
+function MakeOpCode(subcommand : TFilenameSubCommand) : TPBrickOpCode; overload;
+function MakeOpCode(subcommand : TInfoSubCommand) : TPBrickOpCode; overload;
+function MakeOpCode(subcommand : TTestSubCommand) : TPBrickOpCode; overload;
 
 implementation
 
@@ -967,60 +1095,90 @@ begin
   System.Delete(Result, 1, 3); // trim "udc"
 end;
 
+function UiButtonCommandToStr(aValue : TUiButtonCommand) : string;
+begin
+  Result := GetEnumName(TypeInfo(TUiButtonCommand), integer(aValue));
+  System.Delete(Result, 1, 3); // trim "ubc"
+end;
+
 function MakeOpCode(subcommand : TUIReadCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(33024 or Byte(subcommand));
+  Result := TPBrickOpCode($8100 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TUIWriteCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(33280 or Byte(subcommand));
+  Result := TPBrickOpCode($8200 + Byte(subcommand));
+end;
+
+function MakeOpCode(subcommand : TUIButtonCommand) : TPBrickOpCode;
+begin
+  Result := TPBrickOpCode($8300 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TUIDrawCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(33792 or Byte(subcommand));
+  Result := TPBrickOpCode($8400 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TStringCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(32000 or Byte(subcommand));
+  Result := TPBrickOpCode($7D00 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TMathSubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(36097 or Byte(subcommand));
+  Result := TPBrickOpCode($8D00 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TComGetSubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(54017 or Byte(subcommand));
+  Result := TPBrickOpCode($D300 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TComSetSubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(54273 or Byte(subcommand));
+  Result := TPBrickOpCode($D400 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TSoundSubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(37888 or Byte(subcommand));
+  Result := TPBrickOpCode($9400 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TInputDeviceSubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(39170 or Byte(subcommand));
+  Result := TPBrickOpCode($9900 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TFileSubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(49152 or Byte(subcommand));
+  Result := TPBrickOpCode($C000 + Byte(subcommand));
 end;
 
 function MakeOpCode(subcommand : TArraySubCommand) : TPBrickOpCode;
 begin
-  Result := TPBrickOpCode(49408 or Byte(subcommand));
+  Result := TPBrickOpCode($C100 + Byte(subcommand));
 end;
 
+function MakeOpCode(subcommand : TProgramInfoCommand) : TPBrickOpCode;
+begin
+  Result := TPBrickOpCode($0C00 + Byte(subcommand));
+end;
+
+function MakeOpCode(subcommand : TFilenameSubCommand) : TPBrickOpCode;
+begin
+  Result := TPBrickOpCode($C600 + Byte(subcommand));
+end;
+
+function MakeOpCode(subcommand : TInfoSubCommand) : TPBrickOpCode;
+begin
+  Result := TPBrickOpCode($7C00 + Byte(subcommand));
+end;
+
+function MakeOpCode(subcommand : TTestSubCommand) : TPBrickOpCode;
+begin
+  Result := TPBrickOpCode($FF00 + Byte(subcommand));
+end;
 
 end.

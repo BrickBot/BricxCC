@@ -70,7 +70,7 @@ var
   btncount, state, clump, i2caddr : byte;
   i2csend, rawcmd, tmpstr : string;
   LSBlock : NXTLSBlock;
-  Msg : NXTMessage;
+  Msg : PBRMessage;
   BCHandle : FantomHandle;
   buf, tmpbuf1 : PChar;
 
@@ -182,13 +182,13 @@ begin
   Writeln('   -setvmstate=<state> : Set the VM state (enhanced firmware only)');
   Writeln('   -getvmstate : Get the VM state (enhanced firmware only)');
 {
-NXTPollCommandLen
-NXTPollCommand
-NXTWriteIOMap
-NXTReadIOMap
-    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
-    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
-    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
+SCPollCommandLen
+SCPollCommand
+SCWriteIOMap
+SCReadIOMap
+    function DCSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function DCGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
+    function DCSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
 }
   Writeln('General:');
   Writeln('   -help : display command line options');
@@ -341,7 +341,7 @@ begin
       if ParamSwitch('-input') then
       begin
         port := ParamIntValue('-input', 0);
-        if FantomSpiritGetNXTInputValues(BCHandle, Byte(port), valid, calibrated,
+        if FantomSpiritDCGetInputValues(BCHandle, Byte(port), valid, calibrated,
           stype, smode, raw, normalized, scaled, calvalue) <> 0 then
         begin
           Writeln(Format('Port: %d'#13#10 +
@@ -374,7 +374,7 @@ begin
       if ParamSwitch('-output') then
       begin
         port := ParamIntValue('-output', 0);
-        if FantomSpiritGetNXTOutputState(BCHandle, Byte(port), power, mode,
+        if FantomSpiritDCGetOutputState(BCHandle, Byte(port), power, mode,
           regmode, turnratio, runstate, tacholimit, tachocount, blocktachocount,
           rotationcount) <> 0 then
         begin
@@ -409,7 +409,7 @@ begin
           runstate := StrToNXTOutputRunState(runstatestr);
         turnratio := ParamIntValue('/TurnRatio', turnratio);
         tacholimit := ParamIntValue('/TachoLimit', tacholimit);
-        FantomSpiritSetNXTOutputState(BCHandle, Byte(port), power, mode,
+        FantomSpiritDCSetOutputState(BCHandle, Byte(port), power, mode,
           regmode, turnratio, runstate, tacholimit);
       end;
       if ParamSwitch('-mute') then
@@ -440,7 +440,7 @@ begin
       begin
         pattern := ParamValue('-download');
         if pattern <> '' then
-          FantomSpiritNXTDownloadFile(BCHandle, PChar(pattern), NameToNXTFileType(PChar(pattern)));
+          FantomSpiritNXTDownloadFile(BCHandle, PChar(pattern), NXTNameToPBRFileType(PChar(pattern)));
       end;
       if ParamSwitch('-run') then begin
         FantomSpiritNXTStartProgram(BCHandle, PChar(ParamValue('-run')));

@@ -213,17 +213,17 @@ type
     function StartProgram(const filename: WideString): WordBool; safecall;
     function StopProgram: WordBool; safecall;
     function PlaySoundFile(const filename: WideString; loop: WordBool): WordBool; safecall;
-    function GetNXTOutputState(Port: Byte; out power: Integer; out mode: Byte; out regmode: Byte; 
+    function DCGetOutputState(Port: Byte; out power: Integer; out mode: Byte; out regmode: Byte; 
                                out turnratio: Integer; out runstate: Byte; 
                                out tacholimit: LongWord; out tachocount: Integer; 
                                out blocktachocount: Integer; out rotationcount: Integer): WordBool; safecall;
-    function SetNXTOutputState(Port: Byte; power: Integer; mode: Byte; regmode: Byte; 
+    function DCSetOutputState(Port: Byte; power: Integer; mode: Byte; regmode: Byte; 
                                turnratio: Integer; runstate: Byte; tacholimit: LongWord): WordBool; safecall;
-    function GetNXTInputValues(Port: Byte; out valid: WordBool; out calibrated: WordBool; 
+    function DCGetInputValues(Port: Byte; out valid: WordBool; out calibrated: WordBool; 
                                out stype: Byte; out smode: Byte; out raw: LongWord; 
                                out normalized: LongWord; out scaled: Smallint; 
                                out calvalue: Smallint): WordBool; safecall;
-    function SetNXTInputMode(Port: Byte; stype: Byte; smode: Byte): WordBool; safecall;
+    function DCSetInputMode(Port: Byte; stype: Byte; smode: Byte): WordBool; safecall;
     function ResetInputScaledValue(Port: Byte): WordBool; safecall;
     function ResetOutputPosition(Port: Byte; relative: WordBool): WordBool; safecall;
     function MessageWrite(inbox: Byte; const msg: WideString): WordBool; safecall;
@@ -233,39 +233,39 @@ type
     function LSGetStatus(Port: Byte; out bytesReady: Byte): WordBool; safecall;
     function GetCurrentProgramName(out filename: WideString): WordBool; safecall;
     function GetButtonState(idx: Byte; reset: WordBool; out pressed: WordBool; out count: Byte): WordBool; safecall;
-    function NXTOpenRead(const filename: WideString; out handle: LongWord; out size: LongWord): WordBool; safecall;
-    function NXTOpenReadLinear(const filename: WideString; out handle: LongWord; out size: LongWord): WordBool; safecall;
-    function NXTOpenWrite(const filename: WideString; size: LongWord; out handle: LongWord): WordBool; safecall;
-    function NXTOpenWriteLinear(const filename: WideString; size: LongWord; out handle: LongWord): WordBool; safecall;
-    function NXTOpenWriteData(const filename: WideString; size: LongWord; out handle: LongWord): WordBool; safecall;
-    function NXTOpenAppendData(const filename: WideString; out size: LongWord; out handle: LongWord): WordBool; safecall;
-    function NXTRead(var handle: LongWord; var count: Smallint; out buffer: PByte): WordBool; safecall;
-    function NXTWrite(var handle: LongWord; buffer: PByte; var count: Smallint; chkResponse: WordBool): WordBool; safecall;
-    function NXTCloseFile(var handle: LongWord; chkResponse: WordBool): WordBool; safecall;
-    function NXTDeleteFile(var filename: WideString; chkResponse: WordBool): WordBool; safecall;
-    function NXTFindFirstFile(var filename: WideString; out handle: LongWord; out size: LongWord): WordBool; safecall;
-    function NXTFindNextFile(var handle: LongWord; out filename: WideString; out size: LongWord): WordBool; safecall;
-    function NXTGetVersions(out protmin: Byte; out protmaj: Byte; out firmmin: Byte; 
+    function SCOpenRead(const filename: WideString; out handle: LongWord; out size: LongWord): WordBool; safecall;
+    function SCOpenReadLinear(const filename: WideString; out handle: LongWord; out size: LongWord): WordBool; safecall;
+    function SCOpenWrite(const filename: WideString; size: LongWord; out handle: LongWord): WordBool; safecall;
+    function SCOpenWriteLinear(const filename: WideString; size: LongWord; out handle: LongWord): WordBool; safecall;
+    function SCOpenWriteData(const filename: WideString; size: LongWord; out handle: LongWord): WordBool; safecall;
+    function SCOpenAppendData(const filename: WideString; out size: LongWord; out handle: LongWord): WordBool; safecall;
+    function SCRead(var handle: LongWord; var count: Smallint; out buffer: PByte): WordBool; safecall;
+    function SCWrite(var handle: LongWord; buffer: PByte; var count: Smallint; chkResponse: WordBool): WordBool; safecall;
+    function SCCloseFile(var handle: LongWord; chkResponse: WordBool): WordBool; safecall;
+    function SCDeleteFile(var filename: WideString; chkResponse: WordBool): WordBool; safecall;
+    function SCFindFirstFile(var filename: WideString; out handle: LongWord; out size: LongWord): WordBool; safecall;
+    function SCFindNextFile(var handle: LongWord; out filename: WideString; out size: LongWord): WordBool; safecall;
+    function SCGetVersions(out protmin: Byte; out protmaj: Byte; out firmmin: Byte; 
                             out firmmaj: Byte): WordBool; safecall;
-    function NXTCloseModuleHandle(var handle: LongWord; chkResponse: WordBool): WordBool; safecall;
-    function NXTBootCommand(chkResponse: WordBool): WordBool; safecall;
-    function NXTSetBrickName(const name: WideString; chkResponse: WordBool): WordBool; safecall;
-    function NXTGetDeviceInfo(out name: WideString; out BTAddress: Byte; out BTSignal: Byte;
+    function SCCloseModuleHandle(var handle: LongWord; chkResponse: WordBool): WordBool; safecall;
+    function SCBootCommand(chkResponse: WordBool): WordBool; safecall;
+    function SCSetBrickName(const name: WideString; chkResponse: WordBool): WordBool; safecall;
+    function SCGetDeviceInfo(out name: WideString; out BTAddress: Byte; out BTSignal: Byte;
                               out FreeMem: LongWord): WordBool; safecall;
-    function NXTDeleteUserFlash(chkResponse: WordBool): WordBool; safecall;
-    function NXTBTFactoryReset(chkResponse: WordBool): WordBool; safecall;
-    function NXTPollCommandLen(bufNum: Byte; out count: Byte): WordBool; safecall;
-    function NXTPollCommand(bufNum: Byte; var count: Byte; out aCmd: PByte): WordBool; safecall;
-    function NXTWriteIOMap(ModID: LongWord; Offset: Smallint; var count: Smallint; Data: PByte; chkResponse : WordBool): WordBool; safecall;
-    function NXTReadIOMap(ModID: LongWord; Offset: Smallint; var count: Smallint; var Data: PByte): WordBool; safecall;
-    function NXTFindFirstModule(var ModName: WideString; out handle: LongWord; out ModID: LongWord; 
+    function SCDeleteUserFlash(chkResponse: WordBool): WordBool; safecall;
+    function SCBTFactoryReset(chkResponse: WordBool): WordBool; safecall;
+    function SCPollCommandLen(bufNum: Byte; out count: Byte): WordBool; safecall;
+    function SCPollCommand(bufNum: Byte; var count: Byte; out aCmd: PByte): WordBool; safecall;
+    function SCWriteIOMap(ModID: LongWord; Offset: Smallint; var count: Smallint; Data: PByte; chkResponse : WordBool): WordBool; safecall;
+    function SCReadIOMap(ModID: LongWord; Offset: Smallint; var count: Smallint; var Data: PByte): WordBool; safecall;
+    function SCFindFirstModule(var ModName: WideString; out handle: LongWord; out ModID: LongWord; 
                                 out ModSize: LongWord; out IOMapSize: Smallint): WordBool; safecall;
-    function NXTFindNextModule(var handle: LongWord; out ModName: WideString; out ModID: LongWord; 
+    function SCFindNextModule(var handle: LongWord; out ModName: WideString; out ModID: LongWord; 
                                out ModSize: LongWord; out IOMapSize: Smallint): WordBool; safecall;
     function DownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; safecall;
-    function NXTUploadFile(const filename: WideString; const dir: WideString): WordBool; safecall;
-    function NXTListFiles(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
-    function NXTListModules(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
+    function UploadFile(const filename: WideString; const dir: WideString): WordBool; safecall;
+    function ListFiles(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
+    function ListModules(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
   end;
 
 implementation
@@ -1089,14 +1089,14 @@ begin
   filename := tmpFilename;
 end;
 
-function TOleFakeSpirit.GetNXTInputValues(Port: Byte; out valid,
+function TOleFakeSpirit.DCGetInputValues(Port: Byte; out valid,
   calibrated: WordBool; out stype, smode: Byte; out raw,
   normalized: LongWord; out scaled, calvalue: Smallint): WordBool;
 var
   bValid, bCalibrated : Boolean;
   wRaw, wNorm : Word;
 begin
-  Result := BrickComm.GetNXTInputValues(Port, bValid, bCalibrated, stype,
+  Result := BrickComm.DCGetInputValues(Port, bValid, bCalibrated, stype,
     smode, wRaw, wNorm, scaled, calvalue);
   valid := bValid;
   calibrated := bCalibrated;
@@ -1104,12 +1104,12 @@ begin
   normalized := wNorm;
 end;
 
-function TOleFakeSpirit.GetNXTOutputState(Port: Byte; out power: Integer;
+function TOleFakeSpirit.DCGetOutputState(Port: Byte; out power: Integer;
   out mode, regmode: Byte; out turnratio: Integer; out runstate: Byte;
   out tacholimit: LongWord; out tachocount, blocktachocount,
   rotationcount: Integer): WordBool;
 begin
-  Result := BrickComm.GetNXTOutputState(Port, power, mode, regmode, turnratio,
+  Result := BrickComm.DCGetOutputState(Port, power, mode, regmode, turnratio,
     runstate, tacholimit, tachocount, blocktachocount, rotationcount);
 end;
 
@@ -1128,7 +1128,7 @@ end;
 function TOleFakeSpirit.MessageRead(remote: Byte; remove: WordBool;
   var local: Byte; out size: Byte; out msg: WideString): WordBool;
 var
-  MsgRec : NXTMessage;
+  MsgRec : PBRMessage;
   tmpStr : string;
   i : integer;
 begin
@@ -1146,59 +1146,59 @@ begin
   Result := BrickComm.MessageWrite(inbox, msg);
 end;
 
-function TOleFakeSpirit.NXTBootCommand(chkResponse: WordBool): WordBool;
+function TOleFakeSpirit.SCBootCommand(chkResponse: WordBool): WordBool;
 begin
-  Result := BrickComm.NXTBootCommand(chkResponse);
+  Result := BrickComm.SCBootCommand(chkResponse);
 end;
 
-function TOleFakeSpirit.NXTBTFactoryReset(chkResponse: WordBool): WordBool;
+function TOleFakeSpirit.SCBTFactoryReset(chkResponse: WordBool): WordBool;
 begin
-  Result := BrickComm.NXTBTFactoryReset(chkResponse);
+  Result := BrickComm.SCBTFactoryReset(chkResponse);
 end;
 
-function TOleFakeSpirit.NXTCloseFile(var handle: LongWord;
+function TOleFakeSpirit.SCCloseFile(var handle: LongWord;
   chkResponse: WordBool): WordBool;
 begin
-  Result := BrickComm.NXTCloseFile(handle, chkResponse);
+  Result := BrickComm.SCCloseFile(handle, chkResponse);
 end;
 
-function TOleFakeSpirit.NXTCloseModuleHandle(var handle: LongWord;
+function TOleFakeSpirit.SCCloseModuleHandle(var handle: LongWord;
   chkResponse: WordBool): WordBool;
 begin
-  Result := BrickComm.NXTCloseModuleHandle(handle, chkResponse);
+  Result := BrickComm.SCCloseModuleHandle(handle, chkResponse);
 end;
 
-function TOleFakeSpirit.NXTDeleteFile(var filename: WideString;
+function TOleFakeSpirit.SCDeleteFile(var filename: WideString;
   chkResponse: WordBool): WordBool;
 var
   tmpFilename : string;
 begin
   tmpFilename := filename;
-  Result := BrickComm.NXTDeleteFile(tmpFilename);
+  Result := BrickComm.SCDeleteFile(tmpFilename);
   filename := tmpFilename;
 end;
 
-function TOleFakeSpirit.NXTDeleteUserFlash(chkResponse: WordBool): WordBool;
+function TOleFakeSpirit.SCDeleteUserFlash(chkResponse: WordBool): WordBool;
 begin
-  Result := BrickComm.NXTDeleteUserFlash(chkResponse);
+  Result := BrickComm.SCDeleteUserFlash(chkResponse);
 end;
 
-function TOleFakeSpirit.NXTUploadFile(const filename: WideString; const dir: WideString): WordBool;
+function TOleFakeSpirit.UploadFile(const filename: WideString; const dir: WideString): WordBool;
 begin
-  Result := BrickComm.NXTUploadFile(filename, dir);
+  Result := BrickComm.UploadFile(filename, dir);
 end;
 
-function TOleFakeSpirit.NXTFindFirstFile(var filename: WideString;
+function TOleFakeSpirit.SCFindFirstFile(var filename: WideString;
   out handle: LongWord; out size : LongWord): WordBool;
 var
   tmpFilename : string;
 begin
   tmpFilename := filename;
-  Result := BrickComm.NXTFindFirstFile(tmpFilename, handle, size);
+  Result := BrickComm.SCFindFirstFile(tmpFilename, handle, size);
   filename := tmpFilename;
 end;
 
-function TOleFakeSpirit.NXTFindFirstModule(var ModName: WideString;
+function TOleFakeSpirit.SCFindFirstModule(var ModName: WideString;
   out handle: LongWord; out ModID, ModSize: LongWord;
   out IOMapSize: Smallint): WordBool;
 var
@@ -1206,21 +1206,21 @@ var
   wIOMapSize : word;
 begin
   tmpModName := ModName;
-  Result := BrickComm.NXTFindFirstModule(tmpModName, handle, ModID, ModSize, wIOMapSize);
+  Result := BrickComm.SCFindFirstModule(tmpModName, handle, ModID, ModSize, wIOMapSize);
   ModName := tmpModName;
   IOMapSize := wIOMapSize;
 end;
 
-function TOleFakeSpirit.NXTFindNextFile(var handle: LongWord;
+function TOleFakeSpirit.SCFindNextFile(var handle: LongWord;
   out filename: WideString; out size: LongWord): WordBool;
 var
   tmpFilename : string;
 begin
-  Result := BrickComm.NXTFindNextFile(handle, tmpFilename, size);
+  Result := BrickComm.SCFindNextFile(handle, tmpFilename, size);
   filename := tmpFilename;
 end;
 
-function TOleFakeSpirit.NXTFindNextModule(var handle: LongWord;
+function TOleFakeSpirit.SCFindNextModule(var handle: LongWord;
   out ModName: WideString; out ModID, ModSize: LongWord;
   out IOMapSize: Smallint): WordBool;
 var
@@ -1228,13 +1228,13 @@ var
   wIOMapSize : Word;
 begin
   tmpModName := ModName;
-  Result := BrickComm.NXTFindNextModule(handle, tmpModName, ModID, ModSize,
+  Result := BrickComm.SCFindNextModule(handle, tmpModName, ModID, ModSize,
     wIOMapSize);
   ModName := tmpModName;
   IOMapSize := wIOMapSize;
 end;
 
-function TOleFakeSpirit.NXTGetDeviceInfo(out name: WideString; out BTAddress: Byte;
+function TOleFakeSpirit.SCGetDeviceInfo(out name: WideString; out BTAddress: Byte;
   out BTSignal: Byte; out FreeMem: LongWord): WordBool;
 var
   tmpName : string;
@@ -1243,141 +1243,141 @@ var
   tmpFreeMem : Cardinal;
 begin
   tmpName   := '';
-//  Result    := BrickComm.NXTGetDeviceInfo(tmpName, tmpBTAddr, tmpBTSig, tmpFreeMem);
+//  Result    := BrickComm.SCGetDeviceInfo(tmpName, tmpBTAddr, tmpBTSig, tmpFreeMem);
   name      := tmpName;
   BTAddress := tmpBTAddr;
   BTSignal  := tmpBTSig;
   FreeMem   := tmpFreeMem;
 end;
 
-function TOleFakeSpirit.NXTGetVersions(out protmin, protmaj, firmmin,
+function TOleFakeSpirit.SCGetVersions(out protmin, protmaj, firmmin,
   firmmaj: Byte): WordBool;
 begin
-  Result := BrickComm.NXTGetVersions(protmin, protmaj, firmmin, firmmaj);
+  Result := BrickComm.SCGetVersions(protmin, protmaj, firmmin, firmmaj);
 end;
 
-function TOleFakeSpirit.NXTListFiles(const searchPattern: WideString;
+function TOleFakeSpirit.ListFiles(const searchPattern: WideString;
   out Files: WideString): WordBool;
 var
   SL : TStringList;
 begin
   SL := TStringList.Create;
   try
-    Result := BrickComm.NXTListFiles(searchPattern, SL);
+    Result := BrickComm.ListFiles(searchPattern, SL);
     Files := SL.Text;
   finally
     SL.Free;
   end;
 end;
 
-function TOleFakeSpirit.NXTOpenAppendData(const filename: WideString;
+function TOleFakeSpirit.SCOpenAppendData(const filename: WideString;
   out size: LongWord; out handle: LongWord): WordBool;
 begin
-  Result := BrickComm.NXTOpenAppendData(filename, size, handle);
+  Result := BrickComm.SCOpenAppendData(filename, size, handle);
 end;
 
-function TOleFakeSpirit.NXTOpenRead(const filename: WideString;
+function TOleFakeSpirit.SCOpenRead(const filename: WideString;
   out handle: LongWord; out size: LongWord): WordBool;
 begin
-  Result := BrickComm.NXTOpenRead(filename, handle, size);
+  Result := BrickComm.SCOpenRead(filename, handle, size);
 end;
 
-function TOleFakeSpirit.NXTOpenReadLinear(const filename: WideString;
+function TOleFakeSpirit.SCOpenReadLinear(const filename: WideString;
   out handle: LongWord; out size: LongWord): WordBool;
 begin
-  Result := BrickComm.NXTOpenReadLinear(filename, handle, size);
+  Result := BrickComm.SCOpenReadLinear(filename, handle, size);
 end;
 
-function TOleFakeSpirit.NXTOpenWrite(const filename: WideString;
+function TOleFakeSpirit.SCOpenWrite(const filename: WideString;
   size: LongWord; out handle: LongWord): WordBool;
 begin
-  Result := BrickComm.NXTOpenWrite(filename, size, handle);
+  Result := BrickComm.SCOpenWrite(filename, size, handle);
 end;
 
-function TOleFakeSpirit.NXTOpenWriteData(const filename: WideString;
+function TOleFakeSpirit.SCOpenWriteData(const filename: WideString;
   size: LongWord; out handle: LongWord): WordBool;
 begin
-  Result := BrickComm.NXTOpenWriteData(filename, size, handle);
+  Result := BrickComm.SCOpenWriteData(filename, size, handle);
 end;
 
-function TOleFakeSpirit.NXTOpenWriteLinear(const filename: WideString;
+function TOleFakeSpirit.SCOpenWriteLinear(const filename: WideString;
   size: LongWord; out handle: LongWord): WordBool;
 begin
-  Result := BrickComm.NXTOpenWriteLinear(filename, size, handle);
+  Result := BrickComm.SCOpenWriteLinear(filename, size, handle);
 end;
 
-function TOleFakeSpirit.NXTPollCommand(bufNum: Byte; var count: Byte;
+function TOleFakeSpirit.SCPollCommand(bufNum: Byte; var count: Byte;
   out aCmd: PByte): WordBool;
 var
-  buffer : NXTDataBuffer;
+  buffer : PBRDataBuffer;
 begin
-  Result := BrickComm.NXTPollCommand(bufNum, count, buffer);
+  Result := BrickComm.SCPollCommand(bufNum, count, buffer);
   aCmd := @buffer.Data[0];
 end;
 
-function TOleFakeSpirit.NXTPollCommandLen(bufNum: Byte;
+function TOleFakeSpirit.SCPollCommandLen(bufNum: Byte;
   out count: Byte): WordBool;
 begin
-  Result := BrickComm.NXTPollCommandLen(bufNum, count)
+  Result := BrickComm.SCPollCommandLen(bufNum, count)
 end;
 
-function TOleFakeSpirit.NXTRead(var handle: LongWord; var count: Smallint;
+function TOleFakeSpirit.SCRead(var handle: LongWord; var count: Smallint;
   out buffer: PByte): WordBool;
 var
   wCount : Word;
-  buf : NXTDataBuffer;
+  buf : PBRDataBuffer;
 begin
   wCount := count;
-  Result := BrickComm.NXTRead(handle, wCount, buf);
+  Result := BrickComm.SCRead(handle, wCount, buf);
   buffer := @buf.Data[0];
   count := wCount;
 end;
 
-function TOleFakeSpirit.NXTReadIOMap(ModID: LongWord; Offset: Smallint;
+function TOleFakeSpirit.SCReadIOMap(ModID: LongWord; Offset: Smallint;
   var count: Smallint; var Data: PByte): WordBool;
 var
   wCount : Word;
-  buf : NXTDataBuffer;
+  buf : PBRDataBuffer;
 begin
   wCount := count;
-  Result := BrickComm.NXTReadIOMap(ModID, Offset, wCount, buf);
+  Result := BrickComm.SCReadIOMap(ModID, Offset, wCount, buf);
   Data := @buf.Data[0];
   count := wCount;
 end;
 
-function TOleFakeSpirit.NXTSetBrickName(const name: WideString;
+function TOleFakeSpirit.SCSetBrickName(const name: WideString;
   chkResponse: WordBool): WordBool;
 begin
-  Result := BrickComm.NXTSetBrickName(name, chkResponse);
+  Result := BrickComm.SCSetBrickName(name, chkResponse);
 end;
 
 function TOleFakeSpirit.DownloadFile(const filename: WideString;
   filetype: TAutoNXTFileType): WordBool;
 begin
-  Result := BrickComm.DownloadFile(filename, TNXTFileType(filetype));
+  Result := BrickComm.DownloadFile(filename, TPBRFileType(filetype));
 end;
 
-function TOleFakeSpirit.NXTWrite(var handle : LongWord; buffer: PByte;
+function TOleFakeSpirit.SCWrite(var handle : LongWord; buffer: PByte;
   var count: Smallint; chkResponse: WordBool): WordBool;
 var
   wCount : Word;
-  buf : NXTDataBuffer;
+  buf : PBRDataBuffer;
 begin
   wCount := count;
   Move(buffer^, buf.Data[0], count);
-  Result := BrickComm.NXTWrite(handle, buf, wCount, chkResponse);
+  Result := BrickComm.SCWrite(handle, buf, wCount, chkResponse);
   count := wCount;
 end;
 
-function TOleFakeSpirit.NXTWriteIOMap(ModID: LongWord; Offset: Smallint;
+function TOleFakeSpirit.SCWriteIOMap(ModID: LongWord; Offset: Smallint;
   var count: Smallint; Data: PByte; chkResponse : WordBool): WordBool;
 var
   wCount : Word;
-  buf : NXTDataBuffer;
+  buf : PBRDataBuffer;
 begin
   wCount := count;
   Move(Data^, buf.Data[0], count);
-  Result := BrickComm.NXTWriteIOMap(ModID, Offset, wCount, buf, chkResponse);
+  Result := BrickComm.SCWriteIOMap(ModID, Offset, wCount, buf, chkResponse);
   count := wCount;
 end;
 
@@ -1398,17 +1398,17 @@ begin
   Result := BrickComm.ResetOutputPosition(Port, relative);
 end;
 
-function TOleFakeSpirit.SetNXTInputMode(Port, stype,
+function TOleFakeSpirit.DCSetInputMode(Port, stype,
   smode: Byte): WordBool;
 begin
-  Result := BrickComm.SetNXTInputMode(Port, stype, smode);
+  Result := BrickComm.DCSetInputMode(Port, stype, smode);
 end;
 
-function TOleFakeSpirit.SetNXTOutputState(Port: Byte; power: Integer; mode,
+function TOleFakeSpirit.DCSetOutputState(Port: Byte; power: Integer; mode,
   regmode: Byte; turnratio: Integer; runstate: Byte;
   tacholimit: LongWord): WordBool;
 begin
-  Result := BrickComm.SetNXTOutputState(Port, power, mode, regmode, turnratio,
+  Result := BrickComm.DCSetOutputState(Port, power, mode, regmode, turnratio,
   runstate, tacholimit);
 end;
 
@@ -1422,14 +1422,14 @@ begin
   Result := BrickComm.StopProgram;
 end;
 
-function TOleFakeSpirit.NXTListModules(const searchPattern: WideString;
+function TOleFakeSpirit.ListModules(const searchPattern: WideString;
   out Files: WideString): WordBool;
 var
   SL : TStringList;
 begin
   SL := TStringList.Create;
   try
-    Result := BrickComm.NXTListModules(searchPattern, SL);
+    Result := BrickComm.ListModules(searchPattern, SL);
     Files := SL.Text;
   finally
     SL.Free;

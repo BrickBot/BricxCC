@@ -22,19 +22,10 @@ uses
   Classes, Forms, uParseCommon, SynEditHighlighter, 
   BricxccSynEdit;
 
-type
-  TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftLinux, ftOther);
-
 const
   SU_SHOWFORM = 0;
   SU_CONNECT = 1;
   SU_NOCONNECT = 2;
-
-var
-  LocalPort : string;    // Name of the port to use for this instance
-  LocalStartupAction : integer; // action to take at startup for this instance
-  LocalUseBluetooth : Boolean;
-  LocalFirmwareType : TFirmwareType;
 
 function GetActiveEditor : TBricxCCSynEdit;
 function GetActiveEditorHighlighter : TSynCustomHighlighter;
@@ -250,12 +241,18 @@ begin
 end;
 
 function FileIsPascal(AEH : TSynCustomHighlighter): Boolean;
+var
+  ext : string;
 begin
-  Result := False;
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
-  if not Assigned(AEH) then Exit;
-  Result := AEH is TSynPasSyn;
+  if AEH <> nil then
+    Result := AEH is TSynPasSyn
+  else
+  begin
+    ext := LowerCase(ExtractFileExt(GetActiveEditorFilename));
+    Result := (ext = '.pas') or (ext = '.dpr');
+  end;
 end;
 
 function FileIsCPP(AEH : TSynCustomHighlighter): Boolean;
@@ -287,13 +284,18 @@ begin
 end;
 
 function FileIsNXC(AEH : TSynCustomHighlighter = nil): Boolean;
+var
+  ext : string;
 begin
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
   if AEH <> nil then
     Result := AEH is TSynNXCSyn
   else
-    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.nxc';
+  begin
+    ext := LowerCase(ExtractFileExt(GetActiveEditorFilename));
+    Result := (ext = '.nxc') or (IsNXT and LocalStandardFirmware and (ext = '.h'));
+  end;
 end;
 
 function FileIsNPG(AEH : TSynCustomHighlighter = nil): Boolean;
@@ -326,21 +328,28 @@ begin
 end;
 
 function FileIsNQC(AEH : TSynCustomHighlighter): Boolean;
+var
+  ext : string;
 begin
-  Result := False;
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
-  if not Assigned(AEH) then Exit;
-  Result := AEH is TSynNQCSyn;
+  if AEH <> nil then
+    Result := AEH is TSynNQCSyn
+  else
+  begin
+    ext := LowerCase(ExtractFileExt(GetActiveEditorFilename));
+    Result := (ext = '.nqc') or (ext = '.nqh');
+  end;
 end;
 
 function FileIsJava(AEH : TSynCustomHighlighter): Boolean;
 begin
-  Result := False;
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
-  if not Assigned(AEH) then Exit;
-  Result := AEH is TSynJavaSyn;
+  if AEH <> nil then
+    Result := AEH is TSynJavaSyn
+  else
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.java';
 end;
 
 function FileIsForth(AEH : TSynCustomHighlighter): Boolean;

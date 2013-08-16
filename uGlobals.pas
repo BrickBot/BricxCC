@@ -22,6 +22,9 @@ unit uGlobals;
 
 interface
 
+type
+  TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftLinux, ftOther);
+
 const
   // remote commands
   kRemoteKeysReleased = $0000;
@@ -87,6 +90,13 @@ var
 var
   LocalBrickType : integer;
   LocalStandardFirmware : Boolean;
+
+var
+  ProgramDir : string;
+  LocalPort : string;    // Name of the port to use for this instance
+  LocalStartupAction : integer; // action to take at startup for this instance
+  LocalUseBluetooth : Boolean;
+  LocalFirmwareType : TFirmwareType;
 
 var
   GlobalAbort : boolean;

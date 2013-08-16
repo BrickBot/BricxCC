@@ -212,7 +212,7 @@ begin
   begin
     msg := Format('%1.1d%1.1d%1.1d%1.1d%1.1d%1.1d%d', [dir, l, r, lr, ldir+1, rdir+1, speed]);
   end;
-  BrickComm.NXTMessageWrite(CAInBox, msg);
+  BrickComm.DCMessageWrite(CAInBox, msg);
 end;
 
 procedure SendCAMessageEx(XPos, YPos, ZPos, RPos, UPos, VPos, btns, BtnNum, POV : Cardinal);
@@ -232,7 +232,7 @@ begin
   begin
     msg := Format('%d|%d|%d|%d|%d|%d|%d|%d|%d', [XPos, YPos, ZPos, RPos, UPos, VPos, btns, BtnNum, POV]);
   end;
-  BrickComm.NXTMessageWrite(CAInBox, msg);
+  BrickComm.DCMessageWrite(CAInBox, msg);
 end;
 
 {$IFNDEF NXT_ONLY}

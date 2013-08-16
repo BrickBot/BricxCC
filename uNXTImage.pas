@@ -157,7 +157,7 @@ type
     procedure CreatePopupMenu;
   private
     { Private declarations }
-    fBytes : array[0..799] of byte;
+    fBytes : array of byte;
     fBusy : boolean;
     fDisplayNormal : boolean;
     fGoodRead : boolean;
@@ -165,10 +165,10 @@ type
     fClickStream : TMemoryStream;
     fCurrentName : string;
     fMovieWriter : TNXTImageMovie;
+    function ImageBufferSize : integer;
     procedure RefreshImage;
     procedure RetrieveScreenBytes;
     procedure DrawImage;
-    function GetPixelColor(b : byte; bit : integer) : TColor;
     procedure ExecuteButton(const btn : integer);
     procedure ScaleForm(const i : integer);
     procedure ResizeImage;
@@ -201,7 +201,7 @@ uses
   {$IFNDEF FPC}
   JPEG, MMSystem, pngimage, GIFImage, uRICImage,
   {$ENDIF}
-  uGuiUtils, uSpirit,
+  uGuiUtils, uSpirit, uGlobals,
   brick_common, uNXTConstants, rcx_constants,
   uNXTName, uLocalizedStrings, uNXTImageGlobals, uNXTImagePrefs;
 
@@ -257,16 +257,42 @@ var
 begin
   bmp := TBitmap.Create;
   try
-    bmp.Width  := 100;
-    bmp.Height := 64;
-    for line := 0 to 7 do
+    if IsNXT then
     begin
-      for x := 0 to 99 do
+      bmp.Width  := 100;
+      bmp.Height := 64;
+      for line := 0 to 7 do
       begin
-        b := fBytes[line*100 + x];
-        for i := 0 to 7 do
+        for x := 0 to 99 do
         begin
-          bmp.Canvas.Pixels[x, line*8+i] := GetPixelColor(b, i);
+          b := fBytes[line*100 + x];
+          for i := 0 to 7 do
+          begin
+            bmp.Canvas.Pixels[x, line*8+i] := GetPixelColor(b, i);
+          end;
+        end;
+      end;
+    end
+    else if IsEV3 then
+    begin
+      bmp.Width  := 178;
+      bmp.Height := 128;
+      for line := 0 to 127 do
+      begin
+        for x := 0 to 22 do
+        begin
+          b := fBytes[line*23 + x];
+          for i := 0 to 7 do
+          begin
+            bmp.Canvas.Pixels[x*8+i, line] := GetPixelColor(b, i);
+          end;
+        end;
+        // last 2 bits of each line
+        x := 23;
+        b := fBytes[line*23 + x];
+        for i := 0 to 1 do
+        begin
+          bmp.Canvas.Pixels[x*8+i, line] := GetPixelColor(b, i);
         end;
       end;
     end;
@@ -280,34 +306,35 @@ begin
   end;
 end;
 
-function TfrmNXTImage.GetPixelColor(b: byte; bit: integer): TColor;
-var
-  val : byte;
-begin
-  Result := LCDBackgroundColor;
-  val := 1 shl bit;
-  if (b and val) = val then
-    Result := clBlack;
-end;
-
 procedure TfrmNXTImage.RetrieveScreenBytes;
 var
-  idx, i : integer;
+  idx, i, totalBytes, iterations, bytesPerIteration : integer;
   offset, count : word;
   modID : Cardinal;
-  b : NXTDataBuffer;
+  b : PBRDataBuffer;
 begin
-  FillChar(fBytes[0], 800, 0); // clear the array of bytes
+  totalBytes := ImageBufferSize;
+  if IsEV3 then
+  begin
+    iterations := 4;
+  end
+  else
+  begin
+    // NXT
+    iterations := 16;
+  end;
+  bytesPerIteration := totalBytes div iterations;
+  FillChar(fBytes[0], totalBytes, 0); // clear the array of bytes
   idx := 0;
   if fDisplayNormal then
     offset := DisplayOffsetNormal(0, 0)
   else
     offset := DisplayOffsetPopup(0, 0);
   modID := kNXT_ModuleDisplay;
-  for i := 0 to 15 do
+  for i := 0 to iterations - 1 do
   begin
-    count := 50;
-    fGoodRead := BrickComm.NXTReadIOMap(modID, offset, count, b);
+    count := bytesPerIteration;
+    fGoodRead := BrickComm.SCReadIOMap(modID, offset, count, b);
     if not fGoodRead then
       break;
     Move(b.Data[0], fBytes[idx], count);
@@ -323,6 +350,7 @@ end;
 
 procedure TfrmNXTImage.FormCreate(Sender: TObject);
 begin
+  SetLength(fBytes, ImageBufferSize);
   CreatePopupMenu;
   imgNXT.PopupMenu    := pmuMain;
   imgScreen.PopupMenu := pmuMain;
@@ -364,13 +392,13 @@ var
   offset : word;
   modID : Cardinal;
   count : word;
-  b : NXTDataBuffer;
+  b : PBRDataBuffer;
 begin
   modID  := kNXT_ModuleUI;
   offset := UIOffsetButton;
   count  := 1;
   b.Data[0] := btn;
-  BrickComm.NXTWriteIOMap(modID, offset, count, b);
+  BrickComm.SCWriteIOMap(modID, offset, count, b);
   DoClick;
 end;
 
@@ -793,7 +821,7 @@ begin
     F.edtNXTName.Text := CurrentName;
     if F.ShowModal = mrOK then
     begin
-      BrickComm.NXTSetBrickName(F.edtNXTName.Text, True);
+      BrickComm.SCSetBrickName(F.edtNXTName.Text, True);
       CurrentName := F.edtNXTName.Text;
     end;
   finally
@@ -805,7 +833,7 @@ procedure TfrmNXTImage.mniBootSAMBAClick(Sender: TObject);
 begin
   if MessageDlg(sBootSAMBAConfirm, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
-    BrickComm.NXTBootCommand(True);
+    BrickComm.SCBootCommand(True);
   end;
 end;
 
@@ -813,7 +841,7 @@ procedure TfrmNXTImage.mniBTResetClick(Sender: TObject);
 begin
   if MessageDlg(sBTResetConfirm, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
-    BrickComm.NXTBTFactoryReset(True);
+    BrickComm.SCBTFactoryReset(True);
   end;
 end;
 
@@ -826,7 +854,7 @@ end;
 function TfrmNXTImage.GetCurrentName: string;
 begin
   if fCurrentName = '' then
-    fCurrentName := BrickComm.NXTGetBrickName;
+    fCurrentName := BrickComm.SCGetBrickName;
   Result := fCurrentName;
 end;
 
@@ -1308,11 +1336,26 @@ begin
 end;
 
 procedure TfrmNXTImage.FormShow(Sender: TObject);
+var
+  len : integer;
 begin
+//  DebugFmt('length of fBytes = %d', [Length(fBytes)]);
+  len := ImageBufferSize;
+  if Length(fBytes) <> len then
+    SetLength(fBytes, ImageBufferSize);
+//  SetImageSizeByBrickType;
   ScaleForm(NXTImageScale);
   tmrRefresh.Interval := NXTImageDefaultRefreshRate;
   fMovieWriter.MaxFramesPerMovie := NXTImageMaxFramesPerMovie;
   dlgSavePic.InitialDir := DefaultNXTImageDirectory;
+end;
+
+function TfrmNXTImage.ImageBufferSize : integer;
+begin
+  if IsEV3 then
+    Result := 2944
+  else
+    Result := 800;
 end;
 
 {$IFDEF FPC}

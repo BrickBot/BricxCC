@@ -63,9 +63,9 @@ exports
   FantomSpiritNXTStartProgram,
   FantomSpiritNXTStopProgram,
   FantomSpiritNXTPlaySoundFile,
-  FantomSpiritGetNXTOutputState,
-  FantomSpiritSetNXTOutputState,
-  FantomSpiritGetNXTInputValues,
+  FantomSpiritDCGetOutputState,
+  FantomSpiritDCSetOutputState,
+  FantomSpiritDCGetInputValues,
   FantomSpiritSetNXTInputMode,
   FantomSpiritNXTResetInputScaledValue,
   FantomSpiritNXTResetOutputPosition,
@@ -144,8 +144,7 @@ exports
   FantomSpiritNXTFirmwareVersion,
   FantomSpiritNXTInstalledFirmware,
   FantomSpiritNXTGetBrickName,
-  NameToNXTFileType,
+  NXTNameToPBRFileType,
   LoadLSBlock;
 
 end.
-

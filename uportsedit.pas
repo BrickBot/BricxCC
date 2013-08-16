@@ -93,7 +93,7 @@ var
   name, addr : string;
   btsig, memfree : cardinal;
 begin
-  if BrickComm.NXTGetDeviceInfo(name, addr, btsig, memfree) then
+  if BrickComm.SCGetDeviceInfo(name, addr, btsig, memfree) then
   begin
     aStrings.Add(Format('BTH::%s=BTH::%s::%s::1', [name, name, addr]));
     addr := StringReplace(addr, ':', '', [rfReplaceAll]);

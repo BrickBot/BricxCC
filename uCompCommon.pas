@@ -53,8 +53,7 @@ type
   TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnSPC, lnEVC, lnEVA, lnUnknown);
   TOnCompilerMessage = procedure(const msg : string; var stop : boolean) of object;
 
-  TNXTFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware);
-  TEV3FileType = (eftProgram, eftGraphics, eftSound, eftData, eftOther, eftFirmware);
+  TPBRFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFolder, nftFirmware);
 
   TMapList = class(TStringList)
   private
@@ -217,8 +216,8 @@ type
   
 function RootOf(const name: string): string;
 
-function NameToNXTFileType(name : string) : TNXTFileType;
-function NameToEV3FileType(name : string) : TEV3FileType;
+function NXTNameToPBRFileType(name : string) : TPBRFileType;
+function EV3NameToPBRFileType(name : string) : TPBRFileType;
 
 function CCStrToFloat(const AValue: string): Double;
 function CCStrToFloatDef(const AValue: string; const aDef : Double): Double;
@@ -296,7 +295,7 @@ begin
     Result := name;
 end;
 
-function NameToNXTFileType(name : string) : TNXTFileType;
+function NXTNameToPBRFileType(name : string) : TPBRFileType;
 var
   ext : string;
 begin
@@ -312,18 +311,18 @@ begin
     Result := nftProgram
 end;
 
-function NameToEV3FileType(name : string) : TEV3FileType;
+function EV3NameToPBRFileType(name : string) : TPBRFileType;
 var
   ext : string;
 begin
-  Result := eftOther;
+  Result := nftOther;
   ext := AnsiLowercase(ExtractFileExt(name));
   if (ext = '.rsf') then
-    Result := eftSound
+    Result := nftSound
   else if (ext = '.rgf') then
-    Result := eftGraphics
+    Result := nftGraphics
   else if (ext = '.rbf') then
-    Result := eftProgram
+    Result := nftProgram
 end;
 
 procedure CCFormatSettings(var aFS : TFormatSettings; const aDS : Char);

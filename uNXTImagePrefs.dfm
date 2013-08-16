@@ -2,7 +2,7 @@ object frmNXTImagePrefs: TfrmNXTImagePrefs
   Left = 365
   Top = 170
   BorderStyle = bsDialog
-  Caption = 'NeXT Screen Preferences'
+  Caption = 'Brick Screen Preferences'
   ClientHeight = 273
   ClientWidth = 428
   Color = clBtnFace
@@ -81,7 +81,7 @@ object frmNXTImagePrefs: TfrmNXTImagePrefs
     Width = 245
     Height = 21
     TabOrder = 1
-    Text = 'nxtimage_'
+    Text = 'image_'
   end
   object edtDefaultDir2: TEdit
     Left = 174

@@ -75,11 +75,11 @@ var
 begin
   for i := 0 to NXTFiles.Items.Count - 1 do
     if NXTFiles.Selected[i] then
-      FS.NXTUploadFile(NXTFiles.Items.Names[i], lblDir.Caption);
+      FS.UploadFile(NXTFiles.Items.Names[i], lblDir.Caption);
   lstFiles.Update;
 end;
 
-function NameToNXTFileType(name : string) : integer;
+function NXTNameToPBRFileType(name : string) : integer;
 var
   ext : string;
 begin
@@ -101,7 +101,7 @@ var
 begin
   for i := 0 to lstFiles.Items.Count - 1 do
     if lstFiles.Selected[i] then
-      FS.DownloadFile(lstFiles.Items[i], NameToNXTFileType(lstFiles.Items[i]));
+      FS.DownloadFile(lstFiles.Items[i], NXTNameToPBRFileType(lstFiles.Items[i]));
   btnListFilesClick(Sender);
 end;
 
@@ -109,7 +109,7 @@ procedure TForm1.btnListFilesClick(Sender: TObject);
 var
   tmpStr : widestring;
 begin
-  FS.NXTListFiles(edtMask.Text, tmpStr);
+  FS.ListFiles(edtMask.Text, tmpStr);
   NXTFiles.Items.Text := tmpStr;
 end;
 
@@ -148,7 +148,7 @@ begin
         if NXTFiles.Selected[i] then
         begin
           filename := NXTFiles.Items.Names[i];
-          FS.NXTDeleteFile(filename, False);
+          FS.SCDeleteFile(filename, False);
         end;
       btnListFilesClick(Sender);
     end;
@@ -180,7 +180,7 @@ begin
   edtBatteryLevel.Text := Format('%f', [blevel / 1000.0]);
 {
 // this is not working for some reason
-  FS.NXTGetDeviceInfo(name, b1, b2, memfree);
+  FS.SCGetDeviceInfo(name, b1, b2, memfree);
   edtBrickName.Text := name;
   edtFreeMem.Text := IntToStr(memfree);
 }
@@ -190,7 +190,7 @@ procedure TForm1.btnListModulesClick(Sender: TObject);
 var
   tmpStr : widestring;
 begin
-  FS.NXTListModules(edtMask.Text, tmpStr);
+  FS.ListModules(edtMask.Text, tmpStr);
   NXTFiles.Items.Text := tmpStr;
 end;
 

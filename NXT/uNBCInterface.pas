@@ -337,7 +337,7 @@ var
   SC : TSPCComp;
   SL : TStringList;
 {$IFDEF CAN_DOWNLOAD}
-  theType : TNXTFileType;
+  theType : TPBRFileType;
   tmpName : string;
 {$ENDIF}
   i : integer;
@@ -389,8 +389,8 @@ begin
       // just download the already compiled binary file
       if not BrickComm.IsOpen then
         BrickComm.Open;
-      theType := NameToNXTFileType(InputFilename);
-      BrickComm.NXTStopProgram;
+      theType := NXTNameToPBRFileType(InputFilename);
+      BrickComm.DCStopProgram;
       if Download then
       begin
         if Target = dtSPRO then
@@ -398,14 +398,14 @@ begin
           sObj := TMemoryStream.Create;
           try
             SProBinToObj(sIn, sObj);
-            bDownloadOK := BrickComm.NXTDownloadStream(sObj, InputFilename, theType);
+            bDownloadOK := BrickComm.DownloadStream(sObj, InputFilename, theType);
           finally
             sObj.Free;
           end;
         end
         else
         begin
-          bDownloadOK := BrickComm.NXTDownloadStream(sIn, InputFilename, theType);
+          bDownloadOK := BrickComm.DownloadStream(sIn, InputFilename, theType);
         end;
         if bDownloadOK then
           DoBeep
@@ -415,7 +415,7 @@ begin
         end;
       end;
       if RunProgram then
-        BrickComm.NXTStartProgram(InputFilename);
+        BrickComm.DCStartProgram(InputFilename);
 {$ENDIF}
     end
     else
@@ -457,8 +457,8 @@ begin
                     // download the compiled code to the brick
                     if not BrickComm.IsOpen then
                       BrickComm.Open;
-                    BrickComm.NXTStopProgram;
-                    if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(nxtName, '.rpg'), nftOther) then
+                    BrickComm.DCStopProgram;
+                    if BrickComm.DownloadStream(sOut, ChangeFileExt(nxtName, '.rpg'), nftOther) then
                       DoBeep
                     else
                       Result := 2;
@@ -504,8 +504,8 @@ begin
                       BrickComm.Open;
                     if CheckFirmwareVersion then
                     begin
-                      BrickComm.NXTStopProgram;
-                      if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(nxtName, '.ric'), nftGraphics) then
+                      BrickComm.DCStopProgram;
+                      if BrickComm.DownloadStream(sOut, ChangeFileExt(nxtName, '.ric'), nftGraphics) then
                         DoBeep
                       else
                         Result := 2;
@@ -582,11 +582,11 @@ begin
                     // download the compiled code to the brick
                     if not BrickComm.IsOpen then
                       BrickComm.Open;
-                    BrickComm.NXTStopProgram;
+                    BrickComm.DCStopProgram;
                     sObj := TMemoryStream.Create;
                     try
                       SProBinToObj(sOut, sObj);
-                      if BrickComm.NXTDownloadStream(sObj, '', nftProgram) then
+                      if BrickComm.DownloadStream(sObj, '', nftProgram) then
                         DoBeep
                       else begin
                         Result := 2;
@@ -597,7 +597,7 @@ begin
                     end;
                   end;
                   if RunProgram then
-                    BrickComm.NXTStartProgram(tmpName);
+                    BrickComm.DCStartProgram(tmpName);
 {$ENDIF}
                   if WriteOutput then
                     sOut.SaveToFile(NXTName);
@@ -693,8 +693,8 @@ begin
                         BrickComm.Open;
                       if CheckFirmwareVersion then
                       begin
-                        BrickComm.NXTStopProgram;
-                        if BrickComm.NXTDownloadStream(sOut, tmpName, nftProgram) then
+                        BrickComm.DCStopProgram;
+                        if BrickComm.DownloadStream(sOut, tmpName, nftProgram) then
                           DoBeep
                         else begin
                           Result := 2;
@@ -707,7 +707,7 @@ begin
                       end;
                     end;
                     if RunProgram then
-                      BrickComm.NXTStartProgram(tmpName);
+                      BrickComm.DCStartProgram(tmpName);
 {$ENDIF}
                     if WriteOutput then
                       sOut.SaveToFile(NXTName);
@@ -910,7 +910,7 @@ function TNBCCompiler.CheckFirmwareVersion: boolean;
 var
   fwVer : word;
 begin
-  fwVer := BrickComm.NXTFirmwareVersion;
+  fwVer := BrickComm.SCFirmwareVersion;
   if fwVer <> 0 then
   begin
     // if we say we are targetting a 1.0x firmware then the actual

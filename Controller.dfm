@@ -5,8 +5,8 @@ object DirectForm: TDirectForm
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Direct Controller'
-  ClientHeight = 496
-  ClientWidth = 247
+  ClientHeight = 522
+  ClientWidth = 304
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -19,15 +19,15 @@ object DirectForm: TDirectForm
   OnKeyPress = FormKeyPress
   OnShow = FormShow
   DesignSize = (
-    247
-    496)
+    304
+    522)
   PixelsPerInch = 96
   TextHeight = 13
   object grpMotors: TGroupBox
     Left = 8
     Top = 146
-    Width = 233
-    Height = 112
+    Width = 290
+    Height = 143
     HelpContext = 12001
     Caption = ' Motors '
     TabOrder = 1
@@ -71,7 +71,7 @@ object DirectForm: TDirectForm
       ParentFont = False
     end
     object FwdABtn: TSpeedButton
-      Left = 24
+      Left = 32
       Top = 16
       Width = 25
       Height = 25
@@ -97,7 +97,7 @@ object DirectForm: TDirectForm
       OnClick = FwdABtnClick
     end
     object RevABtn: TSpeedButton
-      Left = 49
+      Left = 57
       Top = 16
       Width = 25
       Height = 25
@@ -123,7 +123,7 @@ object DirectForm: TDirectForm
       OnClick = RevABtnClick
     end
     object OffABtn: TSpeedButton
-      Left = 74
+      Left = 82
       Top = 16
       Width = 25
       Height = 25
@@ -150,7 +150,7 @@ object DirectForm: TDirectForm
       OnClick = OffABtnClick
     end
     object FloatABtn: TSpeedButton
-      Left = 99
+      Left = 107
       Top = 16
       Width = 25
       Height = 25
@@ -177,7 +177,7 @@ object DirectForm: TDirectForm
     end
     object FwdBBtn: TSpeedButton
       Tag = 1
-      Left = 24
+      Left = 32
       Top = 48
       Width = 25
       Height = 25
@@ -204,7 +204,7 @@ object DirectForm: TDirectForm
     end
     object RevBBtn: TSpeedButton
       Tag = 1
-      Left = 49
+      Left = 57
       Top = 48
       Width = 25
       Height = 25
@@ -231,7 +231,7 @@ object DirectForm: TDirectForm
     end
     object OffBBtn: TSpeedButton
       Tag = 1
-      Left = 74
+      Left = 82
       Top = 48
       Width = 25
       Height = 25
@@ -259,7 +259,7 @@ object DirectForm: TDirectForm
     end
     object FloatBBtn: TSpeedButton
       Tag = 1
-      Left = 99
+      Left = 107
       Top = 48
       Width = 25
       Height = 25
@@ -286,7 +286,7 @@ object DirectForm: TDirectForm
     end
     object FwdCBtn: TSpeedButton
       Tag = 2
-      Left = 24
+      Left = 32
       Top = 80
       Width = 25
       Height = 25
@@ -313,7 +313,7 @@ object DirectForm: TDirectForm
     end
     object RevCBtn: TSpeedButton
       Tag = 2
-      Left = 49
+      Left = 57
       Top = 80
       Width = 25
       Height = 25
@@ -340,7 +340,7 @@ object DirectForm: TDirectForm
     end
     object OffCBtn: TSpeedButton
       Tag = 2
-      Left = 74
+      Left = 82
       Top = 80
       Width = 25
       Height = 25
@@ -368,7 +368,7 @@ object DirectForm: TDirectForm
     end
     object FloatCBtn: TSpeedButton
       Tag = 2
-      Left = 99
+      Left = 107
       Top = 80
       Width = 25
       Height = 25
@@ -393,10 +393,132 @@ object DirectForm: TDirectForm
       ShowHint = True
       OnClick = FloatABtnClick
     end
+    object lblMotorD: TLabel
+      Left = 8
+      Top = 112
+      Width = 14
+      Height = 20
+      Caption = 'D'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object FwdDBtn: TSpeedButton
+      Tag = 3
+      Left = 32
+      Top = 110
+      Width = 25
+      Height = 25
+      Hint = 'Forwards'
+      GroupIndex = 4
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333333333333333333333333333333333FFFFFFFFFFFFF3300000000000
+        003338888888888888F330F888888888803338F33333333338F330F333333333
+        803338F3333F333338F330F330033333803338F3338FF33338F330F330A03333
+        803338F33388FF3338F330F330AA0333803338F333888FF338F330F330AAA033
+        803338F33388883338F330F330AA0333803338F33388833338F330F330A03333
+        803338F33388333338F330F330033333803338F33383333338F330F333333333
+        803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
+        0033388888888888883333333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = FwdABtnClick
+    end
+    object RevDBtn: TSpeedButton
+      Tag = 3
+      Left = 57
+      Top = 110
+      Width = 25
+      Height = 25
+      Hint = 'Backwards'
+      GroupIndex = 4
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333333333333333333333333333333333FFFFFFFFFFFFF3300000000000
+        003338888888888888F330F888888888803338F33333333338F330F333333333
+        803338F333333FF338F330F333330033803338F33333F8F338F330F33330A033
+        803338F3333F88F338F330F3330AA033803338F333F888F338F330F330AAA033
+        803338F3338888F338F330F3330AA033803338F3333888F338F330F33330A033
+        803338F3333388F338F330F333330033803338F33333383338F330F333333333
+        803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
+        0033388888888888883333333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = RevABtnClick
+    end
+    object OffDBtn: TSpeedButton
+      Tag = 3
+      Left = 82
+      Top = 110
+      Width = 25
+      Height = 25
+      Hint = 'Off'
+      GroupIndex = 4
+      Down = True
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333333333333333333333333333333333FFFFFFFFFFFFF3300000000000
+        003338888888888888F330F888888888803338F33333333338F330F333333333
+        803338F33333333338F330F300000003803338F333FFFFF338F330F309999903
+        803338F3388888F338F330F309999903803338F3388888F338F330F309999903
+        803338F3388888F338F330F309999903803338F3388888F338F330F309999903
+        803338F33888883338F330F300000003803338F33333333338F330F333333333
+        803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
+        0033388888888888883333333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = OffABtnClick
+    end
+    object FloatDBtn: TSpeedButton
+      Tag = 3
+      Left = 107
+      Top = 110
+      Width = 25
+      Height = 25
+      Hint = 'Float'
+      GroupIndex = 4
+      Flat = True
+      Glyph.Data = {
+        76010000424D7601000000000000760000002800000020000000100000000100
+        0400000000000001000000000000000000001000000010000000000000000000
+        80000080000000808000800000008000800080800000C0C0C000808080000000
+        FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333333
+        33333333333333333333333333333333333333FFFFFFFFFFFFF3300000000000
+        003338888888888888F330F888888888803338F33333333338F330F333333333
+        803338F33333333338F330F300000003803338F333FFFFF338F330F30BBBBB03
+        803338F3388888F338F330F30BBBBB03803338F3388888F338F330F30BBBBB03
+        803338F3388888F338F330F30BBBBB03803338F3388888F338F330F30BBBBB03
+        803338F33888883338F330F300000003803338F33333333338F330F333333333
+        803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
+        0033388888888888883333333333333333333333333333333333}
+      NumGlyphs = 2
+      ParentShowHint = False
+      ShowHint = True
+      OnClick = FloatABtnClick
+    end
     object SpeedA: TTrackBar
-      Left = 128
+      Left = 144
       Top = 12
-      Width = 97
+      Width = 141
       Height = 28
       HelpContext = 12017
       Max = 7
@@ -407,9 +529,9 @@ object DirectForm: TDirectForm
     end
     object SpeedB: TTrackBar
       Tag = 1
-      Left = 128
+      Left = 144
       Top = 44
-      Width = 97
+      Width = 141
       Height = 28
       HelpContext = 12018
       Max = 7
@@ -420,9 +542,9 @@ object DirectForm: TDirectForm
     end
     object SpeedC: TTrackBar
       Tag = 2
-      Left = 128
+      Left = 144
       Top = 76
-      Width = 97
+      Width = 141
       Height = 28
       HelpContext = 12019
       Max = 7
@@ -431,11 +553,24 @@ object DirectForm: TDirectForm
       TabOrder = 2
       OnChange = SpeedChange
     end
+    object SpeedD: TTrackBar
+      Tag = 3
+      Left = 144
+      Top = 106
+      Width = 141
+      Height = 28
+      HelpContext = 12019
+      Max = 7
+      PageSize = 1
+      Position = 4
+      TabOrder = 3
+      OnChange = SpeedChange
+    end
   end
   object grpTasks: TGroupBox
     Left = 8
-    Top = 338
-    Width = 233
+    Top = 368
+    Width = 290
     Height = 122
     HelpContext = 12020
     Caption = ' Tasks '
@@ -443,7 +578,7 @@ object DirectForm: TDirectForm
     ParentCtl3D = False
     TabOrder = 3
     object TL0: TLabel
-      Left = 6
+      Left = 14
       Top = 18
       Width = 11
       Height = 20
@@ -456,7 +591,7 @@ object DirectForm: TDirectForm
       ParentFont = False
     end
     object TL1: TLabel
-      Left = 6
+      Left = 14
       Top = 42
       Width = 11
       Height = 20
@@ -470,7 +605,7 @@ object DirectForm: TDirectForm
     end
     object TL2: TLabel
       Tag = 2
-      Left = 6
+      Left = 14
       Top = 66
       Width = 11
       Height = 20
@@ -484,7 +619,7 @@ object DirectForm: TDirectForm
     end
     object TL3: TLabel
       Tag = 2
-      Left = 6
+      Left = 14
       Top = 90
       Width = 11
       Height = 20
@@ -498,7 +633,7 @@ object DirectForm: TDirectForm
     end
     object TL4: TLabel
       Tag = 4
-      Left = 83
+      Left = 107
       Top = 18
       Width = 11
       Height = 20
@@ -512,7 +647,7 @@ object DirectForm: TDirectForm
     end
     object TL5: TLabel
       Tag = 5
-      Left = 83
+      Left = 107
       Top = 42
       Width = 11
       Height = 20
@@ -526,7 +661,7 @@ object DirectForm: TDirectForm
     end
     object TL6: TLabel
       Tag = 6
-      Left = 83
+      Left = 107
       Top = 66
       Width = 11
       Height = 20
@@ -540,7 +675,7 @@ object DirectForm: TDirectForm
     end
     object TL7: TLabel
       Tag = 7
-      Left = 83
+      Left = 107
       Top = 90
       Width = 11
       Height = 20
@@ -554,7 +689,7 @@ object DirectForm: TDirectForm
     end
     object TL8: TLabel
       Tag = 8
-      Left = 158
+      Left = 198
       Top = 18
       Width = 11
       Height = 20
@@ -568,7 +703,7 @@ object DirectForm: TDirectForm
     end
     object TL9: TLabel
       Tag = 9
-      Left = 158
+      Left = 198
       Top = 42
       Width = 11
       Height = 20
@@ -581,7 +716,7 @@ object DirectForm: TDirectForm
       ParentFont = False
     end
     object StartAllBtn: TButton
-      Left = 170
+      Left = 204
       Top = 68
       Width = 57
       Height = 22
@@ -591,7 +726,7 @@ object DirectForm: TDirectForm
       OnClick = StartAllBtnClick
     end
     object StopAllBtn: TButton
-      Left = 170
+      Left = 204
       Top = 92
       Width = 57
       Height = 22
@@ -601,7 +736,7 @@ object DirectForm: TDirectForm
       OnClick = StopAllBtnClick
     end
     object RunTask0: TBitBtn
-      Left = 27
+      Left = 35
       Top = 19
       Width = 18
       Height = 18
@@ -618,7 +753,7 @@ object DirectForm: TDirectForm
         0000}
     end
     object StopTask0: TBitBtn
-      Left = 51
+      Left = 59
       Top = 19
       Width = 18
       Height = 18
@@ -667,7 +802,7 @@ object DirectForm: TDirectForm
     end
     object StopTask1: TBitBtn
       Tag = 1
-      Left = 51
+      Left = 59
       Top = 43
       Width = 18
       Height = 18
@@ -716,7 +851,7 @@ object DirectForm: TDirectForm
     end
     object RunTask1: TBitBtn
       Tag = 1
-      Left = 27
+      Left = 35
       Top = 43
       Width = 18
       Height = 18
@@ -734,7 +869,7 @@ object DirectForm: TDirectForm
     end
     object StopTask2: TBitBtn
       Tag = 2
-      Left = 51
+      Left = 59
       Top = 67
       Width = 18
       Height = 18
@@ -783,7 +918,7 @@ object DirectForm: TDirectForm
     end
     object RunTask2: TBitBtn
       Tag = 2
-      Left = 27
+      Left = 35
       Top = 67
       Width = 18
       Height = 18
@@ -801,7 +936,7 @@ object DirectForm: TDirectForm
     end
     object StopTask3: TBitBtn
       Tag = 3
-      Left = 51
+      Left = 59
       Top = 91
       Width = 18
       Height = 18
@@ -850,7 +985,7 @@ object DirectForm: TDirectForm
     end
     object RunTask3: TBitBtn
       Tag = 3
-      Left = 27
+      Left = 35
       Top = 91
       Width = 18
       Height = 18
@@ -868,7 +1003,7 @@ object DirectForm: TDirectForm
     end
     object StopTask4: TBitBtn
       Tag = 4
-      Left = 128
+      Left = 152
       Top = 19
       Width = 18
       Height = 18
@@ -917,7 +1052,7 @@ object DirectForm: TDirectForm
     end
     object RunTask4: TBitBtn
       Tag = 4
-      Left = 104
+      Left = 128
       Top = 19
       Width = 18
       Height = 18
@@ -935,7 +1070,7 @@ object DirectForm: TDirectForm
     end
     object StopTask5: TBitBtn
       Tag = 5
-      Left = 128
+      Left = 152
       Top = 43
       Width = 18
       Height = 18
@@ -984,7 +1119,7 @@ object DirectForm: TDirectForm
     end
     object RunTask5: TBitBtn
       Tag = 5
-      Left = 104
+      Left = 128
       Top = 43
       Width = 18
       Height = 18
@@ -1002,7 +1137,7 @@ object DirectForm: TDirectForm
     end
     object StopTask6: TBitBtn
       Tag = 6
-      Left = 128
+      Left = 152
       Top = 67
       Width = 18
       Height = 18
@@ -1051,7 +1186,7 @@ object DirectForm: TDirectForm
     end
     object RunTask6: TBitBtn
       Tag = 6
-      Left = 104
+      Left = 128
       Top = 67
       Width = 18
       Height = 18
@@ -1069,7 +1204,7 @@ object DirectForm: TDirectForm
     end
     object StopTask7: TBitBtn
       Tag = 7
-      Left = 128
+      Left = 152
       Top = 91
       Width = 18
       Height = 18
@@ -1118,7 +1253,7 @@ object DirectForm: TDirectForm
     end
     object RunTask7: TBitBtn
       Tag = 7
-      Left = 104
+      Left = 128
       Top = 91
       Width = 18
       Height = 18
@@ -1136,7 +1271,7 @@ object DirectForm: TDirectForm
     end
     object StopTask8: TBitBtn
       Tag = 8
-      Left = 203
+      Left = 243
       Top = 19
       Width = 18
       Height = 18
@@ -1185,7 +1320,7 @@ object DirectForm: TDirectForm
     end
     object RunTask8: TBitBtn
       Tag = 8
-      Left = 179
+      Left = 219
       Top = 19
       Width = 18
       Height = 18
@@ -1203,7 +1338,7 @@ object DirectForm: TDirectForm
     end
     object StopTask9: TBitBtn
       Tag = 9
-      Left = 203
+      Left = 243
       Top = 43
       Width = 18
       Height = 18
@@ -1252,7 +1387,7 @@ object DirectForm: TDirectForm
     end
     object RunTask9: TBitBtn
       Tag = 9
-      Left = 179
+      Left = 219
       Top = 43
       Width = 18
       Height = 18
@@ -1272,7 +1407,7 @@ object DirectForm: TDirectForm
   object SensorGroup: TGroupBox
     Left = 8
     Top = 2
-    Width = 233
+    Width = 290
     Height = 140
     HelpContext = 12053
     Caption = ' Sensors '
@@ -1332,7 +1467,7 @@ object DirectForm: TDirectForm
     object SensorType0: TComboBox
       Left = 32
       Top = 16
-      Width = 89
+      Width = 137
       Height = 21
       HelpContext = 12057
       Style = csDropDownList
@@ -1341,9 +1476,9 @@ object DirectForm: TDirectForm
       OnChange = SensorTypeChange
     end
     object SensorMode0: TComboBox
-      Left = 136
+      Left = 176
       Top = 16
-      Width = 89
+      Width = 105
       Height = 21
       HelpContext = 12058
       Style = csDropDownList
@@ -1355,7 +1490,7 @@ object DirectForm: TDirectForm
       Tag = 1
       Left = 32
       Top = 48
-      Width = 89
+      Width = 137
       Height = 21
       HelpContext = 12059
       Style = csDropDownList
@@ -1371,9 +1506,9 @@ object DirectForm: TDirectForm
     end
     object SensorMode1: TComboBox
       Tag = 1
-      Left = 136
+      Left = 176
       Top = 48
-      Width = 89
+      Width = 105
       Height = 21
       HelpContext = 12060
       Style = csDropDownList
@@ -1394,7 +1529,7 @@ object DirectForm: TDirectForm
       Tag = 2
       Left = 32
       Top = 80
-      Width = 89
+      Width = 137
       Height = 21
       HelpContext = 12061
       Style = csDropDownList
@@ -1410,9 +1545,9 @@ object DirectForm: TDirectForm
     end
     object SensorMode2: TComboBox
       Tag = 2
-      Left = 136
+      Left = 176
       Top = 80
-      Width = 89
+      Width = 105
       Height = 21
       HelpContext = 12062
       Style = csDropDownList
@@ -1433,7 +1568,7 @@ object DirectForm: TDirectForm
       Tag = 3
       Left = 32
       Top = 112
-      Width = 89
+      Width = 137
       Height = 21
       HelpContext = 12061
       Style = csDropDownList
@@ -1449,9 +1584,9 @@ object DirectForm: TDirectForm
     end
     object SensorMode3: TComboBox
       Tag = 3
-      Left = 136
+      Left = 176
       Top = 112
-      Width = 89
+      Width = 105
       Height = 21
       HelpContext = 12062
       Style = csDropDownList
@@ -1471,21 +1606,21 @@ object DirectForm: TDirectForm
   end
   object grpVariables: TGroupBox
     Left = 8
-    Top = 262
-    Width = 233
+    Top = 292
+    Width = 290
     Height = 72
     HelpContext = 12063
     Caption = 'Global variables '
     TabOrder = 2
     object Label4: TLabel
-      Left = 74
+      Left = 130
       Top = 20
       Width = 19
       Height = 13
       Caption = 'Src:'
     end
     object Label5: TLabel
-      Left = 118
+      Left = 174
       Top = 47
       Width = 30
       Height = 13
@@ -1494,7 +1629,7 @@ object DirectForm: TDirectForm
     object VariableBox: TComboBox
       Left = 8
       Top = 16
-      Width = 63
+      Width = 105
       Height = 21
       HelpContext = 12066
       Style = csDropDownList
@@ -1504,7 +1639,7 @@ object DirectForm: TDirectForm
     object OperatorBox: TComboBox
       Left = 8
       Top = 43
-      Width = 43
+      Width = 47
       Height = 21
       HelpContext = 12067
       Style = csDropDownList
@@ -1522,7 +1657,7 @@ object DirectForm: TDirectForm
         '+-=')
     end
     object ValueEdit: TEdit
-      Left = 155
+      Left = 211
       Top = 43
       Width = 55
       Height = 21
@@ -1534,7 +1669,7 @@ object DirectForm: TDirectForm
       OnKeyPress = ValueEditKeyPress
     end
     object ValueUpDown: TUpDown
-      Left = 210
+      Left = 266
       Top = 43
       Width = 15
       Height = 21
@@ -1547,7 +1682,7 @@ object DirectForm: TDirectForm
       Wrap = True
     end
     object SetBtn: TButton
-      Left = 62
+      Left = 104
       Top = 43
       Width = 51
       Height = 21
@@ -1557,7 +1692,7 @@ object DirectForm: TDirectForm
       OnClick = SetBtnClick
     end
     object cboSource: TComboBox
-      Left = 99
+      Left = 155
       Top = 16
       Width = 126
       Height = 21
@@ -1568,8 +1703,8 @@ object DirectForm: TDirectForm
     end
   end
   object btnHelp: TButton
-    Left = 98
-    Top = 467
+    Left = 126
+    Top = 493
     Width = 52
     Height = 25
     HelpContext = 12002

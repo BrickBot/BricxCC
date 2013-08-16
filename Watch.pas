@@ -374,14 +374,14 @@ var busy:boolean = false;
 
 procedure TWatchForm.PollMessage(num : byte; edtValue : TEdit);
 var
-  msg : NXTMessage;
+  msg : PBRMessage;
   logStr, valStr : string;
   bIsNumeric : boolean;
   j, val : integer;
 begin
   if chkResponseMB.Checked then
     num := num + 10;
-  if BrickComm.NXTMessageRead(num, 0, true, msg) then
+  if BrickComm.DCMessageRead(num, 0, true, msg) then
   begin
     if msg.Size = 0 then Exit;
     logStr := '';
@@ -497,28 +497,44 @@ begin
     end;
     if CheckSensor1.Checked then
     begin
-      ival := BrickComm.GetInputValue(0);
+      val := BrickComm.GetInputValue(0);
+        if VarType(val) in [varSingle, varDouble] then begin
+          fVal := val;
+          tmpStr2 := StripTrailingZeros(Format('%.4f', [fval]));
+          tmpStr  := Format('Var %d: ', [i]) + tmpStr2;
+        end
+        else if VarType(val) = varString then
+        begin
+          tmpStr2 := val;
+          tmpStr := Format('Var %d: ', [i]) + tmpStr2;
+        end
+        else begin
+          // assuming a variant of integer type
+          ival := val;
+          tmpStr  := Format('Var %d: %d', [i, ival]);
+          tmpStr2 := Format('%6d',[ival]);
+        end;
       tmpStr := Format('Sensor %d: %d', [1, ival]);
       fNewData.Add(tmpStr);
       ValueSensor1.Text := Format('%6d',[ival]);
     end;
     if CheckSensor2.Checked then
     begin
-      ival := BrickComm.GetInputValue(1);
+      val := BrickComm.GetInputValue(1);
       tmpStr := Format('Sensor %d: %d', [2, ival]);
       fNewData.Add(tmpStr);
       ValueSensor2.Text := Format('%6d',[ival]);
     end;
     if CheckSensor3.Checked then
     begin
-      ival := BrickComm.GetInputValue(2);
+      val := BrickComm.GetInputValue(2);
       tmpStr := Format('Sensor %d: %d', [3, ival]);
       fNewData.Add(tmpStr);
       ValueSensor3.Text := Format('%6d',[ival]);
     end;
-    if IsNXT and CheckSensor4.Checked then
+    if (IsNXT or IsEV3) and CheckSensor4.Checked then
     begin
-      ival := BrickComm.GetInputValue(3);
+      val := BrickComm.GetInputValue(3);
       tmpStr := Format('Sensor %d: %d', [4, ival]);
       fNewData.Add(tmpStr);
       ValueSensor4.Text := Format('%6d',[ival]);
@@ -597,7 +613,7 @@ begin
     // these only apply to NXT
     if chkPortA.Checked then
     begin
-      BrickComm.GetNXTOutputState(0, power, mode, regmode, turnratio,
+      BrickComm.DCGetOutputState(0, power, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blockcount, rotcount);
       if chkNXTPower.Checked then
       begin
@@ -656,7 +672,7 @@ begin
     end;
     if chkPortB.Checked then
     begin
-      BrickComm.GetNXTOutputState(1, power, mode, regmode, turnratio,
+      BrickComm.DCGetOutputState(1, power, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blockcount, rotcount);
       if chkNXTPower.Checked then
       begin
@@ -715,7 +731,7 @@ begin
     end;
     if chkPortC.Checked then
     begin
-      BrickComm.GetNXTOutputState(2, power, mode, regmode, turnratio,
+      BrickComm.DCGetOutputState(2, power, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blockcount, rotcount);
       if chkNXTPower.Checked then
       begin
@@ -878,7 +894,7 @@ begin
             (Pos('chkUltra', temp.Name) = 1)) then
       TCheckBox(temp).Checked := true;
   end;
-  if IsRCX or IsScout or IsSpybotic or IsNXT then
+  if IsRCX or IsScout or IsSpybotic or IsNXT or IsEV3 then
   begin
     CheckTCounterL.Checked := false;
     CheckTSpeedL.Checked   := false;
@@ -949,7 +965,7 @@ begin
   RestoreSettings;
   LoadWatchedProgram;
   grpVar.Visible   := True;
-  grpMotor.Visible := not IsNXT;
+  grpMotor.Visible := not (IsNXT or IsEV3);
   if grpVar.Visible then
   begin
     for i := Low(fVarArray) to High(fVarArray) do
@@ -964,9 +980,9 @@ begin
     if IsNXT then
       SetVariableHints;
   end;
-  CheckSensor4.Visible := IsNXT;
-  ValueSensor4.Visible := IsNXT;
-  if IsNXT then
+  CheckSensor4.Visible := IsNXT or IsEV3;
+  ValueSensor4.Visible := IsNXT or IsEV3;
+  if IsNXT or IsEV3 then
   begin
     grpSensor.Height := 90;
     grpTimer.Top     := 96;
@@ -989,15 +1005,15 @@ begin
   btnPollRegular.Down := false;
   Timer1.Enabled := false;
   busy := false;
-  if IsRCX or IsScout or IsSpybotic or IsNXT then
+  if IsRCX or IsScout or IsSpybotic or IsNXT or IsEV3 then
   begin
-    grpMessage.Visible         := not IsSpybotic and not IsNXT;
+    grpMessage.Visible         := not IsSpybotic and not (IsNXT or IsEV3);
     shtCybermaster.TabVisible  := False;
     grpTacho.Visible           := False;
-    shtNXT.TabVisible          := IsNXT;
-    shtNXTMailboxes.TabVisible := IsNXT;
-    shtNXTI2C.TabVisible       := IsNXT;
-    grpNXTMotors.Visible       := IsNXT;
+    shtNXT.TabVisible          := IsNXT or IsEV3;
+    shtNXTMailboxes.TabVisible := IsNXT or IsEV3;
+    shtNXTI2C.TabVisible       := IsNXT or IsEV3;
+    grpNXTMotors.Visible       := IsNXT or IsEV3;
     grpI2C.Visible             := grpNXTMotors.Visible;
     grpPI2C.Visible            := grpNXTMotors.Visible;
     CheckTCounterL.Checked     := False;
@@ -1005,7 +1021,7 @@ begin
     CheckTCounterR.Checked     := False;
     CheckTSpeedR.Checked       := False;
     CheckMCurrent.Checked      := False;
-    grpCounter.Visible         := not IsNXT;
+    grpCounter.Visible         := not (IsNXT or IsEV3);
     if IsRCX or IsScout or IsSpybotic then
     begin
 //      // move counter box on top of tacho box
@@ -1036,7 +1052,7 @@ begin
       chkNXTMB9.Checked  := False;
       chkNXTMB10.Checked := False;
     end;
-    if IsNXT then
+    if IsNXT or IsEV3 then
       CheckMessage.Checked := False;
   end
   else
@@ -1261,7 +1277,7 @@ var
 begin
   fname := GetActiveEditorFilename;
   // is there a program running on the NXT?
-  if BrickComm.NXTGetCurrentProgramName(name) and (name <> '') then
+  if BrickComm.DCGetCurrentProgramName(name) and (name <> '') then
   begin
     tmp := ExtractFileName(fname);
     if Pos(ChangeFileExt(name, ''), tmp) > 0 then

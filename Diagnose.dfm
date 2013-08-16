@@ -189,6 +189,131 @@ object DiagForm: TDiagForm
       TabOrder = 1
     end
   end
+  object PowerGroup: TGroupBox
+    Left = 8
+    Top = 168
+    Width = 225
+    Height = 49
+    Caption = ' Power Down '
+    TabOrder = 1
+    object lblMinutes: TLabel
+      Left = 12
+      Top = 20
+      Width = 37
+      Height = 13
+      Alignment = taRightJustify
+      Caption = '&Minutes'
+      FocusControl = PowerDown
+    end
+    object PowerDown: TBricxccSpinEdit
+      Left = 64
+      Top = 16
+      Width = 57
+      Height = 22
+      HelpContext = 13011
+      MaxLength = 3
+      MaxValue = 255
+      MinValue = 0
+      TabOrder = 0
+      Value = 15
+      OnChange = PowerDownChange
+    end
+  end
+  object btnHelp: TButton
+    Left = 98
+    Top = 430
+    Width = 52
+    Height = 25
+    HelpContext = 13001
+    Anchors = [akLeft, akBottom]
+    Caption = '&Help'
+    TabOrder = 5
+    OnClick = btnHelpClick
+  end
+  object grpNXTDiag: TGroupBox
+    Left = 8
+    Top = 224
+    Width = 225
+    Height = 145
+    Caption = 'Brick Info'
+    TabOrder = 6
+    object Label1: TLabel
+      Left = 21
+      Top = 20
+      Width = 28
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Name'
+    end
+    object Label2: TLabel
+      Left = 10
+      Top = 44
+      Width = 39
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'BT Addr'
+    end
+    object Label3: TLabel
+      Left = 3
+      Top = 68
+      Width = 46
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'BT Signal'
+    end
+    object Label4: TLabel
+      Left = 3
+      Top = 92
+      Width = 46
+      Height = 13
+      Alignment = taRightJustify
+      Caption = 'Free mem'
+    end
+    object NXTName: TPanel
+      Left = 56
+      Top = 16
+      Width = 161
+      Height = 17
+      BevelOuter = bvLowered
+      TabOrder = 0
+      OnDblClick = NXTNameDblClick
+    end
+    object BTAddress: TPanel
+      Left = 56
+      Top = 40
+      Width = 161
+      Height = 17
+      BevelOuter = bvLowered
+      TabOrder = 1
+      OnDblClick = BTAddressDblClick
+    end
+    object BTSignal: TPanel
+      Left = 56
+      Top = 64
+      Width = 161
+      Height = 17
+      BevelOuter = bvLowered
+      TabOrder = 2
+    end
+    object FreeMemory: TPanel
+      Left = 56
+      Top = 88
+      Width = 161
+      Height = 17
+      BevelOuter = bvLowered
+      TabOrder = 3
+    end
+    object btnRefreshNXT: TButton
+      Left = 144
+      Top = 113
+      Width = 72
+      Height = 24
+      HelpContext = 13013
+      Caption = '&Refresh'
+      TabOrder = 4
+      OnClick = btnRefreshNXTClick
+    end
+  end
   object DisplayGroup: TGroupBox
     Left = 8
     Top = 320
@@ -287,131 +412,6 @@ object DiagForm: TDiagForm
       Text = '0'
       OnExit = edtValueExit
       OnKeyPress = edtValueKeyPress
-    end
-  end
-  object PowerGroup: TGroupBox
-    Left = 8
-    Top = 168
-    Width = 225
-    Height = 49
-    Caption = ' Power Down '
-    TabOrder = 1
-    object lblMinutes: TLabel
-      Left = 12
-      Top = 20
-      Width = 37
-      Height = 13
-      Alignment = taRightJustify
-      Caption = '&Minutes'
-      FocusControl = PowerDown
-    end
-    object PowerDown: TBricxccSpinEdit
-      Left = 64
-      Top = 16
-      Width = 57
-      Height = 22
-      HelpContext = 13011
-      MaxLength = 3
-      MaxValue = 255
-      MinValue = 0
-      TabOrder = 0
-      Value = 15
-      OnChange = PowerDownChange
-    end
-  end
-  object btnHelp: TButton
-    Left = 98
-    Top = 430
-    Width = 52
-    Height = 25
-    HelpContext = 13001
-    Anchors = [akLeft, akBottom]
-    Caption = '&Help'
-    TabOrder = 5
-    OnClick = btnHelpClick
-  end
-  object grpNXTDiag: TGroupBox
-    Left = 8
-    Top = 224
-    Width = 225
-    Height = 145
-    Caption = 'NXT Info'
-    TabOrder = 6
-    object Label1: TLabel
-      Left = 21
-      Top = 20
-      Width = 28
-      Height = 13
-      Alignment = taRightJustify
-      Caption = 'Name'
-    end
-    object Label2: TLabel
-      Left = 10
-      Top = 44
-      Width = 39
-      Height = 13
-      Alignment = taRightJustify
-      Caption = 'BT Addr'
-    end
-    object Label3: TLabel
-      Left = 3
-      Top = 68
-      Width = 46
-      Height = 13
-      Alignment = taRightJustify
-      Caption = 'BT Signal'
-    end
-    object Label4: TLabel
-      Left = 3
-      Top = 92
-      Width = 46
-      Height = 13
-      Alignment = taRightJustify
-      Caption = 'Free mem'
-    end
-    object NXTName: TPanel
-      Left = 56
-      Top = 16
-      Width = 161
-      Height = 17
-      BevelOuter = bvLowered
-      TabOrder = 0
-      OnDblClick = NXTNameDblClick
-    end
-    object BTAddress: TPanel
-      Left = 56
-      Top = 40
-      Width = 161
-      Height = 17
-      BevelOuter = bvLowered
-      TabOrder = 1
-      OnDblClick = BTAddressDblClick
-    end
-    object BTSignal: TPanel
-      Left = 56
-      Top = 64
-      Width = 161
-      Height = 17
-      BevelOuter = bvLowered
-      TabOrder = 2
-    end
-    object FreeMemory: TPanel
-      Left = 56
-      Top = 88
-      Width = 161
-      Height = 17
-      BevelOuter = bvLowered
-      TabOrder = 3
-    end
-    object btnRefreshNXT: TButton
-      Left = 144
-      Top = 113
-      Width = 72
-      Height = 24
-      HelpContext = 13013
-      Caption = '&Refresh'
-      TabOrder = 4
-      OnClick = btnRefreshNXTClick
     end
   end
 end

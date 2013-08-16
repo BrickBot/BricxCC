@@ -37,13 +37,13 @@ type
     Data : array[0..15] of byte;
   end;
 
-  NXTMessage = record
+  PBRMessage = record
     Inbox : byte;
     Size : byte;
     Data : array[0..58] of byte;
   end;
 
-  NXTDataBuffer = record
+  PBRDataBuffer = record
     Data : array[0..63] of Byte;
   end;
 
@@ -54,7 +54,8 @@ const
   nftSound    = 2;
   nftData     = 3;
   nftOther    = 4;
-  nftFirmware = 5;
+  nftFolder   = 5;
+  nftFirmware = 6;
 
 // installed firmware constants
 const
@@ -100,9 +101,9 @@ function FantomSpiritMuteSound(fsh : FantomHandle) : integer; cdecl; external;
 function FantomSpiritNXTStartProgram(fsh : FantomHandle; filename : PChar) : integer; cdecl; external;
 function FantomSpiritNXTStopProgram(fsh : FantomHandle) : integer; cdecl; external;
 function FantomSpiritNXTPlaySoundFile(fsh : FantomHandle; filename : PChar; bLoop : byte) : integer; cdecl; external;
-function FantomSpiritGetNXTOutputState(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl; external;
-function FantomSpiritSetNXTOutputState(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl; external;
-function FantomSpiritGetNXTInputValues(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl; external;
+function FantomSpiritDCGetOutputState(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl; external;
+function FantomSpiritDCSetOutputState(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl; external;
+function FantomSpiritDCGetInputValues(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl; external;
 function FantomSpiritSetNXTInputMode(fsh : FantomHandle; aPort, stype, smode : byte) : integer; cdecl; external;
 function FantomSpiritNXTResetInputScaledValue(fsh : FantomHandle; aPort : byte) : integer; cdecl; external;
 function FantomSpiritNXTResetOutputPosition(fsh : FantomHandle; aPort, Relative : byte) : integer; cdecl; external;
@@ -111,7 +112,7 @@ function FantomSpiritNXTKeepAlive(fsh : FantomHandle; var time : cardinal; chkRe
 function FantomSpiritNXTLSGetStatus(fsh : FantomHandle; aPort : byte; var bready, lsstate : byte) : integer; cdecl; external;
 function FantomSpiritNXTGetCurrentProgramName(fsh : FantomHandle; name : PChar) : integer; cdecl; external;
 function FantomSpiritNXTGetButtonState(fsh : FantomHandle; idx, reset : byte; var pressed, count : byte) : integer; cdecl; external;
-function FantomSpiritNXTMessageRead(fsh : FantomHandle; remote, local, remove : byte; var msg : NXTMessage) : integer; cdecl; external;
+function FantomSpiritNXTMessageRead(fsh : FantomHandle; remote, local, remove : byte; var msg : PBRMessage) : integer; cdecl; external;
 function FantomSpiritNXTSetPropDebugging(fsh : FantomHandle; debug : byte; pauseClump : byte; pausePC : Word) : integer; cdecl; external;
 function FantomSpiritNXTGetPropDebugging(fsh : FantomHandle; var debug : byte; var pauseClump : byte; var pausePC : Word) : integer; cdecl; external;
 function FantomSpiritNXTSetVMState(fsh : FantomHandle; state : byte) : integer; cdecl; external;
@@ -119,8 +120,8 @@ function FantomSpiritNXTSetVMStateEx(fsh : FantomHandle; var state, clump : byte
 function FantomSpiritNXTGetVMState(fsh : FantomHandle; var state, clump : byte; var pc : word) : integer; cdecl; external;
 function FantomSpiritNXTOpenRead(fsh : FantomHandle; filename : PChar; var handle : FantomHandle; var size : cardinal) : integer; cdecl; external;
 function FantomSpiritNXTOpenWrite(fsh : FantomHandle; filename : PChar; const size : cardinal; var handle : FantomHandle) : integer; cdecl; external;
-function FantomSpiritNXTRead(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : NXTDataBuffer) : integer; cdecl; external;
-function FantomSpiritNXTWrite(fsh : FantomHandle; var handle : FantomHandle; buffer : NXTDataBuffer; var count : word; chkResponse : byte) : integer; cdecl; external;
+function FantomSpiritNXTRead(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : PBRDataBuffer) : integer; cdecl; external;
+function FantomSpiritNXTWrite(fsh : FantomHandle; var handle : FantomHandle; buffer : PBRDataBuffer; var count : word; chkResponse : byte) : integer; cdecl; external;
 function FantomSpiritNXTCloseFile(fsh : FantomHandle; var handle : FantomHandle; chkResponse: byte) : integer; cdecl; external;
 function FantomSpiritNXTDeleteFile(fsh : FantomHandle; filename : PChar; chkResponse: byte) : integer; cdecl; external;
 function FantomSpiritNXTFindFirstFile(fsh : FantomHandle; filename : PChar; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : integer; cdecl; external;
@@ -139,9 +140,9 @@ function FantomSpiritNXTFreeMemory(fsh : FantomHandle) : integer; cdecl; externa
 function FantomSpiritNXTDeleteUserFlash(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; external;
 function FantomSpiritNXTBTFactoryReset(fsh : FantomHandle; chkResponse: byte) : integer; cdecl; external;
 function FantomSpiritNXTPollCommandLen(fsh : FantomHandle; bufNum : byte; var count : byte) : integer; cdecl; external;
-function FantomSpiritNXTPollCommand(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : NXTDataBuffer) : integer; cdecl; external;
-function FantomSpiritNXTWriteIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : NXTDataBuffer; chkResponse : byte) : integer; cdecl; external;
-function FantomSpiritNXTReadIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : NXTDataBuffer) : integer; cdecl; external;
+function FantomSpiritNXTPollCommand(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : PBRDataBuffer) : integer; cdecl; external;
+function FantomSpiritNXTWriteIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : PBRDataBuffer; chkResponse : byte) : integer; cdecl; external;
+function FantomSpiritNXTReadIOMap(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : PBRDataBuffer) : integer; cdecl; external;
 function FantomSpiritNXTFindFirstModule(fsh : FantomHandle; ModName : PChar; var Handle : FantomHandle; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl; external;
 function FantomSpiritNXTFindNextModule(fsh : FantomHandle; var Handle : FantomHandle; ModName : PChar; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl; external;
 function FantomSpiritNXTRenameFile(fsh : FantomHandle; old, new : PChar; chkResponse: byte) : integer; cdecl; external;
@@ -181,7 +182,7 @@ procedure FantomSpiritDownloadMemoryMap(fsh : FantomHandle; value : PChar); cdec
 function FantomSpiritNXTFirmwareVersion(fsh : FantomHandle) : integer; cdecl; external;
 function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; external;
 procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; external;
-function NameToNXTFileType(name : PChar) : integer; cdecl; external;
+function NXTNameToPBRFileType(name : PChar) : integer; cdecl; external;
 procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl; external;
 
 
@@ -222,9 +223,9 @@ var
   FantomSpiritNXTStartProgram : function(fsh : FantomHandle; filename : PChar) : integer; cdecl;
   FantomSpiritNXTStopProgram : function(fsh : FantomHandle) : integer; cdecl;
   FantomSpiritNXTPlaySoundFile : function(fsh : FantomHandle; filename : PChar; bLoop : byte) : integer; cdecl;
-  FantomSpiritGetNXTOutputState : function(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl;
-  FantomSpiritSetNXTOutputState : function(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl;
-  FantomSpiritGetNXTInputValues : function(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl;
+  FantomSpiritDCGetOutputState : function(fsh : FantomHandle; aPort : byte; var pwr : integer; var mode, rmode : byte; var tratio : integer; var rstate : byte; var tlimit : cardinal; var tcnt, btcnt, rcnt : longint) : integer; cdecl;
+  FantomSpiritDCSetOutputState : function(fsh : FantomHandle; aPort : byte; pwr : integer; mode, rmode : byte; tratio : integer; rstate : byte; tlimit : cardinal) : integer; cdecl;
+  FantomSpiritDCGetInputValues : function(fsh : FantomHandle; aPort : byte; var valid, calib, stype, smode : byte; var raw, normal : word; var scaled, calvalue : smallint) : integer; cdecl;
   FantomSpiritSetNXTInputMode : function(fsh : FantomHandle; aPort, stype, smode : byte) : integer; cdecl;
   FantomSpiritNXTResetInputScaledValue : function(fsh : FantomHandle; aPort : byte) : integer; cdecl;
   FantomSpiritNXTResetOutputPosition : function(fsh : FantomHandle; aPort, Relative : byte) : integer; cdecl;
@@ -233,7 +234,7 @@ var
   FantomSpiritNXTLSGetStatus : function(fsh : FantomHandle; aPort : byte; var bready, lsstate : byte) : integer; cdecl;
   FantomSpiritNXTGetCurrentProgramName : function(fsh : FantomHandle; name : PChar) : integer; cdecl;
   FantomSpiritNXTGetButtonState : function(fsh : FantomHandle; idx, reset : byte; var pressed, count : byte) : integer; cdecl;
-  FantomSpiritNXTMessageRead : function(fsh : FantomHandle; remote, local, remove : byte; var msg : NXTMessage) : integer; cdecl;
+  FantomSpiritNXTMessageRead : function(fsh : FantomHandle; remote, local, remove : byte; var msg : PBRMessage) : integer; cdecl;
   FantomSpiritNXTSetPropDebugging : function(fsh : FantomHandle; debug : byte; pauseClump : byte; pausePC : Word) : integer; cdecl;
   FantomSpiritNXTGetPropDebugging : function(fsh : FantomHandle; var debug : byte; var pauseClump : byte; var pausePC : Word) : integer; cdecl;
   FantomSpiritNXTSetVMState : function(fsh : FantomHandle; state : byte) : integer; cdecl;
@@ -241,8 +242,8 @@ var
   FantomSpiritNXTGetVMState : function(fsh : FantomHandle; var state, clump : byte; var pc : word) : integer; cdecl;
   FantomSpiritNXTOpenRead : function(fsh : FantomHandle; filename : PChar; var handle : FantomHandle; var size : cardinal) : integer; cdecl;
   FantomSpiritNXTOpenWrite : function(fsh : FantomHandle; filename : PChar; const size : cardinal; var handle : FantomHandle) : integer; cdecl;
-  FantomSpiritNXTRead : function(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : NXTDataBuffer) : integer; cdecl;
-  FantomSpiritNXTWrite : function(fsh : FantomHandle; var handle : FantomHandle; buffer : NXTDataBuffer; var count : word; chkResponse : byte) : integer; cdecl;
+  FantomSpiritNXTRead : function(fsh : FantomHandle; var handle : FantomHandle; var count : word; var buffer : PBRDataBuffer) : integer; cdecl;
+  FantomSpiritNXTWrite : function(fsh : FantomHandle; var handle : FantomHandle; buffer : PBRDataBuffer; var count : word; chkResponse : byte) : integer; cdecl;
   FantomSpiritNXTCloseFile : function(fsh : FantomHandle; var handle : FantomHandle; chkResponse: byte) : integer; cdecl;
   FantomSpiritNXTDeleteFile : function(fsh : FantomHandle; filename : PChar; chkResponse: byte) : integer; cdecl;
   FantomSpiritNXTFindFirstFile : function(fsh : FantomHandle; filename : PChar; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : integer; cdecl;
@@ -261,9 +262,9 @@ var
   FantomSpiritNXTDeleteUserFlash : function(fsh : FantomHandle; chkResponse: byte) : integer; cdecl;
   FantomSpiritNXTBTFactoryReset : function(fsh : FantomHandle; chkResponse: byte) : integer; cdecl;
   FantomSpiritNXTPollCommandLen : function(fsh : FantomHandle; bufNum : byte; var count : byte) : integer; cdecl;
-  FantomSpiritNXTPollCommand : function(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : NXTDataBuffer) : integer; cdecl;
-  FantomSpiritNXTWriteIOMap : function(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : NXTDataBuffer; chkResponse : byte) : integer; cdecl;
-  FantomSpiritNXTReadIOMap : function(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : NXTDataBuffer) : integer; cdecl;
+  FantomSpiritNXTPollCommand : function(fsh : FantomHandle; bufNum : byte; var count : byte; var buffer : PBRDataBuffer) : integer; cdecl;
+  FantomSpiritNXTWriteIOMap : function(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; buffer : PBRDataBuffer; chkResponse : byte) : integer; cdecl;
+  FantomSpiritNXTReadIOMap : function(fsh : FantomHandle; var ModID : Cardinal; Offset : Word; var count : Word; var buffer : PBRDataBuffer) : integer; cdecl;
   FantomSpiritNXTFindFirstModule : function(fsh : FantomHandle; ModName : PChar; var Handle : FantomHandle; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl;
   FantomSpiritNXTFindNextModule : function(fsh : FantomHandle; var Handle : FantomHandle; ModName : PChar; var ModID, ModSize : Cardinal; var IOMapSize : Word) : integer; cdecl;
   FantomSpiritNXTRenameFile : function(fsh : FantomHandle; old, new : PChar; chkResponse: byte) : integer; cdecl;
@@ -303,7 +304,7 @@ var
   FantomSpiritNXTFirmwareVersion :  function(fsh : FantomHandle) : integer; cdecl;
   FantomSpiritNXTInstalledFirmware : function(fsh : FantomHandle) : byte; cdecl;
   FantomSpiritNXTGetBrickName : procedure(fsh : FantomHandle; name : PChar); cdecl;
-  NameToNXTFileType : function(name : PChar) : integer; cdecl;
+  NXTNameToPBRFileType : function(name : PChar) : integer; cdecl;
   LoadLSBlock : procedure(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl;
 
 var
@@ -409,12 +410,12 @@ begin
     Assert(@FantomSpiritNXTStopProgram <> nil);
     @FantomSpiritNXTPlaySoundFile := GetProcAddress(DLLHandle, 'FantomSpiritNXTPlaySoundFile');
     Assert(@FantomSpiritNXTPlaySoundFile <> nil);
-    @FantomSpiritGetNXTOutputState := GetProcAddress(DLLHandle, 'FantomSpiritGetNXTOutputState');
-    Assert(@FantomSpiritGetNXTOutputState <> nil);
-    @FantomSpiritSetNXTOutputState := GetProcAddress(DLLHandle, 'FantomSpiritSetNXTOutputState');
-    Assert(@FantomSpiritSetNXTOutputState <> nil);
-    @FantomSpiritGetNXTInputValues := GetProcAddress(DLLHandle, 'FantomSpiritGetNXTInputValues');
-    Assert(@FantomSpiritGetNXTInputValues <> nil);
+    @FantomSpiritDCGetOutputState := GetProcAddress(DLLHandle, 'FantomSpiritDCGetOutputState');
+    Assert(@FantomSpiritDCGetOutputState <> nil);
+    @FantomSpiritDCSetOutputState := GetProcAddress(DLLHandle, 'FantomSpiritDCSetOutputState');
+    Assert(@FantomSpiritDCSetOutputState <> nil);
+    @FantomSpiritDCGetInputValues := GetProcAddress(DLLHandle, 'FantomSpiritDCGetInputValues');
+    Assert(@FantomSpiritDCGetInputValues <> nil);
     @FantomSpiritSetNXTInputMode := GetProcAddress(DLLHandle, 'FantomSpiritSetNXTInputMode');
     Assert(@FantomSpiritSetNXTInputMode <> nil);
     @FantomSpiritNXTResetInputScaledValue := GetProcAddress(DLLHandle, 'FantomSpiritNXTResetInputScaledValue');
@@ -571,8 +572,8 @@ begin
     Assert(@FantomSpiritNXTInstalledFirmware <> nil);
     @FantomSpiritNXTGetBrickName := GetProcAddress(DLLHandle, 'FantomSpiritNXTGetBrickName');
     Assert(@FantomSpiritNXTGetBrickName <> nil);
-    @NameToNXTFileType := GetProcAddress(DLLHandle, 'NameToNXTFileType');
-    Assert(@NameToNXTFileType <> nil);
+    @NXTNameToPBRFileType := GetProcAddress(DLLHandle, 'NXTNameToPBRFileType');
+    Assert(@NXTNameToPBRFileType <> nil);
     @LoadLSBlock := GetProcAddress(DLLHandle, 'LoadLSBlock');
     Assert(@LoadLSBlock <> nil);
   end

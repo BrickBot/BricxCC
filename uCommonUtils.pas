@@ -84,6 +84,9 @@ function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
 function BinToInt(const aValue: String): Cardinal;
 function BinToIntDef(const aValue: String; const aDefault : Cardinal): Cardinal;
 
+function ExtractUnixFilePath(const FileName: string): string;
+function ExtractUnixFileName(const FileName: string): string;
+
 implementation
 
 uses
@@ -365,6 +368,22 @@ begin
       break;
     end;
   end;
+end;
+
+function ExtractUnixFilePath(const FileName: string): string;
+var
+  I: Integer;
+begin
+  I := LastDelimiter('/', FileName);
+  Result := Copy(FileName, 1, I);
+end;
+
+function ExtractUnixFileName(const FileName: string): string;
+var
+  I: Integer;
+begin
+  I := LastDelimiter('/', FileName);
+  Result := Copy(FileName, I+1, MaxInt);
 end;
 
 end.

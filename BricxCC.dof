@@ -94,10 +94,10 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;NXT;samplerate;png;grep;pbr
+SearchPath=$(DELPHI)\Lib\Debug;bricktools;NXT;samplerate;png;grep;pbr
 Packages=Vcl50;Vclx50;VclSmp50;Vcldb50;vclado50;ibevnt50;Vclbde50;vcldbx50;Qrpt50;TeeUI50;TeeDB50;Tee50;Dss50;TeeQR50;VCLIB50;Vclmid50;vclie50;Inetdb50;Inet50;NMFast50;webmid50;dclocx50;dclaxserver50;O217_R50;O217BR50;TCSComp_50
 Conditionals=FAST_MM, CAN_DOWNLOAD
-DebugSourceDirs=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
+DebugSourceDirs=D:\BricxCC\NXT\;D:\bricxcc\bricktools\;D:\bricxcc_new\bricktools\;D:\bricxcc_new\grep\
 UsePackages=0
 [Parameters]
 RunParams=
@@ -122,7 +122,7 @@ AutoIncBuild=0
 MajorVer=3
 MinorVer=3
 Release=8
-Build=10
+Build=11
 Debug=0
 PreRelease=0
 Special=0
@@ -133,7 +133,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=JoCar Consulting
 FileDescription=Programmable Brick IDE
-FileVersion=3.3.8.10
+FileVersion=3.3.8.11
 InternalName=Bricx Command Center
 LegalCopyright=Copyright (c) 1998-2013 John Hansen
 LegalTrademarks=
@@ -141,16 +141,6 @@ OriginalFilename=bricxcc.exe
 ProductName=Bricx Command Center
 ProductVersion=3.3
 Comments=NQC (c) 1998-2013 David Baum, John Hansen
-[Excluded Packages]
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxCoreD7.bpl=ExpressCoreLibrary by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxLibraryD7.bpl=Express Cross Platform Library by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxPageControlD7.bpl=ExpressPageControl by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxEditorsD7.bpl=ExpressEditors Library by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxEditorFieldLinkD7.bpl=ExpressEditors FieldLink by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxLayoutControlD7.bpl=ExpressLayout Control by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dclcxGridD7.bpl=ExpressQuantumGrid by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxmdsD7.bpl=ExpressMemData by Developer Express Inc.
-C:\Program Files (x86)\Dev Express.VCL\Library\Delphi7\dcldxNavBarD7.bpl=ExpressNavBar by Developer Express Inc.
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=G:\nxt\BricxCC\source\NXT\

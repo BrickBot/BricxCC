@@ -22,7 +22,9 @@ uses
   SysUtils;
 
 procedure DebugLog(const aMsg : string); overload;
+procedure DebugLog(Data : PByte; const len : word); overload;
 procedure DebugLog(E : EAccessViolation); overload;
+procedure DebugLog(Data : array of byte); overload;
 procedure DebugFmt(const aFormat: string; const Args: array of const);
 
 implementation
@@ -50,6 +52,27 @@ end;
 procedure DebugLog(const aMsg : string);
 begin
   WriteToLog(aMsg);
+end;
+
+procedure DebugLog(Data : PByte; const len : word); overload;
+var
+  aMsg : string;
+  p : PByte;
+  i : integer;
+begin
+  aMsg := '';
+  p := Data;
+  for i := 0 to len - 1 do
+  begin
+    aMsg := aMsg + Format('%2.2x', [p^]);;
+    inc(p);
+  end;
+  DebugLog(aMsg);
+end;
+
+procedure DebugLog(Data : array of byte);
+begin
+  DebugLog(PByte(@Data[0]), Length(Data));
 end;
 
 procedure DebugLog(E: EAccessViolation);

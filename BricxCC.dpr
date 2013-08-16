@@ -122,7 +122,15 @@ uses
   uTextViewer in 'uTextViewer.pas' {frmTextView},
   uNXTWatchList in 'uNXTWatchList.pas' {frmNXTWatchList},
   uSimpleTerm in 'uSimpleTerm.pas' {frmSimpleTerm},
-  uNXTImage in 'uNXTImage.pas' {frmNXTImage};
+  uNXTImage in 'uNXTImage.pas' {frmNXTImage},
+  uBrickImage in 'uBrickImage.pas' {frmBrickImage},
+  uLiveSensors in 'uLiveSensors.pas' {frmLiveSensors},
+  ev3RGFedit_MainForm in 'ev3RGFedit_MainForm.pas' {frmEV3RGFEDIT},
+  ev3RGFedit_AddText in 'ev3RGFedit_AddText.pas' {frmAddText},
+  ev3RGFedit_Basis in 'ev3RGFedit_Basis.pas',
+  ev3RGFedit_FileImport in 'ev3RGFedit_FileImport.pas' {frmImageImport},
+  ev3RGFEdit_FileOpen in 'ev3RGFEdit_FileOpen.pas' {frmFileOpen},
+  ev3RGFedit_FileSave in 'ev3RGFedit_FileSave.pas' {frmFileSave};
 
 {$IFNDEF FPC}
 {.$R *.TLB}
@@ -184,8 +192,13 @@ begin
   Application.CreateForm(TfrmNXTExplorer, frmNXTExplorer);
   Application.CreateForm(TfrmNXTController, frmNXTController);
   Application.CreateForm(TfrmNXTImage, frmNXTImage);
+  Application.CreateForm(TfrmBrickImage, frmBrickImage);
   Application.CreateForm(TfrmNXTWatchList, frmNXTWatchList);
+  Application.CreateForm(TfrmLiveSensors, frmLiveSensors);
   Application.CreateForm(TfrmSimpleTerm, frmSimpleTerm);
+  Application.CreateForm(TfrmEV3RGFEDIT, frmEV3RGFEDIT);
+  Application.CreateForm(TfrmAddText, frmAddText);
+  Application.CreateForm(TfrmFileSave, frmFileSave);
   if not ParamSwitch('/RESET') then
     UpgradeRegistry(nil, nil, nil, nil, nil, nil); // must be done before creating preferences form
   if ParamSwitch('-EMBEDDING') or ParamSwitch('-AUTOMATION') then

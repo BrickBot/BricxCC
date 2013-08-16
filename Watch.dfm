@@ -2476,7 +2476,7 @@ object WatchForm: TWatchForm
           Width = 153
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 1
         end
         object edtPI2CVal1: TEdit
@@ -2501,7 +2501,7 @@ object WatchForm: TWatchForm
           Width = 153
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 4
         end
         object edtPI2CVal2: TEdit
@@ -2526,7 +2526,7 @@ object WatchForm: TWatchForm
           Width = 153
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 7
         end
         object edtPI2CVal3: TEdit
@@ -2551,7 +2551,7 @@ object WatchForm: TWatchForm
           Width = 153
           Height = 21
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 10
         end
         object edtPI2CVal4: TEdit

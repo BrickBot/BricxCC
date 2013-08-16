@@ -310,11 +310,11 @@ begin
       // just download the already compiled binary file
       if not BrickComm.IsOpen then
         BrickComm.Open;
-      theType := NameToEV3FileType(InputFilename);
-      BrickComm.NXTStopProgram;
+      theType := EV3NameToPBRFileType(InputFilename);
+      BrickComm.DCStopProgram;
       if Download then
       begin
-        bDownloadOK := BrickComm.NXTDownloadStream(sIn, InputFilename, theType);
+        bDownloadOK := BrickComm.DownloadStream(sIn, InputFilename, theType);
         if bDownloadOK then
           DoBeep
         else begin
@@ -323,7 +323,7 @@ begin
         end;
       end;
       if RunProgram then
-        BrickComm.NXTStartProgram(InputFilename);
+        BrickComm.DCStartProgram(InputFilename);
 {$ENDIF}
     end
     else
@@ -398,11 +398,11 @@ begin
                     // download the compiled code to the brick
                     if not BrickComm.IsOpen then
                       BrickComm.Open;
-                    BrickComm.NXTStopProgram;
+                    BrickComm.DCStopProgram;
                     sObj := TMemoryStream.Create;
                     try
                       SProBinToObj(sOut, sObj);
-                      if BrickComm.NXTDownloadStream(sObj, '', nftProgram) then
+                      if BrickComm.DownloadStream(sObj, '', nftProgram) then
                         DoBeep
                       else begin
                         Result := 2;
@@ -413,7 +413,7 @@ begin
                     end;
                   end;
                   if RunProgram then
-                    BrickComm.NXTStartProgram(tmpName);
+                    BrickComm.DCStartProgram(tmpName);
 {$ENDIF}
                   if WriteOutput then
                     sOut.SaveToFile(EV3Name);
@@ -618,7 +618,7 @@ function TEVCCompiler.CheckFirmwareVersion: boolean;
 //  fwVer : word;
 begin
 {$IFDEF CAN_DOWNLOAD}
-  fwVer := BrickComm.NXTFirmwareVersion;
+  fwVer := BrickComm.SCFirmwareVersion;
   if fwVer <> 0 then
   begin
     // if we say we are targetting a 1.0x firmware then the actual
