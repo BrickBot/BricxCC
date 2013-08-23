@@ -123,7 +123,6 @@ uses
   uNXTWatchList in 'uNXTWatchList.pas' {frmNXTWatchList},
   uSimpleTerm in 'uSimpleTerm.pas' {frmSimpleTerm},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage},
-  uBrickImage in 'uBrickImage.pas' {frmBrickImage},
   uLiveSensors in 'uLiveSensors.pas' {frmLiveSensors},
   ev3RGFedit_MainForm in 'ev3RGFedit_MainForm.pas' {frmEV3RGFEDIT},
   ev3RGFedit_AddText in 'ev3RGFedit_AddText.pas' {frmAddText},
@@ -192,7 +191,6 @@ begin
   Application.CreateForm(TfrmNXTExplorer, frmNXTExplorer);
   Application.CreateForm(TfrmNXTController, frmNXTController);
   Application.CreateForm(TfrmNXTImage, frmNXTImage);
-  Application.CreateForm(TfrmBrickImage, frmBrickImage);
   Application.CreateForm(TfrmNXTWatchList, frmNXTWatchList);
   Application.CreateForm(TfrmLiveSensors, frmLiveSensors);
   Application.CreateForm(TfrmSimpleTerm, frmSimpleTerm);

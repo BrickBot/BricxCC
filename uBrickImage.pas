@@ -30,7 +30,7 @@ uses
   LCLType,
 {$ENDIF}
   Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus,
-  ExtDlgs, ActnList, StdCtrls, uOfficeComp, uNXTImageMovie, Buttons;
+  ExtDlgs, ActnList, StdCtrls, uOfficeComp, uNXTImageMovie;
 
 type
 
@@ -61,12 +61,7 @@ type
     dlgSavePic: TSaveDialog;
     actSave: TAction;
     actPrefs: TAction;
-    shpBack: TShape;
-    pnlNXTButtons: TPanel;
-    shpExit: TSpeedButton;
-    shpLeft2: TSpeedButton;
-    shpEnter: TSpeedButton;
-    shpRight2: TSpeedButton;
+    imgEV3: TImage;
     procedure tmrRefreshTimer(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -316,6 +311,7 @@ begin
   PopupMenu := pmuMain;
   imgScreen.PopupMenu := pmuMain;
   lblInfo.PopupMenu   := pmuMain;
+  imgEV3.PopupMenu    := pmuMain;
   fMovieWriter := TNXTImageMovie.Create(Self);
   fMovieWriter.MaxFramesPerMovie := NXTImageMaxFramesPerMovie;
   fCurrentName := '';
@@ -1011,6 +1007,7 @@ end;
 procedure TfrmBrickImage.SetImageSizeByBrickType;
 begin
   imgScreen.Picture.Assign(nil);
+{
   if IsEV3 then
   begin
     imgScreen.Width  := 356;
@@ -1023,13 +1020,14 @@ begin
   end;
   imgScreen.Left := (Width - imgScreen.Width) div 2;
   imgScreen.Top  := shpBack.Top + ((shpBack.Height - imgScreen.Height) div 2);
+}
 end;
 
 procedure TfrmBrickImage.FormShow(Sender: TObject);
 var
   len : integer;
 begin
-  pnlNXTButtons.Visible := IsNXT;
+//  pnlNXTButtons.Visible := IsNXT;
   len := ImageBufferSize;
   if Length(fBytes) <> len then
     SetLength(fBytes, ImageBufferSize);
@@ -1069,7 +1067,7 @@ end;
 
 initialization
 {$IFDEF FPC}
-  {$i uNXTImage.lrs}
+  {$i uBrickImage.lrs}
 {$ENDIF}
 
 end.

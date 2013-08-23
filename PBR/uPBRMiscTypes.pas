@@ -244,6 +244,8 @@ type
 		class procedure InputRead(layer : byte; port : TPortId; stype, smode, readSI, globalIndex : byte; aStream : TStream);
 		class procedure InputReadyRead(layer : byte; port : TPortId; stype, smode, numValues, readSI, globalIndex : byte; aStream : TStream);
 
+		class procedure InputTest(layer : byte; port : TPortId; globalIndex : byte; aStream : TStream);
+
     class procedure InputWrite(layer : byte; port : TPortId; data : TStream; aStream : TStream); overload;
     class procedure InputWrite(layer : byte; port : TPortId; data : TJCHBytes; aStream : TStream); overload;
 
@@ -297,6 +299,40 @@ type
     class procedure SoundReady(aStream: TStream);
     class procedure KeepAlive(blockIndex: byte; aStream: TStream);
     class procedure SetSleepMinutes(minutes: byte; aStream: TStream);
+
+    class procedure ButtonFlush(aStream : TStream);
+    class procedure ButtonWaitForPress(aStream : TStream);
+    class procedure ButtonPressed(btn, globalOffset : byte; aStream : TStream);
+    class procedure ButtonShortPressed(btn, globalOffset : byte; aStream : TStream);
+    class procedure ButtonGetBumped(btn, globalOffset : byte; aStream : TStream);
+    class procedure ButtonLongPressed(btn, globalOffset : byte; aStream : TStream);
+    class procedure ButtonPress(btn : byte; aStream : TStream);
+    class procedure ButtonRelease(btn : byte; aStream : TStream);
+    class procedure ButtonGetHorz(globalOffset : byte; aStream : TStream);
+    class procedure ButtonGetVert(globalOffset : byte; aStream : TStream);
+    class procedure ButtonGetClick(globalOffset : byte; aStream : TStream);
+(*
+    ubcSetBackBlock, // 10
+    ubcGetBackBlock,
+    ubcTestShortPress,
+    ubcTestLongPress,
+*)
+(*
+ *  <b>     opUI_BUTTON (CMD, ....)  </b>
+ *  - CMD = SET_BACK_BLOCK
+ *    -  \param  (DATA8)   BLOCKED  - Set UI back button blocked flag (0 = not blocked, 1 = blocked)\n
+ *
+ *  - CMD = GET_BACK_BLOCK
+ *    -  \return (DATA8)   BLOCKED  - Get UI back button blocked flag (0 = not blocked, 1 = blocked)\n
+ *
+ *  - CMD = TESTSHORTPRESS
+ *    -  \param  (DATA8)   BUTTON   - \ref buttons \n
+ *    -  \return (DATA8)   STATE    - Button has been hold down(0 = no, 1 = yes)\n
+ *
+ *  - CMD = TESTLONGPRESS
+ *    -  \param  (DATA8)   BUTTON   - \ref buttons \n
+ *    -  \return (DATA8)   STATE    - Button has been hold down(0 = no, 1 = yes)\n
+*)
   end;
 
   TCrcCalculator = class
@@ -1977,6 +2013,15 @@ begin
   TBinaryWriterExtension.Write(aStream, layer);
 end;
 
+class procedure TDirectCommandBuilder.InputTest(layer : byte;
+  port : TPortId; globalIndex : byte; aStream : TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, pbopINPUTTEST);
+  TBinaryWriterExtension.WriteIntArgument(aStream, layer, atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, Byte(port), atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalIndex, atGlobalOffset);
+end;
+
 class procedure TDirectCommandBuilder.InputWrite(layer: byte;
   port: TPortId; data, aStream: TStream);
 var
@@ -2468,6 +2513,82 @@ end;
 class procedure TDirectCommandBuilder.SoundReady(aStream: TStream);
 begin
   TBinaryWriterExtension.WriteOpCode(aStream, pbopSOUNDREADY);
+end;
+
+class procedure TDirectCommandBuilder.ButtonFlush(aStream : TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcFlush));
+end;
+
+class procedure TDirectCommandBuilder.ButtonWaitForPress(aStream : TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcWaitForPress));
+end;
+
+class procedure TDirectCommandBuilder.ButtonGetBumped(btn, globalOffset: byte; aStream: TStream);
+begin
+  // read 1 byte
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcGetBumped));
+  TBinaryWriterExtension.WriteIntArgument(aStream, btn, atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+end;
+
+class procedure TDirectCommandBuilder.ButtonGetHorz(globalOffset: byte; aStream: TStream);
+begin
+  // read 2 bytes
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcGetHorz));
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+end;
+
+class procedure TDirectCommandBuilder.ButtonGetVert(globalOffset: byte; aStream: TStream);
+begin
+  // read 2 bytes
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcGetVert));
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+end;
+
+class procedure TDirectCommandBuilder.ButtonLongPressed(btn, globalOffset: byte; aStream: TStream);
+begin
+  // read 1 byte
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcLongPress));
+  TBinaryWriterExtension.WriteIntArgument(aStream, btn, atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+end;
+
+class procedure TDirectCommandBuilder.ButtonPress(btn: byte; aStream: TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcPress));
+  TBinaryWriterExtension.WriteIntArgument(aStream, btn, atInteger);
+end;
+
+class procedure TDirectCommandBuilder.ButtonPressed(btn, globalOffset: byte; aStream: TStream);
+begin
+  // read 1 byte
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcPressed));
+  TBinaryWriterExtension.WriteIntArgument(aStream, btn, atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+end;
+
+class procedure TDirectCommandBuilder.ButtonRelease(btn: byte; aStream: TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcRelease));
+  TBinaryWriterExtension.WriteIntArgument(aStream, btn, atInteger);
+end;
+
+class procedure TDirectCommandBuilder.ButtonShortPressed(btn, globalOffset: byte; aStream: TStream);
+begin
+  // read 1 byte
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcShortPress));
+  TBinaryWriterExtension.WriteIntArgument(aStream, btn, atInteger);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
+end;
+
+class procedure TDirectCommandBuilder.ButtonGetClick(globalOffset: byte;
+  aStream: TStream);
+begin
+  // read 1 byte
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpCode(ubcGetClick));
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
 end;
 
 { TBinaryWriterExtension }

@@ -71,6 +71,15 @@ const
   DATA_RAW      = $12; //!< Raw     (used in opINPUT_READEXT)
   DATA_SI       = $13; //!< SI unit (used in opINPUT_READEXT)
 
+  NO_BUTTON     = 0;
+  UP_BUTTON     = 1;
+  ENTER_BUTTON  = 2;
+  DOWN_BUTTON   = 3;
+  RIGHT_BUTTON  = 4;
+  LEFT_BUTTON   = 5;
+  BACK_BUTTON   = 6;
+  ANY_BUTTON    = 7;
+
 type
 	TArgType = (
 		atInteger,

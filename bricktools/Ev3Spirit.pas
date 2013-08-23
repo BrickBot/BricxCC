@@ -39,6 +39,7 @@ type
       const path: string; data: TStream): boolean;
     function ListFilesAndFolders(const searchPattern : string; aList : TStrings) : boolean;
     function ConvertToAbsoluteBrickPath(const filename: string): string;
+    function EV3ButtonPressOrRelease(const buffer: PBRDataBuffer): boolean;
     function EV3ReadScreenHack(Offset: Word; var Count: Word;
       var buffer: PBRDataBuffer): boolean;
     function PrettyPathToBrickPath(prettyPath: string;
@@ -641,8 +642,8 @@ begin
     DecodePort(port, layer);
     stype := aType;
     smode := Byte(MODE_KEEP);
-    TDirectCommandBuilder.StartCommand(ctDirectWithReply, 4, 0, ms);
-    TDirectCommandBuilder.InputRead(layer, TPortId(port), stype, smode, 1, 0, ms);
+    TDirectCommandBuilder.StartCommand(ctDirectWithReply, 1, 0, ms);
+    TDirectCommandBuilder.InputRead(layer, TPortId(port), stype, smode, 0, 0, ms);
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
@@ -678,8 +679,8 @@ begin
     DecodePort(port, layer);
     stype := TYPE_KEEP;
     smode := Byte(aMode);
-    TDirectCommandBuilder.StartCommand(ctDirectWithReply, 4, 0, ms);
-    TDirectCommandBuilder.InputRead(layer, TPortId(port), stype, smode, 1, 0, ms);
+    TDirectCommandBuilder.StartCommand(ctDirectWithReply, 1, 0, ms);
+    TDirectCommandBuilder.InputRead(layer, TPortId(port), stype, smode, 0, 0, ms);
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
@@ -770,6 +771,7 @@ begin
     if Assigned(fActiveTransport) then
       fActiveTransport.Close;
     fActiveTransport := nil;
+    fSnapshotFolder := '';
     fActive := False;
   end;
 end;
@@ -793,7 +795,7 @@ begin
 //    DebugFmt('TFantomSpirit.Open: pName = "%s"', [pName]);
 //    DebugFmt('TFantomSpirit.Open: bName = "%s"', [bName]);
     fActive := Transport.Open;
-    SetupSnapshotTool;
+    fSnapshotFolder := '';
     Result := fActive;
   end;
 end;
@@ -2311,11 +2313,58 @@ begin
   Result := False;
 end;
 
+function TranslateButton(btn : byte) : byte;
+begin
+  if btn > ANY_BUTTON then
+    btn := btn - 8;
+  case btn of
+    1 : Result := LEFT_BUTTON;
+    2 : Result := ENTER_BUTTON;
+    3 : Result := RIGHT_BUTTON;
+    4 : Result := BACK_BUTTON;
+    5 : Result := UP_BUTTON;
+    6 : Result := DOWN_BUTTON;
+  else
+    Result := NO_BUTTON;
+  end;
+end;
+
+function TEv3Spirit.EV3ButtonPressOrRelease(const buffer: PBRDataBuffer): boolean;
+var
+  ms : TMemoryStream;
+  rspData : TEV3Data;
+  id : Word;
+  btn : byte;
+  bRelease : boolean;
+begin
+  Result := False;
+  btn := buffer.Data[0];
+  bRelease := btn > ANY_BUTTON;
+  btn := TranslateButton(btn);
+  ms := TMemoryStream.Create;
+  try
+    TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
+    if bRelease then
+      TDirectCommandBuilder.ButtonRelease(btn, ms)
+    else
+      TDirectCommandBuilder.ButtonPress(btn, ms);
+    id := NextSequenceID;
+    Result := Transport.SendStream(id, ms) = ms.Size;
+  finally
+    ms.Free;
+  end;
+end;
+
 function TEv3Spirit.SCWriteIOMap(var ModID: Cardinal;
   const Offset: Word; var count: Word; const buffer: PBRDataBuffer;
   chkResponse : Boolean): boolean;
 begin
   Result := False;
+  if IsOpen and (ModID = kNXT_ModuleUI) and (Offset = UIOffsetButton) and (count = 1) then
+  begin
+    // this appears to be an attempt to press an EV3 button
+    Result := EV3ButtonPressOrRelease(buffer);
+  end;
 end;
 
 function TEv3Spirit.EV3ReadScreenHack(Offset: Word; var Count: Word; var buffer: PBRDataBuffer): boolean;
@@ -2340,6 +2389,7 @@ begin
        ((Offset = DisplayOffsetNormal(0, 0)) or
         (Offset = DisplayOffsetPopup(0, 0))) then
     begin
+      SetupSnapshotTool;
       fSnapshotBaseOffset := Offset;
       // create snapshot, upload file to stream, and process first Count bytes
       fSnapshotMS.Clear;
@@ -2871,7 +2921,7 @@ begin
             begin
               stype := rspData[1];
               if stype = 126 then stype := 0;
-              smode := rspData[2];
+              smode := rspData[2] * 32;
               if aSrc = kRCX_InputTypeType then
               begin
                 fSensorType[aNum] := stype;
@@ -3707,7 +3757,7 @@ begin
     ListFiles('/media/card/snapshot/*.*', SL);
     for i := 0 to SL.Count - 1 do
     begin
-      if Pos('snapshot', SL[i]) = 1 then
+      if Pos('snapshot=', SL[i]) = 1 then
       begin
         bFound := True;
         fSnapshotFolder := '/media/card/snapshot/';
@@ -3719,7 +3769,7 @@ begin
       ListFiles('/mnt/ramdisk/prjs/snapshot/*.*', SL);
       for i := 0 to SL.Count - 1 do
       begin
-        if Pos('snapshot', SL[i]) = 1 then
+        if Pos('snapshot=', SL[i]) = 1 then
         begin
           bFound := True;
           fSnapshotFolder := '/mnt/ramdisk/prjs/snapshot/';
@@ -3730,7 +3780,7 @@ begin
     // if we didn't find it then we need to download it to the EV3
     if not bFound then
     begin
-      fSnapshotFolder := '/home/root/lms2012/prjs/snapshot/';
+      fSnapshotFolder := '/mnt/ramdisk/prjs/snapshot/';
       oldBF := BrickFolder;
       try
         BrickFolder := fSnapshotFolder;
