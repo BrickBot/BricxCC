@@ -70,16 +70,39 @@ type
     dlgSavePic: TSaveDialog;
     actSave: TAction;
     actPrefs: TAction;
-    procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    imgEV3: TImage;
+    shpEV3Exit: TShape;
+    shpEV3Left: TShape;
+    shpEV3Right: TShape;
+    shpEV3Enter: TShape;
+    shpEV3Up: TShape;
+    shpEV3Down: TShape;
     procedure tmrRefreshTimer(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure shpEnterMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure shpExitMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpUpMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpDownMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpLeftMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpEnterMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpRightMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpExitMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpUpMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpDownMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure RescaleClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -165,12 +188,15 @@ type
     fClickStream : TMemoryStream;
     fCurrentName : string;
     fMovieWriter : TNXTImageMovie;
+    procedure ConfigureForm;
     function ImageBufferSize : integer;
     procedure RefreshImage;
     procedure RetrieveScreenBytes;
     procedure DrawImage;
     procedure ExecuteButton(const btn : integer);
-    procedure ScaleForm(const i : integer);
+    procedure ScaleForm;
+    procedure ScaleNXTForm(const i : integer);
+    procedure ScaleEV3Form(const i : integer);
     procedure ResizeImage;
     procedure DoClick;
     function GraphicClassFromExt(ext: string): TGraphicClass;
@@ -197,7 +223,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Themes, Clipbrd,
+  SysUtils, Themes, Clipbrd, Math,
   {$IFNDEF FPC}
   JPEG, MMSystem, pngimage, GIFImage, uRICImage,
   {$ENDIF}
@@ -221,20 +247,6 @@ procedure TfrmNXTImage.tmrRefreshTimer(Sender: TObject);
 begin
   if not fBusy and Visible and (WindowState <> wsMinimized) then
     RefreshImage;
-end;
-
-procedure TfrmNXTImage.shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbLeft then
-    ExecuteButton(1);
-end;
-
-procedure TfrmNXTImage.shpRightMouseDown(Sender: TObject; Button: TMouseButton;
-  Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbLeft then
-    ExecuteButton(3);
 end;
 
 procedure TfrmNXTImage.RefreshImage;
@@ -353,6 +365,7 @@ begin
   SetLength(fBytes, ImageBufferSize);
   CreatePopupMenu;
   imgNXT.PopupMenu    := pmuMain;
+  imgEV3.PopupMenu    := pmuMain;
   imgScreen.PopupMenu := pmuMain;
   lblInfo.PopupMenu   := pmuMain;
   fMovieWriter := TNXTImageMovie.Create(Self);
@@ -360,9 +373,8 @@ begin
   fCurrentName := '';
   fDisplayNormal := True;
   imgNXT.Picture.Bitmap.FreeImage;
+  imgEV3.Picture.Bitmap.FreeImage;
   Self.DoubleBuffered := True;
-  ScaleForm(NXTImageScale);    // 2.5x
-  tmrRefresh.Interval := NXTImageDefaultRefreshRate;
 {$IFNDEF FPC}
   dlgSavePic.Filter :=
     'All (*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.png;*.jpg;*.jpeg;*.gif;*.bmp|' +
@@ -399,7 +411,15 @@ begin
   count  := 1;
   b.Data[0] := btn;
   BrickComm.SCWriteIOMap(modID, offset, count, b);
-  DoClick;
+  if btn < 8 then
+    DoClick;
+end;
+
+procedure TfrmNXTImage.shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(1);
 end;
 
 procedure TfrmNXTImage.shpEnterMouseDown(Sender: TObject;
@@ -409,6 +429,13 @@ begin
     ExecuteButton(2);
 end;
 
+procedure TfrmNXTImage.shpRightMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(3);
+end;
+
 procedure TfrmNXTImage.shpExitMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
@@ -416,11 +443,67 @@ begin
     ExecuteButton(4);
 end;
 
+procedure TfrmNXTImage.shpUpMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(5);
+end;
+
+procedure TfrmNXTImage.shpDownMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(6);
+end;
+
+procedure TfrmNXTImage.shpLeftMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(9);
+end;
+
+procedure TfrmNXTImage.shpEnterMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(10);
+end;
+
+procedure TfrmNXTImage.shpRightMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(11);
+end;
+
+procedure TfrmNXTImage.shpExitMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(12);
+end;
+
+procedure TfrmNXTImage.shpUpMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(13);
+end;
+
+procedure TfrmNXTImage.shpDownMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(14);
+end;
+
 procedure TfrmNXTImage.RescaleClick(Sender: TObject);
 begin
   TOfficeMenuItem(Sender).Checked := True;
   NXTImageScale := TOfficeMenuItem(Sender).Tag;
-  ScaleForm(NXTImageScale);
+  ScaleForm;
 end;
 
 procedure TfrmNXTImage.ScaleClick(Sender: TObject);
@@ -447,6 +530,17 @@ begin
   end;
 end;
 
+procedure TfrmNXTImage.ScaleForm;
+begin
+  if IsNXT then
+    ScaleNXTForm(NXTImageScale)
+  else
+    ScaleEV3Form(NXTImageScale);
+end;
+
+procedure TfrmNXTImage.ScaleNXTForm(const i: integer);
+var
+  factor : double;
 const
   NxtWidth     = 429.0;
   NxtHeight    = 662.0;
@@ -487,10 +581,6 @@ const
   Right3Top    = 406;
   Right3Width  = 32;
   Right3Height = 17;
-
-procedure TfrmNXTImage.ScaleForm(const i: integer);
-var
-  factor : double;
 begin
   case i of
     0 : factor := 0.4; // 1x
@@ -554,6 +644,96 @@ begin
   shpRight3.Height  := Trunc(Right3Height * factor);
 end;
 
+procedure TfrmNXTImage.ScaleEV3Form(const i: integer);
+var
+  factor : double;
+const
+  Ev3Width     = 315.0;
+  Ev3Height    = 485.0;
+  AspectRatio  = Ev3Height/Ev3Width;
+  ScrnLeft     = 66;
+  ScrnTop      = 45;
+  ScrnWidth    = 178;
+  ScrnHeight   = 128;
+  ExitLeft     = 38;
+  ExitTop      = 224;
+  ExitWidth    = 67;
+  ExitHeight   = 33;
+  LeftLeft     = 72;
+  LeftTop      = 292;
+  LeftWidth    = 45;
+  LeftHeight   = 35;
+  RightLeft    = 196;
+  RightTop     = 292;
+  RightWidth   = 45;
+  RightHeight  = 35;
+  EnterLeft    = 140;
+  EnterTop     = 292;
+  EnterWidth   = 34;
+  EnterHeight  = 35;
+  UpLeft       = 125;
+  UpTop        = 248;
+  UpWidth      = 63;
+  UpHeight     = 38;
+  DownLeft     = 125;
+  DownTop      = 333;
+  DownWidth    = 63;
+  DownHeight   = 38;
+begin
+  case i of
+    0 : factor := 1.0; // 1x
+    1 : factor := 1.25; // 1.25x
+    2 : factor := 1.5; // 1.5x
+    3 : factor := 1.75; // 1.75x
+    4 : factor := 2.0; // 2x
+    5 : factor := 2.25; // 2.2x
+    6 : factor := 2.5; // 2.5x
+    7 : factor := 2.75; // 2.8x
+    8 : factor := 3.0; // 3x
+    9 : factor := 3.25; // 3.2x
+   10 : factor := 3.5; // 3.5x
+   11 : factor := 3.75; // 3.8x
+   12 : factor := 4.0; // 4x
+  else
+    factor := 1.0;
+  end;
+  // every control gets its top, left, width, and height multiplied by factor
+  imgEV3.Width     := Trunc(Ev3Width * factor);
+  imgEV3.Height    := Trunc(imgEV3.Width * AspectRatio);
+//  imgEV3.Height    := Trunc(Ev3Height * factor);
+  Width      := imgEV3.Width + 2;
+  Height     := imgEV3.Height + 2;
+  imgScreen.Left   := Trunc(ScrnLeft * factor);
+  imgScreen.Top    := Trunc(ScrnTop * factor);
+  imgScreen.Width  := Trunc(ScrnWidth * factor);
+  imgScreen.Height := Trunc(ScrnHeight * factor);
+  ResizeImage;
+  shpEV3Exit.Left     := Trunc(ExitLeft * factor);
+  shpEV3Exit.Top      := Trunc(ExitTop * factor);
+  shpEV3Exit.Width    := Trunc(ExitWidth * factor);
+  shpEV3Exit.Height   := Trunc(ExitHeight * factor);
+  shpEV3Left.Left     := Trunc(LeftLeft * factor);
+  shpEV3Left.Top      := Trunc(LeftTop * factor);
+  shpEV3Left.Width    := Trunc(LeftWidth * factor);
+  shpEV3Left.Height   := Trunc(LeftHeight * factor);
+  shpEV3Right.Left    := Trunc(RightLeft * factor);
+  shpEV3Right.Top     := Trunc(RightTop * factor);
+  shpEV3Right.Width   := Trunc(RightWidth * factor);
+  shpEV3Right.Height  := Trunc(RightHeight * factor);
+  shpEV3Enter.Left    := Trunc(EnterLeft * factor);
+  shpEV3Enter.Top     := Trunc(EnterTop * factor);
+  shpEV3Enter.Width   := Trunc(EnterWidth * factor);
+  shpEV3Enter.Height  := Trunc(EnterHeight * factor);
+  shpEV3Up.Left       := Trunc(UpLeft * factor);
+  shpEV3Up.Top        := Trunc(UpTop * factor);
+  shpEV3Up.Width      := Trunc(UpWidth * factor);
+  shpEV3Up.Height     := Trunc(UpHeight * factor);
+  shpEV3Down.Left     := Trunc(DownLeft * factor);
+  shpEV3Down.Top      := Trunc(DownTop * factor);
+  shpEV3Down.Width    := Trunc(DownWidth * factor);
+  shpEV3Down.Height   := Trunc(DownHeight * factor);
+end;
+
 procedure TfrmNXTImage.ResizeImage;
 var
   bmp : TBitmap;
@@ -572,7 +752,7 @@ end;
 
 procedure TfrmNXTImage.mniAboutClick(Sender: TObject);
 begin
-  ShowMessage('NeXT Screen'#13#10'Copyright 2007-2013, John C. Hansen');
+  ShowMessage('Brick Screen'#13#10'Copyright 2007-2013, John C. Hansen');
 end;
 
 procedure TfrmNXTImage.actSaveExecute(Sender: TObject);
@@ -1335,16 +1515,55 @@ begin
   end;
 end;
 
+procedure TfrmNXTImage.ConfigureForm;
+var
+  bNXT : boolean;
+begin
+  bNXT := isNXT;
+  // NXT
+  imgNXT.Visible       := bNXT;
+  mniBootSAMBA.Visible := bNXT;
+  mniBTReset.Visible   := bNXT;
+  mni50ms.Visible      := bNXT;
+  mni100ms.Visible     := bNXT;
+  mni200ms.Visible     := bNXT;
+  mni500ms.Visible     := bNXT;
+  mniDisplay.Visible   := bNXT;
+  mniSep5.Visible      := bNXT;
+  shpExit.Visible      := bNXT;
+  shpEnter.Visible     := bNXT;
+  shpRight1.Visible    := bNXT;
+  shpRight2.Visible    := bNXT;
+  shpRight3.Visible    := bNXT;
+  shpLeft1.Visible     := bNXT;
+  shpLeft2.Visible     := bNXT;
+  shpLeft3.Visible     := bNXT;
+  // EV3
+  imgEV3.Visible       := not bNXT;
+  shpEV3Exit.Visible   := not bNXT;
+  shpEV3Left.Visible   := not bNXT;
+  shpEV3Right.Visible  := not bNXT;
+  shpEV3Enter.Visible  := not bNXT;
+  shpEV3Up.Visible     := not bNXT;
+  shpEV3Down.Visible   := not bNXT;
+end;
+
 procedure TfrmNXTImage.FormShow(Sender: TObject);
 var
   len : integer;
+  minInterval : integer;
 begin
+  minInterval := 1000;
+  if isNXT then
+    minInterval := 50;
+  tmrRefresh.Interval := Max(minInterval, NXTImageDefaultRefreshRate);
+  ConfigureForm;
 //  DebugFmt('length of fBytes = %d', [Length(fBytes)]);
   len := ImageBufferSize;
   if Length(fBytes) <> len then
     SetLength(fBytes, ImageBufferSize);
-//  SetImageSizeByBrickType;
-  ScaleForm(NXTImageScale);
+  imgScreen.Picture.Assign(nil);
+  ScaleForm;
   tmrRefresh.Interval := NXTImageDefaultRefreshRate;
   fMovieWriter.MaxFramesPerMovie := NXTImageMaxFramesPerMovie;
   dlgSavePic.InitialDir := DefaultNXTImageDirectory;

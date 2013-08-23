@@ -3,7 +3,8 @@ program ev3spirit_test;
 {$APPTYPE CONSOLE}
 
 uses
-  SysUtils, Classes, brick_common, EV3Spirit, uGlobals, uCompCommon, uImgFormats;
+  SysUtils, Classes, brick_common, EV3Spirit, uGlobals, uCompCommon, uImgFormats,
+  rcx_constants;
 
 var
   name, btaddr, filename : string;
@@ -16,7 +17,8 @@ begin
   BrickComm.Port := 'usb';
   if BrickComm.Open then
   begin
-    WriteLn(BrickComm.SendRawCommand('800000820F', false));
+    WriteLn(BrickComm.Poll(kRCX_TachCounterType, 0));
+//    WriteLn(BrickComm.SendRawCommand('800000820F', false));
     Sleep(2500);
 //    WriteLn(BrickComm.SendRawCommand('0004003A830100000060', false));
 //    WriteLn(BrickComm.SendRawCommand('0000009401816482B80182E803', false));
@@ -25,9 +27,9 @@ begin
 //    BrickComm.PlayTone(880, 2000);
 //    Sleep(500);
 //    BrickComm.ClearSound();
-    BrickComm.DCPlaySoundFile('/media/card/3', false);
+//    BrickComm.DCPlaySoundFile('/media/card/3', false);
 //    BrickComm.DCPlaySoundFile('../prjs/SD_Card/3', false);
-    Sleep(2500);
+//    Sleep(2500);
 (*
     WriteLn(BrickComm.BatteryLevel);
     WriteLn(BrickComm.VersionString);

@@ -771,8 +771,7 @@ uses
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp, uSPCCodeComp, 
-  uNXTWatchList, uSpirit, uSimpleTerm, uLiveSensors, ev3RGFedit_MainForm,
-  uBrickImage;
+  uNXTWatchList, uSpirit, uSimpleTerm, uLiveSensors, ev3RGFedit_MainForm;
 
 const
   K_NQC_GUIDE = 24;
@@ -3145,8 +3144,6 @@ begin
   BrickComm.Close;
   barStatus.Panels[2].Text := '';
   barStatus.Panels[3].Text := '';
-  if frmBrickImage.Visible then
-    frmBrickImage.Close;
   if frmNXTImage.Visible then
     frmNXTImage.Close;
 end;
@@ -3678,14 +3675,8 @@ begin
 end;
 
 procedure TMainForm.actToolsNXTScreenExecute(Sender: TObject);
-var
-  f : TForm;
 begin
-  if IsEV3 then
-    f := frmBrickImage
-  else
-    f := frmNXTImage;
-  with f do begin
+  with frmNXTImage do begin
     Visible := not Visible;
     if Visible and (WindowState = wsMinimized) then
       WindowState := wsNormal;
