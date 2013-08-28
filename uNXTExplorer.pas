@@ -81,6 +81,7 @@ type
     pnlTopLeft: TPanel;
     pnlRight: TPanel;
     Splitter1: TSplitter;
+    actFileCreateFolder: TAction;
 {$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure actViewToolbarExecute(Sender: TObject);
@@ -112,6 +113,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure NXTFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RefreshShellListView(Sender: TObject);
+    procedure actFileCreateFolderExecute(Sender: TObject);
 {$ELSE}
   published
     ilToolbar: TImageList;
@@ -172,6 +174,7 @@ type
     mniUpload: TOfficeMenuItem;
     mniDownload: TOfficeMenuItem;
     mniView: TOfficeMenuItem;
+    mniCreateFolder: TOfficeMenuItem;
     mniSep5: TOfficeMenuItem;
     mniExecute: TOfficeMenuItem;
     mniFileStop: TOfficeMenuItem;
@@ -287,7 +290,7 @@ uses
 {$ENDIF}
   brick_common, uGuiUtils, uCompCommon, uMiscDefines, uGlobals, uProgress,
   uSpirit, uNXTExplorerSettings, uLocalizedStrings, uDebugLogging,
-  uTextViewer;
+  uTextViewer, uCommonUtils;
 
 const
   K_FILTER =
@@ -959,10 +962,6 @@ begin
     Result := K_EV3_MAX_MEM;
 end;
 
-(*
-        Result := frm.ShowModal;
-*)
-
 function TfrmNXTExplorer.DoDownloadFile(const aFile: string) : boolean;
 var
   D1 : TNotifyEvent;
@@ -1342,6 +1341,7 @@ begin
   mniUpload := TOfficeMenuItem.Create(pmuNXT);
   mniDownload := TOfficeMenuItem.Create(pmuNXT);
   mniView := TOfficeMenuItem.Create(pmuNXT);
+  mniCreateFolder := TOfficeMenuItem.Create(pmuNXT);
   mniSep5 := TOfficeMenuItem.Create(pmuNXT);
   mniExecute := TOfficeMenuItem.Create(pmuNXT);
   mniFileStop := TOfficeMenuItem.Create(pmuNXT);
@@ -1364,7 +1364,7 @@ begin
   AddMenuItems(pmuNXT.Items,
                [mniRefresh, mniDelete, mniPopEraseAll, mniPopDefrag,
                 mniSep6, mniUpload, mniDownload,
-                {$IFNDEF FPC}mniView, {$ENDIF}mniSep5,
+                {$IFNDEF FPC}mniView, {$ENDIF}mniCreateFolder, mniSep5,
                 mniExecute, mniFileStop, N1, mniPlay, mniMute, mniSep3,
                 mniViewStyle, {$IFNDEF FPC}NXTViewStyle1, {$ENDIF}mniSep4, mniShowToolbar]);
   AddMenuItems(mniViewStyle, [mitLargeIcons, mitSmallIcons, mitList, mitDetails]);
@@ -1419,6 +1419,11 @@ begin
   begin
     Name := 'mniView';
     Action := actFileView;
+  end;
+  with mniCreateFolder do
+  begin
+    Name := 'mniCreateFolder';
+    Action := actFileCreateFolder;
   end;
   with mniSep5 do
   begin
@@ -1981,21 +1986,33 @@ begin
         System.Delete(tmpCF, 1, i);
         i := Pos('/', tmpCF);
       end;
-      if tmpPath = '' then
-        tmpPath := '/';
-      CurrentBrickFolder := tmpPath;
+//      if tmpPath = '' then
+//        tmpPath := '/';
+//      CurrentBrickFolder := tmpPath;
+    end
+    else if (Pos(CurrentBrickFolder, aFolder) = 1) and (Length(CurrentBrickFolder) <= Length(aFolder)) then
+    begin
+      // just replace the path
+      tmpPath := aFolder;
     end
     else
     begin
       // add to path
-      CurrentBrickFolder := CurrentBrickFolder + aFolder + '/';
+      tmpPath := CurrentBrickFolder + aFolder;
     end;
   end
   else
   begin
     // replace with new absolute path
-    CurrentBrickFolder := aFolder;
+    tmpPath := aFolder;
   end;
+  // if the last character is not '/' then add it at the end
+  len := Length(tmpPath);
+  if (len > 0) and (tmpPath[len] <> '/') then
+    tmpPath := tmpPath + '/';
+  if tmpPath = '' then
+    tmpPath := '/';
+  CurrentBrickFolder := tmpPath;
 end;
 
 procedure TfrmNXTExplorer.NXTFilesDblClick(Sender: TObject);
@@ -2070,9 +2087,25 @@ var
   newPath : string;
 begin
   // prompt for new path
-  newPath := InputBox('Select Path', 'Enter new path', CurrentBrickFolder);
-  ChangeFolder(newPath);
-  RefreshNXTFiles;
+  newPath := InputBox(sSelectPath, sEnterPath, CurrentBrickFolder);
+  if newPath <> CurrentBrickFolder then
+  begin
+    ChangeFolder(newPath);
+    RefreshNXTFiles;
+  end;
+end;
+
+procedure TfrmNXTExplorer.actFileCreateFolderExecute(Sender: TObject);
+var
+  newFolder : string;
+begin
+  // prompt for a folder name
+  newFolder := ExtractUnixFileName(InputBox(sFolderName, sEnterFolder, ''));
+  if newFolder <> '' then
+  begin
+    BrickComm.CreateFolder(CurrentBrickFolder + newFolder);
+    RefreshNXTFiles;
+ end;
 end;
 
 initialization

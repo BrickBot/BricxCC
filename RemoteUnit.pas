@@ -245,6 +245,7 @@ procedure TRemoteForm.MotorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 var
   mtr : byte;
+  dir : TMotorDirection;
 begin
   if BrickComm.BrickType in [SU_NXT, SU_EV3] then
   begin
@@ -254,12 +255,17 @@ begin
       if mtr > 8 then
       begin
         dec(mtr, 8);
-        BrickComm.SetRwd(mtr);
+        dir := mdReverse;
+//        BrickComm.SetRwd(mtr);
       end
       else
-        BrickComm.SetFwd(mtr);
-      BrickComm.SetMotorPower(mtr, kRCX_ConstantType, GetPower(mtr));
-      BrickComm.MotorsOn(mtr);
+      begin
+        dir := mdForward;
+//        BrickComm.SetFwd(mtr);
+      end;
+//      BrickComm.SetMotorPower(mtr, kRCX_ConstantType, GetPower(mtr));
+//      BrickComm.MotorsOn(mtr);
+      BrickComm.ControlMotors(mtr, GetPower(mtr), dir, msOn);
     end;
   end;
 end;
@@ -276,7 +282,8 @@ begin
       mtr := TSpeedButton(Sender).Tag;
       if mtr > 8 then
         dec(mtr, 8);
-      BrickComm.MotorsOff(mtr);
+      BrickComm.ControlMotors(mtr, 0, mdForward, msOff);
+//      BrickComm.MotorsOff(mtr);
     end;
   end;
 end;

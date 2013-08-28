@@ -302,6 +302,7 @@ object DiagForm: TDiagForm
       Height = 17
       BevelOuter = bvLowered
       TabOrder = 3
+      OnDblClick = FreeMemoryDblClick
     end
     object btnRefreshNXT: TButton
       Left = 144

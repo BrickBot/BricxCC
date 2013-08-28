@@ -365,6 +365,10 @@ resourcestring
   sNXTViewStyleMenu = 'PBrick View Style';
   sPCViewStyleMenu  = 'PC View Style';
   sAbout          = '&About';
+  sSelectPath     = 'Select Path';
+  sEnterPath      = 'Enter new path';
+  sFolderName     = 'Folder Name';
+  sEnterFolder    = 'Enter a folder name';
 
 // uNXTImage unit
 resourcestring

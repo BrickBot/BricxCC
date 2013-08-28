@@ -292,6 +292,7 @@ type
 		class procedure DownloadCompleteSound(aStream : TStream);
     class procedure CleanDirectory(path: string; aStream: TStream);
     class procedure ResolveLogFileName(path: string; aStream: TStream);
+    class procedure MakeFolder(name : string; globalOffset: byte; aStream : TStream);
 
     class procedure PlayTone(volume : byte; frequency, duration : word; aStream : TStream);
     class procedure StopSound(aStream : TStream);
@@ -2452,6 +2453,14 @@ begin
 				binaryWriter.WriteStringArgument(sourcePath);
 				binaryWriter.WriteStringArgument(destinationPath);
 *)
+end;
+
+class procedure TDirectCommandBuilder.MakeFolder(name: string;
+  globalOffset: byte; aStream: TStream);
+begin
+  TBinaryWriterExtension.WriteOpCode(aStream, MakeOpcode(fscMakeFolder));
+  TBinaryWriterExtension.WriteStringArgument(aStream, name);
+  TBinaryWriterExtension.WriteIntArgument(aStream, globalOffset, atGlobalOffset);
 end;
 
 class procedure TDirectCommandBuilder.DownloadCompleteSound(aStream: TStream);

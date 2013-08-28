@@ -138,6 +138,7 @@ begin
   repeat
     GetMem(buf, GetMaxMessageSize);
     try
+      FillChar(buf^, GetMaxMessageSize, 0);
       bytesRead := hid_read_timeout(fDeviceHandle, buf, 1025, Timeout);
   //    bytesRead := hid_read_timeout(fDeviceHandle, buf, GetMaxMessageSize, Timeout);
       if (bytesRead > 4) then

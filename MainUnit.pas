@@ -2181,7 +2181,7 @@ begin
   actToolsSetValues.Enabled      := bBALSF and (IsRCX2 or IsSpybotic);
   actToolsSpybotEEPROM.Enabled   := bBALSF and IsSpybotic;
   actToolsNXTExplorer.Enabled    := bBALSF and (IsNXT or IsEV3);
-  actToolsNXTScreen.Enabled      := bBALSF and (IsNXT or IsEV3);
+  actToolsNXTScreen.Enabled      := bBALSF and (IsNXT or IsEV3) and BrickComm.CanCaptureScreen;
   actToolsNXTWatchList.Enabled   := bBALSF and (IsNXT or IsEV3);
   actToolsSyncMotors.Enabled     := bBALSF and IsNXT;
   actToolsSimpleTerm.Enabled     := bBALSF;

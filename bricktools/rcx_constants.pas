@@ -18,6 +18,10 @@ unit rcx_constants;
 
 interface
 
+type
+  TMotorDirection = (mdForward, mdReverse);
+  TMotorState = (msOn, msOff, msFloat);
+
 const
   // opcodes
   kRCX_PingOp           = $10;

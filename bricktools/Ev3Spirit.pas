@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs, uCompCommon,
-  uEV3Transport;
+  uEV3Transport, rcx_constants;
 
 type
   TEv3Spirit = class(TBrickComm)
@@ -45,6 +45,7 @@ type
     function PrettyPathToBrickPath(prettyPath: string;
       bOnSD: boolean): string;
   protected
+    function  GetCanCaptureScreen: boolean; override;
     function  GetFullPortName: string; override;
     function  GetNicePortName: string; override;
     function  GetPortName: string; override;
@@ -76,6 +77,9 @@ type
     procedure FreeAllTransports;
     function SuitableTransport(Tport: IEV3Transport): boolean;
     function NextSequenceID : Word;
+    function GetEV3StorageStatus(var ramTotal : Cardinal; var ramFree : Cardinal;
+      var sdPresent : Byte; var sdTotal : Cardinal; var sdFree : Cardinal;
+      var usbPresent : Byte; var usbTotal : Cardinal; var usbFree : Cardinal) : boolean;
     procedure SetupSnapshotTool;
     property  Transport : IEV3Transport read GetTransport;
   public
@@ -95,6 +99,8 @@ type
     function PlaySystemSound(aSnd : byte) : boolean; override;
 
     // PBrick output control commands
+    function ControlMotors(aMotorList : Byte; Power : ShortInt;
+      dir : TMotorDirection; state : TMotorState) : boolean; override;
     function MotorsOn(aMotorList : Byte) : boolean; override;
     function MotorsOff(aMotorList : Byte) : boolean; override;
     function MotorsFloat(aMotorList : Byte) : boolean; override;
@@ -296,6 +302,7 @@ type
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function SCRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
     // wrapper functions
+    function CreateFolder(const foldername : string) : boolean; override;
     function DownloadFile(const filename : string; const filetype : TPBRFileType) : boolean; override;
     function DownloadStream(aStream : TStream; const dest : string; const filetype : TPBRFileType) : boolean; override;
     function UploadFile(const filename : string; const dir : string = '') : boolean; override;
@@ -312,13 +319,15 @@ uses
 {$IFNDEF FPC}
   Windows,
 {$ENDIF}
-  rcx_constants, Contnrs, Math, uCommonUtils, uUtilities, uDebugLogging,
+  Contnrs, Math, uCommonUtils, uUtilities, uDebugLogging,
   uEV3HIDTransport, uEV3TCPTransport, uEV3BTHTransport, uGlobals,
   uPBRMiscTypes, uPBRSimpleTypes;
 
 const
   MaxFileDownloadBytes = 1000;
   MaxFileUploadBytes = 900;
+  SNAPSHOT_DISABLED = 'DISABLED';
+  MIN_RAMDISK_SNAPSHOT = 332;
 
 
 procedure DoBeep(aFreq, aDur : cardinal);
@@ -438,6 +447,56 @@ end;
 const
   MotorBits : array[0..3] of byte = (1, 2, 4, 8);
 
+function TEv3Spirit.ControlMotors(aMotorList : Byte; Power: ShortInt;
+  dir: TMotorDirection; state: TMotorState): boolean;
+var
+  ms : TMemoryStream;
+  id : Word;
+  layer : byte;
+  i : integer;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  ms := TMemoryStream.Create;
+  try
+    layer := 0;
+    DecodeOutputs(aMotorList, layer);
+    for i := 0 to 3 do
+    begin
+      if (MotorBits[i] and aMotorList) = MotorBits[i] then
+      begin
+        fMotorOn[i]      := state = msOn;
+        fMotorPower[i]   := Power;
+        fMotorForward[i] := dir = mdForward;
+      end;
+    end;
+    TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
+    if state = msOn then
+    begin
+      // power scaled from 0..7 to 0..100
+      if PowerScaleFactor <> 0 then
+      begin
+        if Power >= 7 then
+          Power := 100
+        else
+          Power := Power * PowerScaleFactor;
+      end;
+      if dir = mdReverse then
+        Power := Power * -1;
+      TDirectCommandBuilder.OutputStart(layer, aMotorList, ms);
+      TDirectCommandBuilder.OutputPower(layer, aMotorList, Power, ms);
+    end
+    else // state is Off or Float
+    begin
+      TDirectCommandBuilder.OutputStop(layer, aMotorList, state = msOff, ms);
+    end;
+    id := NextSequenceID;
+    Result := Transport.SendStream(id, ms) = ms.Size;
+  finally
+    ms.Free;
+  end;
+end;
+
 function TEv3Spirit.MotorsOn(aMotorList: Byte): boolean;
 var
   ms : TMemoryStream;
@@ -503,64 +562,46 @@ end;
 
 function TEv3Spirit.SetFwd(aMotorList: Byte): boolean;
 var
-  ms : TMemoryStream;
-  id : Word;
-  layer : byte;
+  i : integer;
 begin
   Result := IsOpen;
   if not Result then Exit;
-  ms := TMemoryStream.Create;
-  try
-    layer := 0;
-    DecodeOutputs(aMotorList, layer);
-    TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
-    TDirectCommandBuilder.OutputPolarity(layer, aMotorList, 1, ms);
-    id := NextSequenceID;
-    Result := Transport.SendStream(id, ms) = ms.Size;
-  finally
-    ms.Free;
+  for i := 0 to 3 do
+  begin
+    if (MotorBits[i] and aMotorList) = MotorBits[i] then
+    begin
+      fMotorForward[i] := true;
+    end;
   end;
 end;
 
 function TEv3Spirit.SetRwd(aMotorList: Byte): boolean;
 var
-  ms : TMemoryStream;
-  id : Word;
-  layer : byte;
+  i : integer;
 begin
   Result := IsOpen;
   if not Result then Exit;
-  ms := TMemoryStream.Create;
-  try
-    layer := 0;
-    DecodeOutputs(aMotorList, layer);
-    TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
-    TDirectCommandBuilder.OutputPolarity(layer, aMotorList, -1, ms);
-    id := NextSequenceID;
-    Result := Transport.SendStream(id, ms) = ms.Size;
-  finally
-    ms.Free;
+  for i := 0 to 3 do
+  begin
+    if (MotorBits[i] and aMotorList) = MotorBits[i] then
+    begin
+      fMotorForward[i] := false;
+    end;
   end;
 end;
 
 function TEv3Spirit.SwitchDirection(aMotorList: Byte): boolean;
 var
-  ms : TMemoryStream;
-  id : Word;
-  layer : byte;
+  i : integer;
 begin
   Result := IsOpen;
   if not Result then Exit;
-  ms := TMemoryStream.Create;
-  try
-    layer := 0;
-    DecodeOutputs(aMotorList, layer);
-    TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
-    TDirectCommandBuilder.OutputPolarity(layer, aMotorList, 0, ms);
-    id := NextSequenceID;
-    Result := Transport.SendStream(id, ms) = ms.Size;
-  finally
-    ms.Free;
+  for i := 0 to 3 do
+  begin
+    if (MotorBits[i] and aMotorList) = MotorBits[i] then
+    begin
+      fMotorForward[i] := not fMotorForward[i];
+    end;
   end;
 end;
 
@@ -569,6 +610,8 @@ var
   ms : TMemoryStream;
   id : Word;
   layer : byte;
+  bFirst, bAllSame : boolean;
+  i, power : integer;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -579,6 +622,8 @@ begin
   end
   else
   begin
+    layer := 0;
+    DecodeOutputs(aMotorList, layer);
     // power scaled from 0..7 to 0..100
     if PowerScaleFactor <> 0 then
     begin
@@ -587,16 +632,55 @@ begin
       else
         aNum := aNum * PowerScaleFactor;
     end;
-    ms := TMemoryStream.Create;
-    try
-      layer := 0;
-      DecodeOutputs(aMotorList, layer);
-      TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
-      TDirectCommandBuilder.OutputPower(layer, aMotorList, aNum, ms);
-      id := NextSequenceID;
-      Result := Transport.SendStream(id, ms) = ms.Size;
-    finally
-      ms.Free;
+    // are some false and some true?
+    bAllSame := True;
+    bFirst := fMotorForward[0];
+    for i := 0 to 3 do
+    begin
+      if bFirst <> fMotorForward[i] then
+      begin
+        bAllSame := False;
+        break;
+      end;
+    end;
+    if not bAllSame then
+    begin
+      // send a command for each motor
+      for i := 0 to 3 do
+      begin
+        if (MotorBits[i] and aMotorList) = MotorBits[i] then
+        begin
+          if not fMotorForward[i] then
+            power := aNum * -1
+          else
+            power := aNum;
+          ms := TMemoryStream.Create;
+          try
+            TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
+            TDirectCommandBuilder.OutputPower(layer, MotorBits[i], power, ms);
+            id := NextSequenceID;
+            Result := Transport.SendStream(id, ms) = ms.Size;
+          finally
+            ms.Free;
+          end;
+        end;
+      end;
+    end
+    else
+    begin
+      if not bFirst then
+        power := aNum * -1
+      else
+        power := aNum;
+      ms := TMemoryStream.Create;
+      try
+        TDirectCommandBuilder.StartCommand(ctDirectNoReply, 0, 0, ms);
+        TDirectCommandBuilder.OutputPower(layer, aMotorList, power, ms);
+        id := NextSequenceID;
+        Result := Transport.SendStream(id, ms) = ms.Size;
+      finally
+        ms.Free;
+      end;
     end;
   end;
 end;
@@ -2226,6 +2310,42 @@ begin
   // find EV3 bricks via all possible transport layers.
 end;
 
+function TEv3Spirit.CreateFolder(const foldername: string): boolean;
+var
+  ms : TMemoryStream;
+  rspData : TEV3Data;
+  id : Word;
+  name, path : string;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  path := foldername;
+  name := ExtractUnixFileName(foldername);
+  path := ExtractUnixFilePath(foldername);
+  if path = '' then
+    path := BrickFolder;
+  name := path + name;
+  ms := TMemoryStream.Create;
+  try
+    TDirectCommandBuilder.StartCommand(ctDirectWithReply, 1, 0, ms);
+    TDirectCommandBuilder.MakeFolder(name, 0, ms);
+    id := NextSequenceID;
+    if Transport.SendStream(id, ms) = ms.Size then
+    begin
+      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      begin
+        DebugLog(rspData);
+        if (rspData[0] = DIRECT_REPLY_OK) then
+        begin
+          Result := rspData[1] = 1;
+        end;
+      end;
+    end;
+  finally
+    ms.Free;
+  end;
+end;
+
 function TEv3Spirit.DownloadFile(const filename: string; const filetype: TPBRFileType): boolean;
 var
   MS : TMemoryStream;
@@ -2419,8 +2539,8 @@ begin
         if UploadFileToStream(filename, fSnapshotMS) and
            ((fSnapshotMS.Size = EV3_LCD_BUFFER_SIZE)) then
         begin
-          // try to delete the file
-          SCDeleteFile(filename, true);
+//          // try to delete the file
+//          SCDeleteFile(filename, true);
           // copy data from the memory stream
           pTmp := fSnapshotMS.Memory;
           Move(pTmp^, buffer.Data[0], Count);
@@ -2683,6 +2803,8 @@ var
   SL : TStringList;
   i : integer;
   name : string;
+  sdPresent, usbPresent : Byte;
+  sdTotal, sdFree, usbTotal, usbFree, ramTotal, ramFree : Cardinal;
 begin
   fMemMap.Clear;
   SL := TStringList.Create;
@@ -2702,9 +2824,41 @@ begin
     SL.Clear;
     fMemMap.Add('');
     fMemMap.Add('');
-    i := SCFreeMemory;
-    fMemMap.Add('Free Memory');
-    fMemMap.Add(IntToStr(i));
+    ramTotal := 0; ramFree := 0;
+    sdTotal  := 0; sdFree  := 0;
+    usbTotal := 0; usbFree := 0;
+    sdPresent := 0; usbPresent := 0;
+    if GetEV3StorageStatus(ramTotal, ramFree, sdPresent, sdTotal, sdFree, usbPresent, usbTotal, usbFree) then
+    begin
+      fMemMap.Add('Total RAM (kb)');
+      fMemMap.Add(IntToStr(ramTotal));
+      fMemMap.Add('Free RAM (kb)');
+      fMemMap.Add(IntToStr(ramFree));
+      fMemMap.Add('SD Card Present');
+      fMemMap.Add(IntToStr(sdPresent));
+      if sdPresent <> 0 then
+      begin
+        fMemMap.Add('Total SD Card (kb)');
+        fMemMap.Add(IntToStr(sdTotal));
+        fMemMap.Add('Free SD Card (kb)');
+        fMemMap.Add(IntToStr(sdFree));
+      end;
+      fMemMap.Add('USB Stick Present');
+      fMemMap.Add(IntToStr(usbPresent));
+      if usbPresent <> 0 then
+      begin
+        fMemMap.Add('Total USB Stick (kb)');
+        fMemMap.Add(IntToStr(usbTotal));
+        fMemMap.Add('Free USB Stick (kb)');
+        fMemMap.Add(IntToStr(usbFree));
+      end;
+    end
+    else
+    begin
+      i := SCFreeMemory;
+      fMemMap.Add('Free Memory');
+      fMemMap.Add(IntToStr(i));
+    end;
   finally
     SL.Free;
   end;
@@ -3740,6 +3894,57 @@ begin
   end;
 end;
 
+function TEv3Spirit.GetEV3StorageStatus(var ramTotal : Cardinal; var ramFree : Cardinal;
+  var sdPresent : Byte; var sdTotal : Cardinal; var sdFree : Cardinal;
+  var usbPresent : Byte; var usbTotal : Cardinal; var usbFree : Cardinal) : boolean;
+var
+  ms : TMemoryStream;
+  rspData : TEV3Data;
+  id : Word;
+begin
+  ramTotal   := 0;
+  ramFree    := 0;
+  sdPresent  := 0;
+  sdTotal    := 0;
+  sdFree     := 0;
+  usbPresent := 0;
+  usbTotal   := 0;
+  usbFree    := 0;
+  Result := IsOpen;
+  if not Result then Exit;
+  // read 26 bytes
+  ms := TMemoryStream.Create;
+  try
+    ms.Clear;
+    TDirectCommandBuilder.StartCommand(ctDirectWithReply, 32, 0, ms);
+    TDirectCommandBuilder.GetOnBrickStorageStatus(0, 4, ms);
+    TDirectCommandBuilder.GetBrickSDCardStatus(8, 12, 16, ms);
+    TDirectCommandBuilder.GetBrickUSBStickStatus(20, 24, 28, ms);
+    id := NextSequenceID;
+    if Transport.SendStream(id, ms) = ms.Size then
+    begin
+      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      begin
+        DebugLog(rspData);
+        if (rspData[0] = DIRECT_REPLY_OK) then
+        begin
+          Result := True;
+          Move(rspData[1], ramTotal, 4);
+          Move(rspData[5], ramFree, 4);
+          Move(rspData[9], sdPresent, 1);
+          Move(rspData[13], sdTotal, 4);
+          Move(rspData[17], sdFree, 4);
+          Move(rspData[21], usbPresent, 1);
+          Move(rspData[25], usbTotal, 4);
+          Move(rspData[29], usbFree, 4);
+        end;
+      end;
+    end;
+  finally
+    ms.Free;
+  end;
+end;
+
 procedure TEv3Spirit.SetupSnapshotTool;
 var
   SL : TStringList;
@@ -3747,6 +3952,8 @@ var
   bFound : boolean;
   oldBF : string;
   ms : TMemoryStream;
+  sdPresent, usbPresent : Byte;
+  sdTotal, sdFree, usbTotal, usbFree, ramTotal, ramFree : Cardinal;
 begin
   if fSnapshotFolder <> '' then Exit;
   // is there a file called snapshot at /media/card/snapshot/snapshot?
@@ -3780,19 +3987,37 @@ begin
     // if we didn't find it then we need to download it to the EV3
     if not bFound then
     begin
-      fSnapshotFolder := '/mnt/ramdisk/prjs/snapshot/';
-      oldBF := BrickFolder;
-      try
-        BrickFolder := fSnapshotFolder;
-        DownloadFile(ProgramDir+'snapshot', nftProgram);
-      finally
-        BrickFolder := oldBF;
+      ramTotal := 0; ramFree := 0;
+      sdTotal  := 0; sdFree  := 0;
+      usbTotal := 0; usbFree := 0;
+      sdPresent := 0; usbPresent := 0;
+      GetEV3StorageStatus(ramTotal, ramFree, sdPresent, sdTotal, sdFree, usbPresent, usbTotal, usbFree);
+      // do we have enough memory in ramdisk - we need at least 17 kb
+      if ramFree > MIN_RAMDISK_SNAPSHOT then
+        fSnapshotFolder := '/mnt/ramdisk/prjs/snapshot/'
+      else if sdPresent <> 0 then
+        fSnapshotFolder := '/media/card/snapshot/'
+      else
+        fSnapshotFolder := SNAPSHOT_DISABLED;
+      if fSnapshotFolder <> SNAPSHOT_DISABLED then
+      begin
+        oldBF := BrickFolder;
+        try
+          BrickFolder := fSnapshotFolder;
+          DownloadFile(ProgramDir+'snapshot', nftProgram);
+        finally
+          BrickFolder := oldBF;
+        end;
       end;
     end;
   finally
     SL.Free;
   end;
+end;
 
+function TEv3Spirit.GetCanCaptureScreen: boolean;
+begin
+  Result := fSnapshotFolder <> SNAPSHOT_DISABLED;
 end;
 
 (*

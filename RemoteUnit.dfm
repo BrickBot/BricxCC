@@ -55,7 +55,7 @@ object RemoteForm: TRemoteForm
       Orientation = trVertical
       Position = 4
       TabOrder = 0
-      ThumbLength = 8
+      ThumbLength = 12
     end
   end
   object grpMotorB: TGroupBox
@@ -95,7 +95,7 @@ object RemoteForm: TRemoteForm
       Orientation = trVertical
       Position = 4
       TabOrder = 0
-      ThumbLength = 8
+      ThumbLength = 12
     end
   end
   object grpMotorC: TGroupBox
@@ -135,7 +135,7 @@ object RemoteForm: TRemoteForm
       Orientation = trVertical
       Position = 4
       TabOrder = 0
-      ThumbLength = 8
+      ThumbLength = 12
     end
   end
   object lblMotorA: TStaticText
@@ -223,7 +223,7 @@ object RemoteForm: TRemoteForm
       Orientation = trVertical
       Position = 4
       TabOrder = 0
-      ThumbLength = 8
+      ThumbLength = 12
     end
   end
   object lblMotorD: TStaticText

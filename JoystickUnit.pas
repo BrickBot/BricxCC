@@ -108,7 +108,7 @@ uses
   MainUnit,
 {$ENDIF}
   SysUtils, Dialogs, Math, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals,
-  uROPS, uJoyActions, uUtilities;
+  uROPS, uJoyActions, uUtilities, rcx_constants;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction
@@ -269,68 +269,91 @@ begin
     mcaScript : ExecuteCAScript(dir, l, r, lr, ldir, rdir, speed, btns);
     mcaMessage : SendCAMessage(dir, l, r, lr, ldir, rdir, speed, btns);
   else // mdcaDefault
-    if IsNXT then
+    if IsNXT or IsEV3 then
     begin
       speed := Min(speed div 14, 7);
     end;
-    BrickComm.SetMotorPower(lr, 2, speed);
     if ldir < 0 then
     begin
       if rdir = 0 then
       begin
-        BrickComm.MotorsOff(r);
-        BrickComm.SetRwd(l);
-        BrickComm.MotorsOn(l);
+        BrickComm.ControlMotors(r, 0, mdForward, msOff);
+        BrickComm.ControlMotors(l, speed, mdReverse, msOn);
+//        BrickComm.MotorsOff(r);
+//        BrickComm.SetRwd(l);
+//        BrickComm.MotorsOn(l);
+//        BrickComm.SetMotorPower(l, kRCX_ConstantType, speed);
       end
       else if rdir > 0 then
       begin
-        BrickComm.SetRwd(l);
-        BrickComm.SetFwd(r);
-        BrickComm.MotorsOn(lr);
+        BrickComm.ControlMotors(l, speed, mdReverse, msOn);
+        BrickComm.ControlMotors(r, speed, mdForward, msOn);
+//        BrickComm.SetRwd(l);
+//        BrickComm.SetFwd(r);
+//        BrickComm.MotorsOn(lr);
+//        BrickComm.SetMotorPower(lr, kRCX_ConstantType, speed);
       end
       else // if rdir < 0 then
       begin
-        BrickComm.SetRwd(lr);
-        BrickComm.MotorsOn(lr);
+        BrickComm.ControlMotors(lr, speed, mdReverse, msOn);
+//        BrickComm.SetRwd(lr);
+//        BrickComm.MotorsOn(lr);
+//        BrickComm.SetMotorPower(lr, kRCX_ConstantType, speed);
       end;
     end
     else if ldir > 0 then
     begin
       if rdir = 0 then
       begin
-        BrickComm.MotorsOff(r);
-        BrickComm.SetFwd(l);
-        BrickComm.MotorsOn(l);
+        BrickComm.ControlMotors(r, 0, mdForward, msOff);
+        BrickComm.ControlMotors(l, speed, mdForward, msOn);
+//        BrickComm.MotorsOff(r);
+//        BrickComm.SetFwd(l);
+//        BrickComm.MotorsOn(l);
+//        BrickComm.SetMotorPower(l, kRCX_ConstantType, speed);
       end
       else if rdir > 0 then
       begin
-        BrickComm.SetFwd(lr);
-        BrickComm.MotorsOn(lr);
+        BrickComm.ControlMotors(lr, speed, mdForward, msOn);
+//        BrickComm.SetFwd(lr);
+//        BrickComm.MotorsOn(lr);
+//        BrickComm.SetMotorPower(lr, kRCX_ConstantType, speed);
       end
       else // if rdir < 0 then
       begin
-        BrickComm.SetFwd(l);
-        BrickComm.SetRwd(r);
-        BrickComm.MotorsOn(lr);
+        BrickComm.ControlMotors(l, speed, mdForward, msOn);
+        BrickComm.ControlMotors(r, speed, mdReverse, msOn);
+//        BrickComm.SetFwd(l);
+//        BrickComm.SetRwd(r);
+//        BrickComm.MotorsOn(lr);
+//        BrickComm.SetMotorPower(lr, kRCX_ConstantType, speed);
       end;
     end
     else // if ldir = 0 then
     begin
       if rdir = 0 then
       begin
-        BrickComm.MotorsOff(lr);
+        BrickComm.ControlMotors(lr, 0, mdForward, msOff);
+//        BrickComm.MotorsOff(lr);
+//        BrickComm.SetMotorPower(lr, kRCX_ConstantType, speed);
       end
       else if rdir > 0 then
       begin
-        BrickComm.MotorsOff(l);
-        BrickComm.SetFwd(r);
-        BrickComm.MotorsOn(r);
+        BrickComm.ControlMotors(l, 0, mdForward, msOff);
+        BrickComm.ControlMotors(r, speed, mdForward, msOn);
+//        BrickComm.MotorsOff(l);
+//        BrickComm.SetFwd(r);
+//        BrickComm.MotorsOn(r);
+//        BrickComm.SetMotorPower(r, kRCX_ConstantType, speed);
       end
       else // if rdir < 0 then
       begin
-        BrickComm.MotorsOff(l);
-        BrickComm.SetRwd(r);
-        BrickComm.MotorsOn(r);
+        BrickComm.ControlMotors(l, 0, mdForward, msOff);
+        BrickComm.ControlMotors(r, speed, mdReverse, msOn);
+//        BrickComm.MotorsOff(l);
+//        BrickComm.SetRwd(r);
+//        BrickComm.MotorsOn(r);
+//        BrickComm.SetMotorPower(r, kRCX_ConstantType, speed);
       end;
     end;
 
@@ -546,13 +569,13 @@ begin
   RMotorC.Checked := (RightMotor = 2);
   LReversed.Checked := LeftReversed;
   RReversed.Checked := RightReversed;
-  if IsNXT then
+  if IsNXT or IsEV3 then
   begin
     if MotorSpeed < 7 then
       MotorSpeed := MotorSpeed * 14
     else if MotorSpeed = 7 then
       MotorSpeed := 100;
-    SpeedBar.Frequency := 14;
+    SpeedBar.Frequency := 2;
     SpeedBar.Max := 100;
   end
   else

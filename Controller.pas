@@ -29,7 +29,7 @@ uses
   LResources,
 {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls, Buttons;
+  ComCtrls, StdCtrls, ExtCtrls, Buttons, rcx_constants;
 
 type
   TDirectForm = class(TForm)
@@ -135,6 +135,9 @@ type
   private
     { Private declarations }
     procedure InitForm;
+    function GetMotorPower(tag: integer): Byte;
+    function GetMotorDirection(tag: integer): TMotorDirection;
+    function GetMotorState(tag: integer): TMotorState;
   public
     { Public declarations }
   end;
@@ -149,7 +152,7 @@ implementation
 {$ENDIF}
 
 uses
-  brick_common, rcx_constants, uSources, uLocalizedStrings, uGlobals;
+  brick_common, uSources, uLocalizedStrings, uGlobals;
 
 var
   V_HEIGHT, V_MOTORS_TOP, V_VARS_TOP, V_TASKS_TOP, V_FUDGE,
@@ -220,43 +223,121 @@ begin
   end;
 end;
 
+function TDirectForm.GetMotorPower(tag : integer) : Byte;
+begin
+  case tag of
+    0 : result := SpeedA.Position;
+    1 : result := SpeedB.Position;
+    2 : result := SpeedC.Position;
+    3 : result := SpeedD.Position;
+  else
+    result := 0;
+  end;
+end;
+
+function TDirectForm.GetMotorDirection(tag : integer) : TMotorDirection;
+begin
+  Result := mdForward;
+  case tag of
+    0 : if RevABtn.Down then Result := mdReverse;
+    1 : if RevBBtn.Down then Result := mdReverse;
+    2 : if RevCBtn.Down then Result := mdReverse;
+    3 : if RevDBtn.Down then Result := mdReverse;
+  end;
+end;
+
+function TDirectForm.GetMotorState(tag : integer) : TMotorState;
+begin
+  Result := msFloat;
+  case tag of
+    0 :
+      if FwdABtn.Down or RevABtn.Down then
+        Result := msOn
+      else if OffABtn.Down then
+        Result := msOff;
+    1 :
+      if FwdBBtn.Down or RevBBtn.Down then
+        Result := msOn
+      else if OffBBtn.Down then
+        Result := msOff;
+    2 :
+      if FwdCBtn.Down or RevCBtn.Down then
+        Result := msOn
+      else if OffCBtn.Down then
+        Result := msOff;
+    3 :
+      if FwdDBtn.Down or RevDBtn.Down then
+        Result := msOn
+      else if OffDBtn.Down then
+        Result := msOff;
+  end;
+end;
+
 procedure TDirectForm.FwdABtnClick(Sender: TObject);
 var
-  n : integer;
+  n, tag : integer;
+  pwr : byte;
 begin
   if Sender = nil then Exit;
-  n := GetMotorNum(TComponent(Sender).Tag);
-  BrickComm.SetFwd(n);
-  BrickComm.MotorsOn(n);
+  tag := TComponent(Sender).Tag;
+  n := GetMotorNum(tag);
+  pwr := GetMotorPower(tag);
+  BrickComm.ControlMotors(n, pwr, mdForward, msOn);
+//  BrickComm.SetFwd(n);
+//  BrickComm.MotorsOn(n);
 end;
 
 procedure TDirectForm.RevABtnClick(Sender: TObject);
 var
-  n : integer;
+  n, tag : integer;
+  pwr : byte;
 begin
   if Sender = nil then Exit;
-  n := GetMotorNum(TComponent(Sender).Tag);
-  BrickComm.SetRwd(n);
-  BrickComm.MotorsOn(n);
+  tag := TComponent(Sender).Tag;
+  n := GetMotorNum(tag);
+  pwr := GetMotorPower(tag);
+  BrickComm.ControlMotors(n, pwr, mdReverse, msOn);
+//  BrickComm.SetRwd(n);
+//  BrickComm.MotorsOn(n);
 end;
 
 procedure TDirectForm.OffABtnClick(Sender: TObject);
+var
+  n, tag : integer;
 begin
   if Sender = nil then Exit;
-  BrickComm.MotorsOff(GetMotorNum(TComponent(Sender).Tag));
+  tag := TComponent(Sender).Tag;
+  n := GetMotorNum(tag);
+  BrickComm.ControlMotors(n, 0, mdForward, msOff);
+//  BrickComm.MotorsOff(n);
 end;
 
 procedure TDirectForm.FloatABtnClick(Sender: TObject);
+var
+  n, tag : integer;
 begin
   if Sender = nil then Exit;
-  BrickComm.MotorsFloat(GetMotorNum(TComponent(Sender).Tag));
+  tag := TComponent(Sender).Tag;
+  n := GetMotorNum(tag);
+  BrickComm.ControlMotors(n, 0, mdForward, msFloat);
+//  BrickComm.MotorsFloat(n);
 end;
 
 procedure TDirectForm.SpeedChange(Sender: TObject);
+var
+  n, tag : integer;
+  pwr : byte;
+  dir : TMotorDirection;
+  state : TMotorState;
 begin
   if Sender = nil then Exit;
-  BrickComm.SetMotorPower(GetMotorNum(TComponent(Sender).Tag), kRCX_ConstantType,
-                        TTrackBar(Sender).Position);
+  tag := TComponent(Sender).Tag;
+  n := GetMotorNum(tag);
+  pwr := GetMotorPower(tag);
+  dir := GetMotorDirection(tag);
+  state := GetMotorState(tag);
+  BrickComm.ControlMotors(n, pwr, dir, state);
+//  BrickComm.SetMotorPower(n, kRCX_ConstantType, pwr);
 end;
 
 
