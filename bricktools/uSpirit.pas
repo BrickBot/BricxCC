@@ -108,7 +108,6 @@ type
   end;
 
   TBrickComm = class
-  private
   protected
     fPowerScaleFactor : byte;
     fLayer : byte;
@@ -149,6 +148,7 @@ type
     fSensorType : array[0..15] of Byte;
     fSensorMode : array[0..15] of Byte;
     fStatus : integer;
+    function GetCanCaptureScreen: boolean; virtual;
     function GetBrickTypeName: string; virtual;
     function GetDownloadWaitTime: Integer; virtual; abstract;
     function GetEEPROM(addr: Byte): Byte; virtual; abstract;
@@ -208,6 +208,7 @@ type
     function PlaySystemSound(aSnd : byte) : boolean; virtual; abstract;
 
     // PBrick output control commands
+    function ControlMotors(aMotorList : Byte; Power : ShortInt; dir : TMotorDirection; state : TMotorState) : boolean; virtual;
     function MotorsOn(aMotorList : Byte) : boolean; virtual; abstract;
     function MotorsOff(aMotorList : Byte) : boolean; virtual; abstract;
     function MotorsFloat(aMotorList : Byte) : boolean; virtual; abstract;
@@ -414,6 +415,7 @@ type
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
     function SCRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
     // wrapper functions
+    function CreateFolder(const foldername : string) : boolean; virtual;
     function DownloadFile(const filename : string; const filetype : TPBRFileType) : boolean; virtual; abstract;
     function DownloadStream(aStream : TStream; const dest : string; const filetype : TPBRFileType) : boolean; virtual; abstract;
     function UploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
@@ -468,6 +470,7 @@ type
     property  BrickFolder : string read fBrickFolder write fBrickFolder;
     property  Layer : byte read fLayer write fLayer;
     property  PowerScaleFactor : byte read fPowerScaleFactor write fPowerScaleFactor;
+    property  CanCaptureScreen : boolean read GetCanCaptureScreen;
     property  OnDownloadStart : TNotifyEvent read fOnDownloadStart write fOnDownloadStart;
     property  OnDownloadDone : TNotifyEvent read fOnDownloadDone write fOnDownloadDone;
     property  OnDownloadStatus : TDownloadStatusEvent read fOnDownloadStatus write fOnDownloadStatus;
@@ -959,7 +962,7 @@ begin
   begin
     // if we can call a direct command that only exists in the enhanced firmware
     // then we know that it is enhanced.
-    state := 0; clump := 0; pc := 0; 
+    state := 0; clump := 0; pc := 0;
     if DCGetVMState(state, clump, pc) then
       Result := ifEnhanced
     else
@@ -1117,6 +1120,36 @@ begin
   finally
     SL.Free;
   end;
+end;
+
+function TBrickComm.ControlMotors(aMotorList : Byte; Power: ShortInt;
+  dir: TMotorDirection; state: TMotorState): boolean;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  if state = msOn then
+  begin
+    if dir = mdForward then
+      SetFwd(aMotorList)
+    else
+      SetRwd(aMotorList);
+    SetMotorPower(aMotorList, kRCX_ConstantType, Power);
+    MotorsOn(aMotorList);
+  end
+  else if state = msOff then
+    MotorsOff(aMotorList)
+  else if state = msFloat then
+    MotorsFloat(aMotorList);
+end;
+
+function TBrickComm.GetCanCaptureScreen: boolean;
+begin
+  Result := False;
+end;
+
+function TBrickComm.CreateFolder(const foldername: string): boolean;
+begin
+  Result := False;
 end;
 
 end.

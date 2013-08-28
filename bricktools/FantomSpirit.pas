@@ -20,7 +20,8 @@ interface
 
 uses
   Classes, SysUtils, Variants,
-  rcx_cmd, uSpirit, uNXTConstants, FantomDefs, Parser10, uCompCommon;
+  rcx_cmd, uSpirit, uNXTConstants, FantomDefs, Parser10, uCompCommon,
+  rcx_constants;
 
 type
   TFantomSpirit = class(TBrickComm)
@@ -53,6 +54,7 @@ type
     fLastI2CRead : NXTLSBlock;
     fNXTHandle : FantomHandle;
     fCalc : TExpParser;
+    function  GetCanCaptureScreen: boolean; override;
     function  GetDownloadWaitTime: Integer; override;
     function  GetEEPROM(addr: Byte): Byte; override;
     function  GetEEPROMBlock(idx: Integer): EEPROMBlock; override;
@@ -106,6 +108,8 @@ type
     function PlaySystemSound(aSnd : byte) : boolean; override;
 
     // PBrick output control commands
+    function ControlMotors(aMotorList : Byte; Power : ShortInt;
+      dir : TMotorDirection; state : TMotorState) : boolean; override;
     function MotorsOn(aMotorList : Byte) : boolean; override;
     function MotorsOff(aMotorList : Byte) : boolean; override;
     function MotorsFloat(aMotorList : Byte) : boolean; override;
@@ -322,7 +326,7 @@ type
 implementation
 
 uses
-  Contnrs, Math, rcx_constants, uCommonUtils, uDebugLogging, uUtilities,
+  Contnrs, Math, uCommonUtils, uDebugLogging, uUtilities,
   {$IFNDEF FPC}
   Windows, FANTOM{, visa}
   {$ELSE}
@@ -613,6 +617,70 @@ end;
 const
   MotorBits : array[0..2] of byte = (1, 2, 4);
 
+function TFantomSpirit.ControlMotors(aMotorList: Byte; Power: ShortInt;
+  dir: TMotorDirection; state: TMotorState): boolean;
+var
+  mode, regmode, runstate : byte;
+  i : Byte;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  for i := 0 to 2 do
+  begin
+    if (MotorBits[i] and aMotorList) = MotorBits[i] then
+    begin
+      fMotorOn[i]      := state = msOn;
+      fMotorPower[i]   := Power;
+      fMotorForward[i] := dir = mdForward;
+    end;
+  end;
+  if state = msOn then
+  begin
+    if PowerScaleFactor <> 0 then
+    begin
+      if Power >= 7 then
+        Power := 100
+      else
+        Power := Power * PowerScaleFactor;
+    end;
+    if dir = mdReverse then
+      Power := Power * -1;
+    mode := OUT_MODE_MOTORON+OUT_MODE_BRAKE;
+    runstate := OUT_RUNSTATE_RUNNING;
+    regmode  := OUT_REGMODE_IDLE;
+    for i := 0 to 2 do
+    begin
+      if (MotorBits[i] and aMotorList) = MotorBits[i] then
+      begin
+        Result := Result and DCSetOutputState(i, Power, mode, regmode, 0, runstate, 0);
+        if not Result then break;
+      end;
+    end;
+  end
+  else // state is Off or Float
+  begin
+    if state = msFloat then
+    begin
+      mode     := OUT_MODE_COAST;
+      runstate := OUT_RUNSTATE_IDLE;
+    end
+    else
+    begin
+      mode     := OUT_MODE_MOTORON+OUT_MODE_BRAKE;
+      runstate := OUT_RUNSTATE_RUNNING;
+    end;
+    regmode := OUT_REGMODE_IDLE;
+    for i := 0 to 2 do
+    begin
+      if (MotorBits[i] and aMotorList) = MotorBits[i] then
+      begin
+        Result := Result and DCSetOutputState(i, 0, mode, regmode, 0, runstate, 0);
+        if not Result then break;
+      end;
+    end;
+  end;
+end;
+
 function TFantomSpirit.MotorsOn(aMotorList: Byte): boolean;
 var
   mode, regmode, runstate : byte;
@@ -641,11 +709,13 @@ begin
         runstate, tacholimit, tachocount, blocktachocount, rotationcount);
       if PowerScaleFactor <> 0 then
       begin
-        if fMotorPower[i] = 7 then
+        if fMotorPower[i] >= 7 then
           power := 100
         else
           power := fMotorPower[i] * PowerScaleFactor;
-      end;
+      end
+      else
+        power := fMotorPower[i];
       if not fMotorForward[i] then
         power := power * -1;
       if (oldpower <> power) or
@@ -873,11 +943,13 @@ begin
           runstate, tacholimit, tachocount, blocktachocount, rotationcount);
         if PowerScaleFactor <> 0 then
         begin
-          if fMotorPower[i] = 7 then
+          if fMotorPower[i] >= 7 then
             power := 100
           else
             power := fMotorPower[i] * PowerScaleFactor;
-        end;
+        end
+        else
+          power := fMotorPower[i];
         if not fMotorForward[i] then
           power := power * -1;
         if oldpower <> power then
@@ -1351,12 +1423,12 @@ begin
   try
     status := kStatusNoError;
     pwr := power;
-    if PowerScaleFactor <> 0 then
-      pwr := Min(Byte(Abs(pwr) div PowerScaleFactor), 7);
-    fMotorPower[aPort]   := pwr;
-    fMotorForward[aPort] := (pwr >= 0);
-    fMotorOn[aPort]      := ((mode and OUT_MODE_MOTORON) = OUT_MODE_MOTORON) and
-                            (runstate <> OUT_RUNSTATE_IDLE);
+//    if PowerScaleFactor <> 0 then
+//      pwr := Min(Byte(Abs(pwr) div PowerScaleFactor), 7);
+//    fMotorPower[aPort]   := pwr;
+//    fMotorForward[aPort] := (pwr >= 0);
+//    fMotorOn[aPort]      := ((mode and OUT_MODE_MOTORON) = OUT_MODE_MOTORON) and
+//                            (runstate <> OUT_RUNSTATE_IDLE);
     cmd.MakeSetOutputState(aPort, mode, regmode, runstate, ShortInt(pwr), ShortInt(turnratio), tacholimit, False);
     DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
@@ -4467,6 +4539,11 @@ end;
 function TFantomSpirit.GetErrorStatus: integer;
 begin
   Result := inherited GetErrorStatus + kStatusOffset;
+end;
+
+function TFantomSpirit.GetCanCaptureScreen: boolean;
+begin
+  Result := True;
 end;
 
 end.

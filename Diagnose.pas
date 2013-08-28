@@ -92,6 +92,7 @@ type
     procedure btnRefreshNXTClick(Sender: TObject);
     procedure NXTNameDblClick(Sender: TObject);
     procedure BTAddressDblClick(Sender: TObject);
+    procedure FreeMemoryDblClick(Sender: TObject);
   private
     { Private declarations }
     procedure InitForm;
@@ -433,6 +434,13 @@ begin
     F.ShowModal;
   finally
     F.Free;
+  end;
+end;
+
+procedure TDiagForm.FreeMemoryDblClick(Sender: TObject);
+begin
+  if IsEV3 then
+  begin
   end;
 end;
 

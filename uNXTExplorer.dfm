@@ -4,7 +4,7 @@ object frmNXTExplorer: TfrmNXTExplorer
   Width = 580
   Height = 480
   BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
-  Caption = 'PBrick Explorer'
+  Caption = 'Brick Explorer'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -250,6 +250,12 @@ object frmNXTExplorer: TfrmNXTExplorer
       Caption = '&View'
       Hint = 'View selected file'
       OnExecute = actFileViewExecute
+    end
+    object actFileCreateFolder: TAction
+      Category = 'File'
+      Caption = 'Create folder...'
+      Hint = 'Create a folder'
+      OnExecute = actFileCreateFolderExecute
     end
   end
   object ilLarge: TImageList
