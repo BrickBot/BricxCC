@@ -83,10 +83,17 @@ implementation
 {$ENDIF}
 
 uses
-  brick_common, uSpirit, uLocalizedStrings;
+  brick_common, uSpirit, uLocalizedStrings, uGlobals;
 
 const
   STATUS : array[boolean] of string = ('', S_Modified);
+
+function GetUSBProductId : integer;
+begin
+  Result := 2;
+  if BrickComm.BrickType = SU_EV3 then
+    Result := 5;
+end;
 
 procedure GetBrickResourceStrings(aStrings : TStrings);
 var
@@ -97,7 +104,7 @@ begin
   begin
     aStrings.Add(Format('BTH::%s=BTH::%s::%s::1', [name, name, addr]));
     addr := StringReplace(addr, ':', '', [rfReplaceAll]);
-    aStrings.Add(Format('%s=USB0::0X0694::0X0002::%s::RAW', [addr, addr]));
+    aStrings.Add(Format('%s=USB0::0X0694::0X000%d::%s::RAW', [addr, GetUSBProductId, addr]));
   end;
 end;
 
