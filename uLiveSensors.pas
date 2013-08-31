@@ -106,6 +106,7 @@ begin
     Top := 28;
     Width := 68;
     Height := 68;
+    AllowAllUp := True;
     Flat := True;
     PopupMenu := popOutputs;
     OnClick := btnOutputClick;
@@ -119,6 +120,7 @@ begin
     Top := 28;
     Width := 68;
     Height := 68;
+    AllowAllUp := True;
     Flat := True;
     PopupMenu := popOutputs;
     OnMouseDown := btnOutputDown;
@@ -131,6 +133,7 @@ begin
     Top := 28;
     Width := 68;
     Height := 68;
+    AllowAllUp := True;
     Flat := True;
     PopupMenu := popOutputs;
     OnMouseDown := btnOutputDown;
@@ -143,6 +146,7 @@ begin
     Top := 28;
     Width := 68;
     Height := 68;
+    AllowAllUp := True;
     Flat := True;
     PopupMenu := popOutputs;
     OnMouseDown := btnOutputDown;
@@ -155,6 +159,7 @@ begin
     Top := 124;
     Width := 68;
     Height := 68;
+    AllowAllUp := True;
     Flat := True;
     PopupMenu := popInputs;
     OnMouseDown := btnInputDown;
@@ -167,6 +172,7 @@ begin
     Top := 124;
     Width := 68;
     Height := 68;
+    AllowAllUp := True;
     Flat := True;
     PopupMenu := popInputs;
     OnMouseDown := btnInputDown;
@@ -411,7 +417,8 @@ var
   sb : TSpeedButton;
 begin
   sb := TSpeedButton(Sender);
-  popInputs.Popup(Left + sb.Left+32, Top + sb.Top+32);
+  if Button = mbRight then
+    popInputs.Popup(Left + sb.Left+32, Top + sb.Top+32);
 end;
 
 procedure TfrmLiveSensors.btnOutputDown(Sender: TObject;
@@ -420,7 +427,8 @@ var
   sb : TSpeedButton;
 begin
   sb := TSpeedButton(Sender);
-  popOutputs.Popup(Left + sb.Left+32, Top + sb.Top+32);
+  if Button = mbRight then
+    popOutputs.Popup(Left + sb.Left+32, Top + sb.Top+32);
 end;
 
 end.
