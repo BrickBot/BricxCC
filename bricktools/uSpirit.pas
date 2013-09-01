@@ -104,7 +104,7 @@ type
   TTransportTypes = set of TTransportType; 
 
   EEPROMBlock = record
-    Data : array[0..15] of Byte;
+    Data : array[0..255] of Byte;
   end;
 
   TBrickComm = class

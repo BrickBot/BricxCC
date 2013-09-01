@@ -1,6 +1,6 @@
 object MainForm: TMainForm
-  Left = 443
-  Top = 249
+  Left = 364
+  Top = 242
   Width = 592
   Height = 416
   Caption = 'Bricx Command Center'

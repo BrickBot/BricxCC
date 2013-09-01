@@ -26,6 +26,7 @@ uses
   Forms,
   SysUtils,
   Dialogs,
+  uDeviceTypeImages in 'uDeviceTypeImages.pas' {dmDevTypeImg: TDataModule},
   Controller in 'Controller.pas' {DirectForm},
   MainUnit in 'MainUnit.pas' {MainForm},
   Diagnose in 'Diagnose.pas' {DiagForm},
@@ -165,11 +166,12 @@ begin
 
   if ParamSwitch('/PTO') then
     PingTimeout := StrToIntDef(ParamValue('/PTO'), K_DEFAULT_PING_TIMEOUT);
-    
+
   //must be read before creating the SearchBrickForm
   if ParamSwitch('/UserPath') then
     UserDataLocalPath := IncludeTrailingPathDelimiter(ParamValue('/UserPath'));
 
+  Application.CreateForm(TdmDevTypeImg, dmDevTypeImg);
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TDirectForm, DirectForm);
   Application.CreateForm(TDiagForm, DiagForm);
