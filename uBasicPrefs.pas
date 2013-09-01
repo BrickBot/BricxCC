@@ -405,7 +405,8 @@ implementation
 uses
   SysUtils, Forms, ComCtrls, uRegUtils, uHighlighterProcs, uMiscDefines,
   uNXTExplorerSettings, uEditorExperts, uJoyGlobals, uRemoteGlobals,
-  uWatchGlobals, uNXTImageGlobals, uGlobals, uSimpleTerminalGlobals;
+  uWatchGlobals, uNXTImageGlobals, uGlobals, uSimpleTerminalGlobals,
+  uLiveSensorGlobals;
 
 const
   K_DEF_MACRO_LIB = 'bricxcc.mlb';
@@ -1485,6 +1486,7 @@ begin
   LoadCodeTemplateValues(reg, S);
   LoadWatchValues(reg);
   LoadNXTImageValues(reg);
+  LoadLiveSensorValues(reg);
   LoadTransferValues('Transfer', TransferList, reg);
   LoadTransferValues('CompXfer', CompXferList, reg);
   LoadTransferValues('PrecompileSteps', PrecompileSteps, reg);
@@ -1739,6 +1741,7 @@ begin
   SaveCodeTemplateValues(reg, S);
   SaveWatchValues(reg);
   SaveNXTImageValues(reg);
+  SaveLiveSensorValues(reg);
   SaveTransferValues('Transfer', TransferList, reg);
   SaveTransferValues('PrecompileSteps', PrecompileSteps, reg);
   SaveTransferValues('PostcompileSteps', PostcompileSteps, reg);
@@ -1759,6 +1762,7 @@ begin
   ResetCodeTemplateValues(reg, S);
   ResetWatchValues(reg);
   ResetNXTImageValues(reg);
+  ResetLiveSensorValues(reg);
   ResetTransferValues('Transfer', TransferList, reg);
   ResetTransferValues('PrecompileSteps', PrecompileSteps, reg);
   ResetTransferValues('PostcompileSteps', PostcompileSteps, reg);

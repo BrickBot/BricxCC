@@ -646,7 +646,7 @@ begin
       tmpSL.Append('NXT Sound');
       tmpSL.Append('NXT Color');
       tmpSL.Append('NXT Ultrasonic'); // 5
-      tmpSL.Append('NXT Temperature');
+      tmpSL.Append('Temperature');
       tmpSL.Append('Large Motor');
       tmpSL.Append('Medium Motor');
       tmpSL.Append('Free');

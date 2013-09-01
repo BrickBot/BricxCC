@@ -1576,21 +1576,6 @@ begin
   TBinaryWriterExtension.WriteIntArgument(aStream, stype, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, smode, atInteger);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndex, atGlobalOffset);
-(*
-				if (readSI)
-				{
-					binaryWriter.WriteOpCode(PBrickOpCode.opINPUTREADSI);
-				}
-				else
-				{
-					binaryWriter.WriteOpCode(PBrickOpCode.opINPUTREAD);
-				}
-				binaryWriter.Write(layer);
-				binaryWriter.Write(port);
-				binaryWriter.WriteIntArgument((int)sensorType, ArgType.Integer);
-				binaryWriter.WriteIntArgument((int)mode, ArgType.Integer);
-				binaryWriter.WriteIntArgument(globalIndex, ArgType.GlobalOffset);
-*)
 end;
 
 class procedure TDirectCommandBuilder.InputReadyRead(layer: byte;
@@ -1782,13 +1767,6 @@ begin
   TBinaryWriterExtension.Write(aStream, Byte(port));
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndexType, atGlobalOffset);
   TBinaryWriterExtension.WriteIntArgument(aStream, globalIndexMode, atGlobalOffset);
-(*
-				binaryWriter.WriteOpCode(PBrickOpCode.opInputDeviceGetTypeMode);
-				binaryWriter.Write(layer);
-				binaryWriter.Write(port);
-				binaryWriter.WriteIntArgument((int)globalIndexType, ArgType.GlobalOffset);
-				binaryWriter.WriteIntArgument((int)globalIndexMode, ArgType.GlobalOffset);
-*)
 end;
 
 class procedure TDirectCommandBuilder.InputDeviceGetName(layer : byte;

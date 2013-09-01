@@ -2452,12 +2452,12 @@ end;
 function TEv3Spirit.EV3ButtonPressOrRelease(const buffer: PBRDataBuffer): boolean;
 var
   ms : TMemoryStream;
-  rspData : TEV3Data;
   id : Word;
   btn : byte;
   bRelease : boolean;
 begin
   Result := False;
+  if not IsOpen then Exit;
   btn := buffer.Data[0];
   bRelease := btn > ANY_BUTTON;
   btn := TranslateButton(btn);
@@ -2600,8 +2600,74 @@ begin
 end;
 
 function TEv3Spirit.GetEEPROMBlock(idx: Integer): EEPROMBlock;
+var
+  ms : TMemoryStream;
+  rspData : TEV3Data;
+  id : Word;
+  i, j, cnt, len : integer;
 begin
-  Result.Data[idx] := 0;
+  FillChar(Result.Data[0], 256, 0);
+  if not isOpen then Exit;
+  len := 0;
+  // TODO: implement some sort of memory polling?
+  // for the EV3 we will have block 0 == get all sensor types and modes
+  // for the EV3 we will have block 1 == get all sensor values
+  ms := TMemoryStream.Create;
+  try
+    case idx of
+      0 : begin
+        len := 128;
+        cnt := 0;
+        TDirectCommandBuilder.StartCommand(ctDirectWithReply, len, 0, ms);
+        for i := 0 to 3 do
+        begin
+          for j := 0 to 3 do
+          begin
+            TDirectCommandBuilder.InputDeviceGetTypeMode(i, TPortId(j), cnt, cnt+1, ms);
+            TDirectCommandBuilder.InputDeviceGetFigures(i, TPortId(j), cnt+2, cnt+3, ms);
+            inc(cnt, 4);
+          end;
+          for j := 0 to 3 do
+          begin
+            TDirectCommandBuilder.InputDeviceGetTypeMode(i, TPortId(16+j), cnt, cnt+1, ms);
+            TDirectCommandBuilder.InputDeviceGetFigures(i, TPortId(16+j), cnt+2, cnt+3, ms);
+            inc(cnt, 4);
+          end;
+        end;
+      end;
+      1 : begin
+        len := 128;
+        cnt := 0;
+        TDirectCommandBuilder.StartCommand(ctDirectWithReply, len, 0, ms);
+        for i := 0 to 3 do
+        begin
+          for j := 0 to 3 do
+          begin
+            TDirectCommandBuilder.InputRead(i, TPortId(j), TYPE_KEEP, MODE_KEEP, 1, cnt, ms);
+            inc(cnt, 4);
+          end;
+          for j := 0 to 3 do
+          begin
+            TDirectCommandBuilder.InputRead(i, TPortId(16+j), TYPE_KEEP, MODE_KEEP, 1, cnt, ms);
+            inc(cnt, 4);
+          end;
+        end;
+      end;
+    end;
+    id := NextSequenceID;
+    if Transport.SendStream(id, ms) = ms.Size then
+    begin
+      if id = Transport.ReceiveMessage(rspData, 2500, id) then
+      begin
+        if (rspData[0] = DIRECT_REPLY_OK) then
+        begin
+          Move(rspData[1], Result.Data[0], len);
+        end;
+      end;
+    end;
+  finally
+    ms.Free;
+  end;
 end;
 
 function TEv3Spirit.GetLinkLog: string;
@@ -3001,7 +3067,6 @@ end;
 
 function TEv3Spirit.Poll(aSrc, aNum: integer): variant;
 var
-  res : boolean;
   ms : TMemoryStream;
   rspData : TEV3Data;
   id : Word;
@@ -3207,7 +3272,7 @@ function TEv3Spirit.PollEEPROM(block: Integer): TStrings;
 begin
   Result := fMemData;
   fMemData.Clear;
-  // TODO: implement some sort of memory polling?
+  if not IsOpen then Exit;
 end;
 
 function TEv3Spirit.PollMemory(address, size: Integer): TStrings;
@@ -3951,7 +4016,6 @@ var
   i : integer;
   bFound : boolean;
   oldBF : string;
-  ms : TMemoryStream;
   sdPresent, usbPresent : Byte;
   sdTotal, sdFree, usbTotal, usbFree, ramTotal, ramFree : Cardinal;
 begin
