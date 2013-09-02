@@ -679,7 +679,14 @@ begin
       tmpSL.Append('HT PIR');         // 50
       tmpSL.Append('HT Barometer');
       tmpSL.Append('HT IRSeeker V2');
-      for i := 53 to 98 do
+      tmpSL.Append('HT Color');
+      tmpSL.Append('HT Color V2');
+      tmpSL.Append('HT Angle');
+      tmpSL.Append('HT Compass');
+      tmpSL.Append('HT IR Receiver');
+      tmpSL.Append('HT Accelerometer');
+      tmpSL.Append('HT IRLink');
+      for i := 60 to 98 do
         tmpSL.Append(Format('EV3 3rdP %d', [i]));
       tmpSL.Append('LEGO EMeter'); // 99
       tmpSL.Append('IIC');

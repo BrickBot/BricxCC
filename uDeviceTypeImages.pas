@@ -29,6 +29,13 @@ type
     actHTIRSeekerV2: TAction;
     actEMeter: TAction;
     actI2C: TAction;
+    actHTColor: TAction;
+    actHTColorPD: TAction;
+    actHTAngle: TAction;
+    actHTCompass: TAction;
+    actHTIRReceiver: TAction;
+    actHTAccel: TAction;
+    actHTIRLink: TAction;
   private
     { Private declarations }
   public
