@@ -681,6 +681,8 @@ end;
 procedure TfrmLiveSensors.HandleOnPopup(Sender: TObject);
 begin
   mniSensorModes.Visible := ActivePort <> $FF;
+  // hide or show menu items and set their captions
+  // based on the current sensor mode
 end;
 
 function TfrmLiveSensors.GetPortFromButton(aSB: TSpeedButton; bOutput : boolean): byte;
