@@ -3110,6 +3110,7 @@
 #define MS_ADDR_RXMUX       0x7E /*!< MindSensors RXMux I2C address */
 #define MS_ADDR_NUMERICPAD  0xB4 /*!< MindSensors NumericPad I2C address */
 #define MS_ADDR_TOUCHPANEL  0x04 /*!< MindSensors TouchPanel I2C address */
+#define MS_ADDR_PPS58       0x18 /*!< MindSensors Pressure 58 PSI I2C address */
 
 /** @defgroup MSDistNX MindSensors DIST-Nx constants
  * Constants that are for use with the MindSensors DIST-Nx device.

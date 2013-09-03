@@ -1,0 +1,34 @@
+//! \page types Known Device Types
+//!
+//! \verbatim
+
+//  Type  Mode  Name      DataSets  Format  Figures  Decimals  Views  Conn. Pins  RawMin   RawMax   PctMin  PctMax  SiMin    SiMax    Time  IdValue  Symbol     Setup
+//  ----  ----  --------  --------  ------  -------  --------  -----  ----- ----  -------  -------  ------  ------  -------  -------  ----  -------  --------   --------------------------
+
+    70    0     MS-NXTSERVO   1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs NXTServo 0 0x00000000 2 0x58420000 1 
+
+    71    0     MS-LINELDR    1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs LineLdr 0 0x00000000 2 0x01420000 1 
+
+    72    0     MS-IVSENS     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs IVSens 0 0x00000000 2 0x09420000 1 
+
+    73    0     MS-NXTHID     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs NXTHID 0 0x00000000 2 0x02420000 1 
+
+    74    0     MS-NRLINK     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs NRLink 0 0x00000000 2 0x01420000 1 
+
+    75    0     MS-PFMATE     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs PFMate 0 0x00000000 2 0x24420000 1 
+
+    76    0     MS-DISTNX     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs DIST 0 0x00000000 2 0x01420000 1 
+
+    77    0     MS-PSPNX      1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs PSX-NX 0 0x00000000 2 0x01420000 1 
+
+    78    0     MS-ACCL3X03   1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs ACCL3X03 0 0x00000000 2 0x01420000 1 
+
+    79    0     MS-ACCLNX     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs ACCL-NX 0 0x00000000 2 0x01420000 1 
+
+    80    0     MS-PPS58      1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs PPS58 0 0x00000000 2 0x0C420000 1 
+
+    81    0     MS-NXTCAM     1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs NXTCAM 0 0x00000000 2 0x0C420000 1 
+
+    82    0     MS-NXTCHPNL   1       1     5        0         1      120   0x46      0.0    255.0       0     100      0.0    255.0   100        0  _          mndsnsrs NXTCHPNL 0 0x00000000 2 0x02420000 1 
+
+//!  \endverbatim
