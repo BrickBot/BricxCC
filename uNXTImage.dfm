@@ -41152,7 +41152,7 @@ object frmNXTImage: TfrmNXTImage
     Height = 16
     Align = alBottom
     Alignment = taCenter
-    Caption = 'The NXT is not responding.'
+    Caption = 'The brick is not responding.'
     Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -13

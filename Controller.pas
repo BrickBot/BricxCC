@@ -138,6 +138,7 @@ type
     function GetMotorPower(tag: integer): Byte;
     function GetMotorDirection(tag: integer): TMotorDirection;
     function GetMotorState(tag: integer): TMotorState;
+    procedure UpdateModes(aTypeID: integer; aStrings: TStrings);
   public
     { Public declarations }
   end;
@@ -152,7 +153,7 @@ implementation
 {$ENDIF}
 
 uses
-  brick_common, uSources, uLocalizedStrings, uGlobals;
+  brick_common, uSources, uLocalizedStrings, uGlobals, uEV3TypeData;
 
 var
   V_HEIGHT, V_MOTORS_TOP, V_VARS_TOP, V_TASKS_TOP, V_FUDGE,
@@ -188,15 +189,33 @@ const
   K_SENS_H     = 140;
 {$ENDIF}
 
-{Dealing with the Sensors}
+procedure TDirectForm.UpdateModes(aTypeID : integer; aStrings : TStrings);
+begin
+  if IsEV3 then
+  begin
+    // load the associated combo box with the correct mode names
+    LoadTypeModes(aTypeID, aStrings);
+  end;
+end;
 
+{Dealing with the Sensors}
 procedure TDirectForm.SensorTypeChange(Sender: TObject);
+var
+  cbo : TComboBox;
+  typeID : integer;
 begin
   if Sender = nil then Exit;
   if TComboBox(Sender).ItemIndex >= 0 then
   begin
-    BrickComm.SetSensorType(TComboBox(Sender).Tag, TComboBox(Sender).ItemIndex);
-    SensorModeChange(FindComponent('SensorMode' + IntToStr(TComboBox(Sender).Tag)));
+    typeID := TComboBox(Sender).ItemIndex;
+    cbo := TComboBox(FindComponent('SensorMode' + IntToStr(TComboBox(Sender).Tag)));
+    if Assigned(cbo) then
+    begin
+      UpdateModes(typeID, cbo.Items);
+      cbo.ItemIndex := 0;
+    end;
+    BrickComm.SetSensorType(TComboBox(Sender).Tag, typeID);
+    SensorModeChange(cbo);
   end;
 end;
 
@@ -624,6 +643,12 @@ begin
       SensorType2.Enabled  := true;
       SensorType3.Enabled  := true;
       // blech
+      // sensor types
+      LoadTypeNames(tmpSL);
+      SensorType0.Items.Assign(tmpSL);
+      SensorType1.Items.Assign(tmpSL);
+      SensorType2.Items.Assign(tmpSL);
+      SensorType3.Items.Assign(tmpSL);
       // EV3 mode names depend on the type
       tmpSL.Clear;
       tmpSL.Append('0');
@@ -638,64 +663,6 @@ begin
       SensorMode1.Items.Assign(tmpSL);
       SensorMode2.Items.Assign(tmpSL);
       SensorMode3.Items.Assign(tmpSL);
-      // sensor types
-      tmpSL.Clear;
-      tmpSL.Append(sNone);            // 0
-      tmpSL.Append('NXT Touch');
-      tmpSL.Append('NXT Light');
-      tmpSL.Append('NXT Sound');
-      tmpSL.Append('NXT Color');
-      tmpSL.Append('NXT Ultrasonic'); // 5
-      tmpSL.Append('Temperature');
-      tmpSL.Append('Large Motor');
-      tmpSL.Append('Medium Motor');
-      tmpSL.Append('Free');
-      tmpSL.Append('Output #2');      // 10
-      tmpSL.Append('Output #3');
-      tmpSL.Append('Output #4');
-      tmpSL.Append('Output #5');
-      tmpSL.Append('Output 3rd Party');
-      tmpSL.Append('Input #1');       // 15
-      tmpSL.Append('EV3 Touch');
-      tmpSL.Append('Input #3');
-      tmpSL.Append('Input #4');
-      tmpSL.Append('Input #5');
-      tmpSL.Append('Input #6');       // 20
-      tmpSL.Append('Test');
-      tmpSL.Append('Input #8');
-      tmpSL.Append('Input #9');
-      tmpSL.Append('Input #10');
-      tmpSL.Append('Input #11');      // 25
-      tmpSL.Append('Input #12');
-      tmpSL.Append('Input #13');
-      tmpSL.Append('Input 3rd Party');
-      tmpSL.Append('EV3 Color');
-      tmpSL.Append('EV3 Ultrasonic'); // 30
-      tmpSL.Append('EV3 31');
-      tmpSL.Append('EV3 Gyro');
-      tmpSL.Append('EV3 InfraRed');   // 33
-      for i := 34 to 49 do
-        tmpSL.Append(Format('EV3 LEGO %d', [i]));
-      tmpSL.Append('HT PIR');         // 50
-      tmpSL.Append('HT Barometer');
-      tmpSL.Append('HT IRSeeker V2');
-      tmpSL.Append('HT Color');
-      tmpSL.Append('HT Color V2');
-      tmpSL.Append('HT Angle');
-      tmpSL.Append('HT Compass');
-      tmpSL.Append('HT IR Receiver');
-      tmpSL.Append('HT Accelerometer');
-      tmpSL.Append('HT IRLink');
-      for i := 60 to 98 do
-        tmpSL.Append(Format('EV3 3rdP %d', [i]));
-      tmpSL.Append('LEGO EMeter'); // 99
-      tmpSL.Append('IIC');
-      tmpSL.Append('NXT Test');
-
-      SensorType0.Items.Assign(tmpSL);
-      SensorType1.Items.Assign(tmpSL);
-      SensorType2.Items.Assign(tmpSL);
-      SensorType3.Items.Assign(tmpSL);
     end else begin
       // cybermaster or spybot (sensor mode only)
       delta := V_SENS_DELTA;
@@ -799,6 +766,10 @@ begin
         SensorType1.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,1);
         SensorType2.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,2);
         SensorType3.ItemIndex := BrickComm.Poll(kRCX_InputTypeType,3);
+        UpdateModes(SensorType0.ItemIndex, SensorMode0.Items);
+        UpdateModes(SensorType1.ItemIndex, SensorMode1.Items);
+        UpdateModes(SensorType2.ItemIndex, SensorMode2.Items);
+        UpdateModes(SensorType3.ItemIndex, SensorMode3.Items);
       end;
 
       ttt := BrickComm.Poll(kRCX_InputModeType,0);

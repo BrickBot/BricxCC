@@ -130,7 +130,8 @@ uses
   ev3RGFedit_Basis in 'ev3RGFedit_Basis.pas',
   ev3RGFedit_FileImport in 'ev3RGFedit_FileImport.pas' {frmImageImport},
   ev3RGFEdit_FileOpen in 'ev3RGFEdit_FileOpen.pas' {frmFileOpen},
-  ev3RGFedit_FileSave in 'ev3RGFedit_FileSave.pas' {frmFileSave};
+  ev3RGFedit_FileSave in 'ev3RGFedit_FileSave.pas' {frmFileSave},
+  uEV3TypeData in 'uEV3TypeData.pas';
 
 {$IFNDEF FPC}
 {.$R *.TLB}
@@ -154,6 +155,7 @@ begin
   LoadNBCCodeCompFromFile(ProgramDir + 'Default\nbc_api.txt', True);
   LoadRICScriptCodeCompFromFile(ProgramDir + 'Default\ricscript_api.txt');
   LoadSPCCodeCompFromFile(ProgramDir + 'Default\spc_api.txt', True);
+  InitializeTypeData;
 
   if ParamSwitch('/NoNewMenuItems') then
     AddMenuItemsToNewMenu := False;

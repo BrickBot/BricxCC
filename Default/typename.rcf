@@ -1,0 +1,36 @@
+  1 NXT Touch
+  2 NXT Light
+  3 NXT Sound
+  4 NXT Color
+  5 NXT Ultrasonic
+  6 Temperature
+  7 Large Motor
+  8 Medium Motor
+  9 Free
+ 10 Output #2
+ 11 Output #3
+ 12 Output #4
+ 13 Output #5
+ 14 Output 3rd Party
+ 15 Input #1
+ 16 EV3 Touch
+ 17 Input #3
+ 18 Input #4
+ 19 Input #5
+ 20 Input #6
+ 21 Test
+ 22 Input #8
+ 23 Input #9
+ 24 Input #10
+ 25 Input #11
+ 26 Input #12
+ 27 Input #13
+ 28 Input 3rd Party
+ 29 EV3 Color
+ 30 EV3 Ultrasonic
+ 31 EV3 31
+ 32 EV3 Gyro
+ 33 EV3 InfraRed
+ 99 LEGO EMeter
+100 IIC
+101 NXT Test

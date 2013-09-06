@@ -635,8 +635,8 @@ resourcestring
 resourcestring
   UsageSyntax    = 'Syntax: %s [options] filename [options]';
   UsagePort      = '   -S=<portname>: specify port name (usb), brick resource name, or alias';
-  UsageDownload  = '   -d: download program';
-  UsageRunProg   = '   -r: download and run program';
+  UsageDownload  = '   -d: download';
+  UsageRunProg   = '   -r: download and run';
   UsageBinary    = '   -b: treat input file as a binary file (don''t compile it)';
   UsageQuiet     = '   -q: quiet';
   UsageNoSystem  = '   -n: prevent the system file from being included';
@@ -657,8 +657,11 @@ resourcestring
   UsageSafecall  = '   -safecall: NXC will wrap all function calls in Acquire/Release';
   UsageAPI       = '   -api: dump the NBC/NXC API to stdout';
   UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 128, NXT 1.1 == 105)';
-  UsageHelp      = '   -help : display command line options';
-  UsageFolder    = '   -F=<path> : remote destination folder (default is /media/card)';
+  UsageHelp      = '   -help: display command line options';
+  UsageFolder    = '   -F=<path>: Folder. Default = ../prjs (brick) or . (PC)';
+  UsageUpload    = '   -u: upload';
+  UsageListFiles = '   -l: list files';
+  UsageDelete    = '   -x: delete';
 
 // uEditorExperts.pas
 resourcestring

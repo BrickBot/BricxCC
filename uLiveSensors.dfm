@@ -129,53 +129,5 @@ object frmLiveSensors: TfrmLiveSensors
       ShortCut = 16464
       OnExecute = actPollingExecute
     end
-    object actMode0: TAction
-      Category = 'Modes'
-      Caption = 'Mode 0'
-      GroupIndex = 3
-      OnExecute = actSensorModeExecute
-    end
-    object actMode1: TAction
-      Tag = 1
-      Category = 'Modes'
-      Caption = 'Mode 1'
-      OnExecute = actSensorModeExecute
-    end
-    object actMode2: TAction
-      Tag = 2
-      Category = 'Modes'
-      Caption = 'Mode 2'
-      OnExecute = actSensorModeExecute
-    end
-    object actMode3: TAction
-      Tag = 3
-      Category = 'Modes'
-      Caption = 'Mode3'
-      OnExecute = actSensorModeExecute
-    end
-    object actMode4: TAction
-      Tag = 4
-      Category = 'Modes'
-      Caption = 'Mode 4'
-      OnExecute = actSensorModeExecute
-    end
-    object actMode5: TAction
-      Tag = 5
-      Category = 'Modes'
-      Caption = 'Mode 5'
-      OnExecute = actSensorModeExecute
-    end
-    object actMode6: TAction
-      Tag = 6
-      Category = 'Modes'
-      Caption = 'Mode 6'
-      OnExecute = actSensorModeExecute
-    end
-    object actMode7: TAction
-      Tag = 7
-      Category = 'Modes'
-      Caption = 'Mode 7'
-      OnExecute = actSensorModeExecute
-    end
   end
 end
