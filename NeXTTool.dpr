@@ -148,7 +148,7 @@ begin
   Writeln('   /Loop: loop when playing sound files');
   Writeln('   /Relative: reset output position relative');
   Writeln('   /KeepMsg: do not empty mailbox when reading');
-  Writeln('   /Bin[=filename]: dump data output as binary to a file (nxt.bin)');
+  Writeln('   /Bin[=filename]: dump data output as binary to a file (output.bin)');
   Writeln('   /Power=<n>: output power level (-100..100)');
   Writeln('   /Mode=<n>: output mode (COAST=0, MOTORON=1, BRAKE=2, REGULATED=4)');
   Writeln('   /RegMode=<n>: output regulation mode (IDLE=0, SPEED=1, SYNC=2)');
@@ -160,15 +160,15 @@ begin
   Writeln('   /Iterations=<n>: repeat a command <n> times (1)');
   Writeln('   /RefreshRate=<ms>: delay <ms> milliseconds between iterations (1000)');
   Writeln('Actions:');
-  Writeln('   -init[=0] : initialize nxt.dat (optionally turn off Bluetooth search)');
-  Writeln('   -update[=0] : update the nxt.dat file (ditto)');
-  Writeln('   -listbricks[=0] : list resource names of all found NXT bricks (ditto)');
+  Writeln('   -init[=0] : initialize bricks.dat (optionally turn off Bluetooth search)');
+  Writeln('   -update[=0] : update the bricks.dat file (ditto)');
+  Writeln('   -listbricks[=0] : list resource names of all found bricks (ditto)');
   Writeln('   -clear : erase all items on the brick');
   Writeln('   -battery : return the battery level');
   Writeln('   -input=<N> : read input N (0-3)');
-  Writeln('   -output=<N> : read the status of output N (0-2)');
+  Writeln('   -output=<N> : read the status of output N (0-3)');
   Writeln('   -setinput=<N> : configure input N (0-3)');
-  Writeln('   -setoutput=<N> : configure output N (0-2)');
+  Writeln('   -setoutput=<N> : configure output N (0-3)');
   Writeln('   -mute : stop playing sounds');
   Writeln('   -playtone=<frequency> : play a tone for the specified duration');
   Writeln('   -run=<filename> : run the specified program');
@@ -201,7 +201,6 @@ begin
   Writeln('   -boot : reset the NXT into SAMBA mode');
   Writeln('   -btreset : reset the NXT bluetooth to factory settings (usb only)');
   Writeln('   -defrag : defragment the NXT filesystem');
-  Writeln('   -shutdown : turn off the NXT');
   Writeln('   -motorson=<motorlist> : Turn on the specified motors');
   Writeln('   -motorsoff=<motorlist> : Turn off the specified motors');
   Writeln('   -motorsfloat=<motorlist> : Float the specified motors');
@@ -342,7 +341,7 @@ begin
   bindump := ParamSwitch('/Bin');
   binfile := ParamValue('/Bin');
   if binfile = '' then
-    binfile := 'nxt.bin';
+    binfile := 'output.bin';
 
   EHO := TEventHandlerObject.Create;
   try

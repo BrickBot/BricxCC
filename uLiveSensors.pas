@@ -56,28 +56,15 @@ type
     act10sec: TAction;
     actPollNow: TAction;
     actPolling: TAction;
-    actMode0: TAction;
-    actMode1: TAction;
-    actMode2: TAction;
-    actMode3: TAction;
-    actMode4: TAction;
-    actMode5: TAction;
-    actMode6: TAction;
-    actMode7: TAction;
     procedure FormCreate(Sender: TObject);
     procedure btnOutputClick(Sender: TObject);
     procedure btnInputClick(Sender: TObject);
-    procedure btnInputDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure btnOutputDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
     procedure tmrRefreshTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actPollNowExecute(Sender: TObject);
     procedure actPollingExecute(Sender: TObject);
     procedure actRefreshExecute(Sender: TObject);
-    procedure actSensorModeExecute(Sender: TObject);
   private
     { Private declarations }
     fNumLayers : integer;
@@ -94,7 +81,6 @@ type
     procedure UpdateSensorButtons;
     procedure UpdateSensorValues;
     procedure RefreshRateClick(Sender: TObject);
-    procedure SensorModeClick(Sender: TObject);
     procedure HandleOnPopup(Sender: TObject);
     function GetActivePort: Byte;
     function GetPortFromButton(aSB : TSpeedButton; bOutput : boolean) : byte;
@@ -110,6 +96,7 @@ type
     mni2sec: TOfficeMenuItem;
     mni5sec: TOfficeMenuItem;
     mni10sec: TOfficeMenuItem;
+    mniSensorTypes: TOfficeMenuItem;
     mniSensorModes: TOfficeMenuItem;
     mniMode0: TOfficeMenuItem;
     mniMode1: TOfficeMenuItem;
@@ -120,6 +107,11 @@ type
     mniMode6: TOfficeMenuItem;
     mniMode7: TOfficeMenuItem;
     procedure CreatePopupMenu;
+    procedure AddSensorTypeMenuItems;
+    procedure SensorModesClick(Sender: TObject);
+    procedure SensorTypesClick(Sender: TObject);
+    procedure SensorModeClick(Sender: TObject);
+    procedure SensorTypeClick(Sender: TObject);
   protected
     fActions : TStringList;
     function FindAction(aType : byte) : TAction;
@@ -136,8 +128,8 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, Math, brick_common, uSpirit, uLocalizedStrings, uLiveSensorGlobals,
-  uGuiUtils, uGlobals;
+  SysUtils, Math, Graphics, brick_common, uSpirit, uLocalizedStrings,
+  uLiveSensorGlobals, uGuiUtils, uGlobals, uEV3TypeData;
 
 procedure TfrmLiveSensors.CreateSheetComponents;
 var
@@ -167,9 +159,7 @@ begin
         Flat := True;
         ShowHint := True;
         Tag := i*4+j;
-//        PopupMenu := pmuMain;
         OnClick := btnInputClick;
-        OnMouseDown := btnInputDown;
       end;
       l := TLabel.Create(self);
       fLabels[x] := l;
@@ -181,7 +171,9 @@ begin
         Top := 118;
         Width := 9;
         Height := 16;
-        Caption := IntToStr(j);
+        Caption := IntToStr(j+1);
+        Font.Style := [fsBold];
+        Font.Height := 18;
         ParentFont := False;
       end;
       e := TEdit.Create(self);
@@ -217,9 +209,7 @@ begin
         Flat := True;
         ShowHint := True;
         Tag := 16+i*4+j;
-//        PopupMenu := pmuMain;
         OnClick := btnOutputClick;
-        OnMouseDown := btnOutputDown;
       end;
       l := TLabel.Create(self);
       fLabels[x] := l;
@@ -232,6 +222,8 @@ begin
         Width := 11;
         Height := 16;
         Caption := Chr(65+j);
+        Font.Style := [fsBold];
+        Font.Height := 18;
         ParentFont := False;
       end;
       e := TEdit.Create(self);
@@ -280,6 +272,8 @@ procedure TfrmLiveSensors.btnOutputClick(Sender: TObject);
 var
   sb : TSpeedButton;
 begin
+  mniSensorTypes.Visible := True;
+  mniSensorModes.Visible := True;
   sb := TSpeedButton(Sender);
   fActivePort := GetPortFromButton(sb, true);
   pmuMain.Popup(Left + sb.Left+32, Top + sb.Top+32);
@@ -289,31 +283,11 @@ procedure TfrmLiveSensors.btnInputClick(Sender: TObject);
 var
   sb : TSpeedButton;
 begin
+  mniSensorTypes.Visible := True;
+  mniSensorModes.Visible := True;
   sb := TSpeedButton(Sender);
   fActivePort := GetPortFromButton(sb, false);
   pmuMain.Popup(Left + sb.Left+32, Top + sb.Top+32);
-end;
-
-procedure TfrmLiveSensors.btnInputDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  sb : TSpeedButton;
-begin
-  sb := TSpeedButton(Sender);
-  fActivePort := GetPortFromButton(sb, false);
-  if Button = mbRight then
-    pmuMain.Popup(Left + sb.Left+32, Top + sb.Top+32);
-end;
-
-procedure TfrmLiveSensors.btnOutputDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-var
-  sb : TSpeedButton;
-begin
-  sb := TSpeedButton(Sender);
-  fActivePort := GetPortFromButton(sb, true);
-  if Button = mbRight then
-    pmuMain.Popup(Left + sb.Left+32, Top + sb.Top+32);
 end;
 
 procedure TfrmLiveSensors.tmrRefreshTimer(Sender: TObject);
@@ -463,6 +437,7 @@ begin
   mni2sec := TOfficeMenuItem.Create(mniRefreshRate);
   mni5sec := TOfficeMenuItem.Create(mniRefreshRate);
   mni10sec := TOfficeMenuItem.Create(mniRefreshRate);
+  mniSensorTypes := TOfficeMenuItem.Create(pmuMain);
   mniSensorModes := TOfficeMenuItem.Create(pmuMain);
   mniMode0 := TOfficeMenuItem.Create(mniSensorModes);
   mniMode1 := TOfficeMenuItem.Create(mniSensorModes);
@@ -544,17 +519,24 @@ begin
     GroupIndex := 2;
     RadioItem := True;
   end;
+  with mniSensorTypes do
+  begin
+    Name := 'mniSensorTypes';
+    Caption := 'Sensor Type';
+    OnClick := SensorTypesClick;
+  end;
   with mniSensorModes do
   begin
     Name := 'mniSensorModes';
     Caption := 'Sensor Mode';
-    OnClick := SensorModeClick;
+    OnClick := SensorModesClick;
   end;
   with mniMode0 do
   begin
     Name := 'mniMode0';
     Tag := 0;
-    Action := actMode0;
+    Caption := 'Mode 0';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -562,7 +544,8 @@ begin
   begin
     Name := 'mniMode1';
     Tag := 1;
-    Action := actMode1;
+    Caption := 'Mode 1';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -570,7 +553,8 @@ begin
   begin
     Name := 'mniMode2';
     Tag := 2;
-    Action := actMode2;
+    Caption := 'Mode 2';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -578,7 +562,8 @@ begin
   begin
     Name := 'mniMode3';
     Tag := 3;
-    Action := actMode3;
+    Caption := 'Mode 3';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -586,7 +571,8 @@ begin
   begin
     Name := 'mniMode4';
     Tag := 4;
-    Action := actMode4;
+    Caption := 'Mode 4';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -594,7 +580,8 @@ begin
   begin
     Name := 'mniMode5';
     Tag := 5;
-    Action := actMode5;
+    Caption := 'Mode 5';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -602,7 +589,8 @@ begin
   begin
     Name := 'mniMode6';
     Tag := 6;
-    Action := actMode6;
+    Caption := 'Mode 6';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
@@ -610,13 +598,15 @@ begin
   begin
     Name := 'mniMode7';
     Tag := 7;
-    Action := actMode7;
+    Caption := 'Mode 7';
+    OnClick := SensorModeClick;
     GroupIndex := 3;
     RadioItem := True;
   end;
-  AddMenuItems(pmuMain.Items, [mniPollNow, mniPoll, mniRefreshRate, mniSensorModes]);
+  AddMenuItems(pmuMain.Items, [mniPollNow, mniPoll, mniRefreshRate, mniSensorTypes, mniSensorModes]);
   AddMenuItems(mniRefreshRate, [mni100ms, mni200ms, mni500ms, mni1sec, mni2sec, mni5sec, mni10sec]);
   AddMenuItems(mniSensorModes, [mniMode0, mniMode1, mniMode2, mniMode3, mniMode4, mniMode5, mniMode6, mniMode7]);
+  AddSensorTypeMenuItems;
 end;
 
 procedure TfrmLiveSensors.RefreshRateClick(Sender: TObject);
@@ -628,17 +618,6 @@ begin
   begin
     M := TOfficeMenuItem(mniRefreshRate.Items[i]);
     M.Checked := M.Tag = LiveSensorDefaultRefreshRate;
-  end;
-end;
-
-procedure TfrmLiveSensors.SensorModeClick(Sender: TObject);
-var
-  i : integer;
-  M : TOfficeMenuItem;
-begin
-  for i := 0 to mniSensorModes.Count - 1 do
-  begin
-    M := TOfficeMenuItem(mniSensorModes.Items[i]);
   end;
 end;
 
@@ -663,16 +642,6 @@ begin
   tmrRefresh.Interval := LiveSensorDefaultRefreshRate;
 end;
 
-procedure TfrmLiveSensors.actSensorModeExecute(Sender: TObject);
-begin
-  if Sender is TAction then
-    TAction(Sender).Checked := True
-  else if Sender is TOfficeMenuItem then
-    TOfficeMenuItem(Sender).Checked := True;
-  BrickComm.SetSensorMode(ActivePort, TControl(Sender).Tag, 0);
-  fActivePort := $FF;
-end;
-
 function TfrmLiveSensors.GetActivePort: Byte;
 begin
   Result := fActivePort;
@@ -680,7 +649,8 @@ end;
 
 procedure TfrmLiveSensors.HandleOnPopup(Sender: TObject);
 begin
-  mniSensorModes.Visible := ActivePort <> $FF;
+  mniSensorTypes.Visible := ActivePort < 32;
+  mniSensorModes.Visible := ActivePort < 32;
   // hide or show menu items and set their captions
   // based on the current sensor mode
 end;
@@ -702,6 +672,105 @@ begin
     layer := 3;
   tmp := aSB.Left;
   Result := Result + (layer * 4) + (tmp div 74);
+end;
+
+procedure TfrmLiveSensors.AddSensorTypeMenuItems;
+var
+  i : integer;
+  TD : EV3TypeData;
+  m : TOfficeMenuItem;
+begin
+  mniSensorTypes.Clear;
+  for i := 0 to TypeDataCount - 1 do
+  begin
+    TD := TypeDataByID(i);
+    if TD.TypeName = 'Unknown' then Continue;
+    m := TOfficeMenuItem.Create(mniSensorTypes);
+    with m do
+    begin
+      Name := 'mniType'+IntToStr(i);
+      Tag := i;
+      Caption := TD.TypeName;
+      OnClick := SensorTypeClick;
+      GroupIndex := 4;
+      RadioItem := True;
+    end;
+    mniSensorTypes.Add(m);
+  end;
+end;
+
+function GetTypeModeIndex(aPort : byte) : byte;
+var
+  bOutput : boolean;
+begin
+  // translate a port number into an index into the TypeModes array
+  bOutput := aPort >= 16;
+  if bOutput then
+    aPort := aPort - 16;
+  Result := (aPort mod 4) + ((aPort div 4)*8);
+  if bOutput then
+    inc(Result, 4);
+end;
+
+procedure TfrmLiveSensors.SensorModesClick(Sender: TObject);
+var
+  i : integer;
+  M : TOfficeMenuItem;
+  aTM : TTypeMode;
+  aTD : EV3TypeData;
+begin
+  if ActivePort >= 32 then Exit;
+  aTM := fTypeModes[GetTypeModeIndex(ActivePort)];
+  if aTM.iType >= TypeDataCount then Exit;
+  aTD := TypeDataByID(aTM.iType);
+  // update the sub-menu to reflect the modes for the type of the currently
+  // active port and "check" the one that is the current mode
+  for i := 0 to mniSensorModes.Count - 1 do
+  begin
+    M := TOfficeMenuItem(mniSensorModes.Items[i]);
+    M.Caption := aTD.Modes[i];
+    M.Visible := i < aTD.ModeCount;
+    M.Checked := M.Tag = aTM.iMode;
+  end;
+end;
+
+procedure TfrmLiveSensors.SensorTypesClick(Sender: TObject);
+var
+  i : integer;
+  M : TOfficeMenuItem;
+  aTM : TTypeMode;
+  aTD : EV3TypeData;
+begin
+  // mark the type of the current port
+  if ActivePort >= 32 then Exit;
+  aTM := fTypeModes[GetTypeModeIndex(ActivePort)];
+  if aTM.iType >= TypeDataCount then Exit;
+  aTD := TypeDataByID(aTM.iType);
+  // update the sub-menu to reflect the modes for the type of the currently
+  // active port and "check" the one that is the current mode
+  for i := 0 to mniSensorTypes.Count - 1 do
+  begin
+    M := TOfficeMenuItem(mniSensorTypes.Items[i]);
+    M.Checked := (M.Tag = aTM.iType) or (aTM.iType = 126);
+  end;
+end;
+
+procedure TfrmLiveSensors.SensorModeClick(Sender: TObject);
+begin
+  if ActivePort >= 32 then Exit;
+  if Sender is TOfficeMenuItem then
+    TOfficeMenuItem(Sender).Checked := True;
+  BrickComm.SetSensorMode(ActivePort, TControl(Sender).Tag, 0);
+  fActivePort := $FF;
+end;
+
+procedure TfrmLiveSensors.SensorTypeClick(Sender: TObject);
+begin
+  if ActivePort >= 32 then Exit;
+  if Sender is TOfficeMenuItem then
+    TOfficeMenuItem(Sender).Checked := True;
+  BrickComm.SetSensorType(ActivePort, TControl(Sender).Tag);
+  fActivePort := $FF;
 end;
 
 end.

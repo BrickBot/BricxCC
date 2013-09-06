@@ -49,14 +49,20 @@ var
   Filename : string;
   TheErrorCode : integer;
   Quiet : boolean;
+  Download : boolean;
+  Upload : boolean;
+  ListFiles : boolean;
+  DeleteFile : boolean;
+  Run : boolean;
   UseSpecialName : boolean;
   SpecialName : string;
-  RemoteFolder : string;
+  DestinationFolder : string;
   PortName : string;
   MS : TMemoryStream;
-  data : array of byte;
   BC : TBrickComm;
   EHO : TEventHandlerObject;
+  SL : TStringList;
+  i : integer;
   
 function BrickComm : TBrickComm;
 begin
@@ -74,7 +80,11 @@ begin
   WriteLn('');
   WriteLn(UsagePort);
   WriteLn(UsageFolder);
+  Writeln(UsageListFiles);
+  Writeln(UsageUpload);
+  Writeln(UsageDownload);
   Writeln(UsageRunProg);
+  Writeln(UsageDelete);
   Writeln(UsageQuiet);
   Writeln(UsageHelp);
   // also takes an undocumented "ev3 name" parameter which is
@@ -106,19 +116,16 @@ begin
 {$IFDEF FPC}
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := 'EV3 Downloader';
-  VerFileVersion      := '0.1.0.1';
+  VerFileVersion      := '1.0.0.1';
   VerInternalName     := 'dll';
   VerLegalCopyright   := 'Copyright (c) 2006-2013, John Hansen';
   VerOriginalFileName := 'dll';
   VerProductName      := 'EV3 Downloader';
-  VerProductVersion   := '0.1';
+  VerProductVersion   := '1.0';
   VerComments         := '';
 {$ENDIF}
 
   TheErrorCode := 0;
-  Quiet := False;
-  UseSpecialName := False;
-  SpecialName := '';
   
   if ParamSwitch('-help', False) then
   begin
@@ -130,74 +137,124 @@ begin
   begin
     PrintUsageError(COMPILATION_TIMESTAMP);
     TheErrorCode := 1;
-    Exit;
+    Halt(TheErrorCode);
   end;
 
+  ListFiles := ParamSwitch('-l', False);
+
   Filename := getFilenameParam();
-  if Trim(Filename) = '' then
+  if not ListFiles and (Trim(Filename) = '') then
   begin
     PrintUsageError(COMPILATION_TIMESTAMP);
     TheErrorCode := 1;
-    Exit;
+    Halt(TheErrorCode);
   end;
 
   Quiet          := ParamSwitch('-q', False);
   UseSpecialName := ParamSwitch('-N', False);
   SpecialName    := ParamValue('-N', False);
+  Download       := ParamSwitch('-d', False) or ParamSwitch('-r', False);
+  Run            := ParamSwitch('-r', False);
+  Upload         := ParamSwitch('-u', not Download);
+  DeleteFile     := ParamSwitch('-x', False);
 
-  RemoteFolder   := ParamValue('-F', False);
-  if RemoteFolder = '' then
-    RemoteFolder := '/media/card/';
+  if not ListFiles and not DeleteFile and ((Upload and Download) or not (Upload or Download)) then
+  begin
+    PrintUsageError(COMPILATION_TIMESTAMP);
+    TheErrorCode := 1;
+    Halt(TheErrorCode);
+  end;
 
-  PortName       := ParamValue('-S', False);
+  DestinationFolder := ParamValue('-F', False);
+
+  PortName := ParamValue('-S', False);
   if PortName = '' then
     PortName := 'usb';
 
-  if FileExists(filename) then
-  begin
-    EHO := TEventHandlerObject.Create;
-    try
-      BrickComm.OnDownloadStart  := EHO.HandleDownloadStart;
-      BrickComm.OnDownloadDone   := EHO.HandleDownloadDone;
-      BrickComm.OnDownloadStatus := EHO.HandleDownloadStatus;
+  EHO := TEventHandlerObject.Create;
+  try
+    BrickComm.OnDownloadStart  := EHO.HandleDownloadStart;
+    BrickComm.OnDownloadDone   := EHO.HandleDownloadDone;
+    BrickComm.OnDownloadStatus := EHO.HandleDownloadStatus;
 
-      LocalBrickType := SU_EV3;
-      BrickComm.Port := PortName;
-      if BrickComm.Open then
+    LocalBrickType := SU_EV3;
+    BrickComm.Port := PortName;
+    if BrickComm.Open then
+    begin
+      if ListFiles then
       begin
-        BrickComm.BrickFolder := RemoteFolder;
-        if UseSpecialName then
+        if DestinationFolder = '' then
+          DestinationFolder := BrickComm.BrickFolder;
+        SL := TStringList.Create;
+        try
+          BrickComm.ListFiles(DestinationFolder + '*.*', SL);
+          for i := 0 to SL.Count - 1 do
+            WriteLn(SL[i]);
+        finally
+          SL.Free;
+        end;
+      end
+      else if DeleteFile then
+      begin
+        if DestinationFolder = '' then
+          DestinationFolder := BrickComm.BrickFolder;
+        filename := DestinationFolder + filename;
+        BrickComm.SCDeleteFile(filename, true);
+      end
+      else if Download then
+      begin
+        if FileExists(filename) then
         begin
-          MS := TMemoryStream.Create;
-          try
-            MS.LoadFromFile(filename);
-            if not BrickComm.DownloadStream(MS, SpecialName, nftProgram) then
-              TheErrorCode := 1;
-          finally
-            MS.Free;
+          if DestinationFolder <> '' then
+            BrickComm.BrickFolder := DestinationFolder;
+          if UseSpecialName then
+          begin
+            MS := TMemoryStream.Create;
+            try
+              MS.LoadFromFile(filename);
+              if not BrickComm.DownloadStream(MS, SpecialName, nftProgram) then
+                TheErrorCode := 3;
+            finally
+              MS.Free;
+            end;
+          end
+          else
+          begin
+            if not BrickComm.DownloadFile(filename, nftProgram) then
+              TheErrorCode := 3;
+          end;
+
+          if not Quiet and (TheErrorCode = 0) then
+          begin
+            BrickComm.PlayDownloadCompletedSound();
+          end;
+
+          if Run and (TheErrorCode = 0) then
+          begin
+            if not BrickComm.DCStartProgram(ExtractFilename(filename)) then
+              TheErrorCode := 4;
           end;
         end
         else
-        begin
-          if not BrickComm.DownloadFile(filename, nftProgram) then
-            TheErrorCode := 1;
-        end;
-
-        if not Quiet and (TheErrorCode = 0) then
-        begin
-          BrickComm.PlayDownloadCompletedSound();
-        end;
-
-        BrickComm.Close;
+          TheErrorCode := 2;
       end
       else
-        TheErrorCode := 1;
-    finally
-      EHO.Free;
-    end;
-  end
-  else
-    TheErrorCode := 1;
+      begin
+        // upload
+        if DestinationFolder = '' then
+          DestinationFolder := GetCurrentDir;
+        if not BrickComm.UploadFile(filename, DestinationFolder) then
+          TheErrorCode := 5;
+      end;
+
+      BrickComm.Close;
+    end
+    else
+      TheErrorCode := 6;
+  finally
+    EHO.Free;
+  end;
+
   if TheErrorCode <> 0 then
     Halt(TheErrorCode);
 end.
