@@ -22,7 +22,7 @@ uses
   Classes, uEV3Transport;
 
 type
-  TEV3HIDTransport = class(TInterfacedObject, IEV3Transport)
+  TEV3TCPTransport = class(TInterfacedObject, IEV3Transport)
   public
     function GetMaxMessageSize : integer;
     function GetSerialNumber : string;
@@ -31,6 +31,7 @@ type
     procedure Close;
     function Open : boolean;
     function IsOpen : boolean;
+    function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
     function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
@@ -43,57 +44,63 @@ implementation
 uses
   SysUtils;
 
-{ TEV3HIDTransport }
+{ TEV3TCPTransport }
 
-procedure TEV3HIDTransport.Close;
+procedure TEV3TCPTransport.Close;
 begin
   // nothing to close;
 end;
 
-function TEV3HIDTransport.Open: boolean;
+function TEV3TCPTransport.Open: boolean;
 begin
   // cannot be opened
   Result := False;
 end;
 
-function TEV3HIDTransport.IsOpen: boolean;
+function TEV3TCPTransport.IsOpen: boolean;
 begin
   // cannot be opened
   Result := False;
 end;
 
-function TEV3HIDTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Word): Word;
+function TEV3TCPTransport.IsFirmwareDownload: boolean;
+begin
+  // cannot be in firmware download mode
+  Result := False;
+end;
+
+function TEV3TCPTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Word): Word;
 begin
   Result := 0;
   if not IsOpen then
     Exit;
 end;
 
-function TEV3HIDTransport.SendMessage(SequenceId: Word; var Buffer: TEV3Data): integer;
+function TEV3TCPTransport.SendMessage(SequenceId: Word; var Buffer: TEV3Data): integer;
 begin
   Result := 0;
   if not IsOpen then
     Exit;
 end;
 
-function TEV3HIDTransport.SendStream(SequenceId: Word; aStream: TStream): integer;
+function TEV3TCPTransport.SendStream(SequenceId: Word; aStream: TStream): integer;
 begin
   Result := 0;
   if not IsOpen then
     Exit;
 end;
 
-function TEV3HIDTransport.GetMaxMessageSize: integer;
+function TEV3TCPTransport.GetMaxMessageSize: integer;
 begin
   Result := 1024;
 end;
 
-function TEV3HIDTransport.GetSerialNumber: string;
+function TEV3TCPTransport.GetSerialNumber: string;
 begin
   Result := '0';
 end;
 
-function TEV3HIDTransport.GetUserVisibleType: string;
+function TEV3TCPTransport.GetUserVisibleType: string;
 begin
   Result := 'tcp';
 end;
