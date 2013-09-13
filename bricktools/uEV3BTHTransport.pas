@@ -31,6 +31,7 @@ type
     procedure Close;
     function Open : boolean;
     function IsOpen : boolean;
+    function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
     function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
@@ -59,6 +60,12 @@ end;
 function TEV3BTHTransport.IsOpen: boolean;
 begin
   // cannot be opened
+  Result := False;
+end;
+
+function TEV3BTHTransport.IsFirmwareDownload: boolean;
+begin
+  // cannot be in firmware download mode
   Result := False;
 end;
 

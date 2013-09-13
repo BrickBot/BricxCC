@@ -5754,7 +5754,6 @@ begin
     P.AddIncludeDirs(IncludeDirs);
     if not IgnoreSystemFile then
     begin
-      P.SkipIncludeFile('spmem.h');
       P.SkipIncludeFile('EVCDefs.h');
     end;
     P.Preprocess(CurrentFile, fMS);
@@ -5898,17 +5897,6 @@ end;
 
 const
   APIF_ASM      = 0;
-  APIF_OPEN     = 1;
-  APIF_CLOSE    = 2;
-  APIF_WRITE    = 3;
-  APIF_READ     = 4;
-  APIF_STAT     = 5;
-  APIF_PUSH     = 6;
-  APIF_POP      = 7;
-  APIF_SQRT     = 8;
-  APIF_PUTCHAR  = 9;
-  APIF_PUTS     = 10;
-  APIF_PRINTF   = 11;
   APIF_ABS      = 12;
   APIF_SIGN     = 13;
   APIF_SIZEOF   = 14;
@@ -5925,17 +5913,6 @@ begin
       DoAsm(dt);
       fSemiColonRequired := True;
     end;
-    APIF_OPEN    : DoOpenLog;
-    APIF_CLOSE   : DoCloseLog;
-    APIF_WRITE   : DoWriteToLog;
-    APIF_READ    : DoReadFromLog;
-    APIF_STAT    : DoLogStatus;
-    APIF_PUSH    : DoPush;
-    APIF_POP     : DoPop;
-    APIF_SQRT    : DoSquareRoot;
-    APIF_PUTCHAR : DoPutChar;
-    APIF_PUTS    : DoPutString;
-    APIF_PRINTF  : DoPrintf;
     APIF_ABS     : DoAbs;
     APIF_SIGN    : DoSign;
     APIF_SIZEOF  : DoSizeOf;
@@ -5947,17 +5924,6 @@ end;
 procedure TEVCComp.LoadAPIFunctions;
 begin
   AddAPIFunction('asm', APIF_ASM);
-  AddAPIFunction('open', APIF_OPEN);
-  AddAPIFunction('close', APIF_CLOSE);
-  AddAPIFunction('write', APIF_WRITE);
-  AddAPIFunction('read', APIF_READ);
-  AddAPIFunction('stat', APIF_STAT);
-  AddAPIFunction('push', APIF_PUSH);
-  AddAPIFunction('pop', APIF_POP);
-  AddAPIFunction('sqrt', APIF_SQRT);
-  AddAPIFunction('putchar', APIF_PUTCHAR);
-  AddAPIFunction('puts', APIF_PUTS);
-  AddAPIFunction('printf', APIF_PRINTF);
   AddAPIFunction('abs', APIF_ABS);
   AddAPIFunction('sign', APIF_SIGN);
   AddAPIFunction('SizeOf', APIF_SIZEOF);

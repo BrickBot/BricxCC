@@ -24,6 +24,7 @@ uses
 type
   TEV3HIDTransport = class(TInterfacedObject, IEV3Transport)
   private
+    fFirmwareDownload : boolean;
     fPath : string;
     fSerial : string;
     fProductString : string;
@@ -39,6 +40,7 @@ type
     procedure Close;
     function Open : boolean;
     function IsOpen : boolean;
+    function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
     function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
@@ -84,6 +86,8 @@ begin
   fSerial := UpperCase(info^.serial_number);
   fProductString := info^.product_string;
   fDeviceHandle := nil;
+  fFirmwareDownload := (info^.product_id = USB_ID_PRODUCT_EV3FW) and
+                       (info^.vendor_id = USB_ID_VENDOR_LEGO);
 end;
 
 destructor TEV3HIDTransport.Destroy;
@@ -124,6 +128,11 @@ begin
   Result := fDeviceHandle <> nil;
 end;
 
+function TEV3HIDTransport.IsFirmwareDownload: boolean;
+begin
+  Result := fFirmwareDownload;
+end;
+
 function TEV3HIDTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Word): Word;
 var
   bytesRead : integer;
@@ -132,6 +141,7 @@ var
   messageSize : SmallInt;
 begin
   Result := 0;
+  SetLength(Buffer, 0);
 //  SetLength(Buffer, 0);
   if not IsOpen then
     Exit;

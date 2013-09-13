@@ -1,11 +1,11 @@
 Tone sweepUp[] = {
-  TONE_C4, MS_50, 
-  TONE_E4, MS_50, 
-  TONE_G4, MS_50,
-  TONE_C5, MS_50, 
-  TONE_E5, MS_50, 
-  TONE_G5, MS_50, 
-  TONE_C6, MS_200
+  { TONE_C4, MS_50 },
+  { TONE_E4, MS_50 },
+  { TONE_G4, MS_50 },
+  { TONE_C5, MS_50 },
+  { TONE_E5, MS_50 },
+  { TONE_G5, MS_50 },
+  { TONE_C6, MS_200 }
 };
 
 task main()

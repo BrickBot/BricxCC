@@ -125,7 +125,8 @@ object MainForm: TMainForm
       'Lego RCX Firmware (*.lgo)|*.lgo|Alternate RCX Firmware files (*.' +
       'srec)|*.srec|Lego NXT Firmware (*.rfw)|*.rfw|Alternate NXT Firmw' +
       'are files (*.a79)|*.a79|All Firmware files (*.lgo;*.srec;*.rfw;*' +
-      '.a79)|*.lgo;*.srec;*.rfw;*.a79|All files (*.*)|*.*'
+      '.a79)|*.lgo;*.srec;*.rfw;*.a79|EV3 Firmware files (*.bin)|*.bin|' +
+      'All files (*.*)|*.*'
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
     Title = 'Choose the Firmware file'
     Left = 176

@@ -81,6 +81,7 @@ type
       var sdPresent : Byte; var sdTotal : Cardinal; var sdFree : Cardinal;
       var usbPresent : Byte; var usbTotal : Cardinal; var usbFree : Cardinal) : boolean;
     procedure SetupSnapshotTool;
+    function TransferFirmware(aStream: TStream): boolean;
     property  Transport : IEV3Transport read GetTransport;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
@@ -866,10 +867,10 @@ begin
   Result := IsOpen;
   if not Result then begin
     // check whether we need to refresh our transport list or not
-    if fAvailableTransports.Count = 1 then
+    if fAvailableTransports.Count <= 1 then
       RefreshAvailableTransports;
     DebugLog('TEv3Spirit.Open: IsOpen returned FALSE');
-    fSequenceID := 0;
+    fSequenceID := 1;
     if fResPort = '' then
       LookupResourceName;
     if fResPort = '' then
@@ -1048,56 +1049,214 @@ begin
   end;
 end;
 
-function TEv3Spirit.DownloadFirmware(aFile: string; bFast : Boolean;
-  bComp : Boolean; bUnlock : boolean): boolean;
-begin
-  Result := False;
-(*
-function TCasperDevice.DownloadProgram(image: TStream): cardinal;
+function TEv3Spirit.TransferFirmware(aStream: TStream): boolean;
 var
-  imageLength, totalBytesDownloaded, actualReadSize : integer;
-  crc : Cardinal;
-  command : TPBrickGenericCommandObject;
-  token : TPendingResponse;
-  calculator : TCrcCalculator;
-  payload : TByteArray;
-begin
-  imageLength := Integer(image.Size);
-  Update(pbrsDownloadingImage, 0, imageLength);
-  calculator := TCrcCalculator.Create;
-  try
-    crc := 0;
-    command := TPBrickGenericCommandObject.Create;
-    try
-      command.Write(ctSystemWithReply);
-      command.Write(rcDownloadData);
-      totalBytesDownloaded := 0;
-      actualReadSize := image.Read(payload, 1018);
-      while (actualReadSize <> 0) do
-      begin
-        command.BaseStream.Seek(2, soBeginning);
-        command.BaseStream.Size := 2;
-        command.BaseStream.Write(payload, actualReadSize);
-        crc := calculator.CalculateCrc(payload, actualReadSize, crc);
-        token := Self.SendMessage(command.BaseStream, true);
-        if not token.TryReceiveMessage(nil, 5000) then
-        begin
-          Update(pbrsDownloadingImageFailed, totalBytesDownloaded, imageLength);
-          break;
-        end;
-        totalBytesDownloaded := totalBytesDownloaded + actualReadSize;
-        Update(pbrsDownloadingImage, totalBytesDownloaded, imageLength);
-        actualReadSize := image.Read(payload, 1018);
-      end;
-      Result := crc;
-    finally
-      command.Free;
+  size, totalBytesDownloaded, actualReadSize, cur, i : integer;
+  ms : TMemoryStream;
+  id, newID, retries : Word;
+  rspData : TEV3Data;
+  bStop : boolean;
+const
+  K_SEC = 1000;
+  K_STEPS = 30350;
+
+  function CloseAndReopenTheTransport : boolean;
+  begin
+    // close the current transport
+    if Assigned(fActiveTransport) then
+      fActiveTransport.Close;
+    fActiveTransport := nil;
+    fSequenceID := 1;
+    RefreshAvailableTransports;
+    // step 12 done
+    inc(cur);
+    DoDownloadStatus(cur, K_STEPS, bStop);
+    if bStop then begin
+      Result := False;
+      Exit;
     end;
-  finally
-    calculator.Free;
+    Result := Transport.Open;
+  end;
+
+begin
+  Result := IsOpen;
+  DebugLog('TFantomSpirit.TransferFirmware: Connection is open = ' + BoolToStr(Result));
+  size   := Cardinal(aStream.Size);
+  bStop  := False;
+  cur := 0;
+  DoDownloadStatus(cur, K_STEPS, bStop);
+  if bStop then begin
+    Result := False;
+    Exit;
+  end;
+  if Result then
+  begin
+    ms := TMemoryStream.Create;
+    try
+      // first step
+      if not Transport.IsFirmwareDownload then
+      begin
+        TSystemCommandBuilder.EnterFirmwareUpdate(ms);
+        id := NextSequenceID;
+        if Transport.SendStream(id, ms) = ms.Size then
+        begin
+          // 10 steps
+          for i := 0 to 9 do
+          begin
+            SysUtils.Sleep(K_SEC);
+            inc(cur, 50);
+            DoDownloadStatus(cur, K_STEPS, bStop);
+            if bStop then begin
+              Result := False;
+              Exit;
+            end;
+          end;
+        end;
+      end;
+      // another step
+      if CloseAndReopenTheTransport and Transport.IsFirmwareDownload then
+      begin
+        // step 11 done
+        inc(cur, 60);
+        DoDownloadStatus(cur, K_STEPS, bStop);
+        if bStop then begin
+          Result := False;
+          Exit;
+        end;
+        // try to do the recovery system commands
+        ms.Clear;
+        // next step (erase flash)
+        TSystemCommandBuilder.BeginFlashDownloadWithErase(0, size, ms);
+        id := NextSequenceID;
+        if Transport.SendStream(id, ms) = ms.Size then
+        begin
+          // 120 steps
+          for i := 0 to 119 do
+          begin
+            SysUtils.Sleep(K_SEC);
+            inc(cur, 60);
+            DoDownloadStatus(cur, K_STEPS, bStop);
+            if bStop then begin
+              Result := False;
+              Exit;
+            end;
+          end;
+          retries := 0;
+          newID := Transport.ReceiveMessage(rspData, 1000, id);
+          while (newID < id) and (retries <= 60) do
+          begin
+            newID := Transport.ReceiveMessage(rspData, 1000, id);
+            inc(retries);
+            inc(cur, 60);
+            DoDownloadStatus(cur, K_STEPS, bStop);
+            if bStop then begin
+              Result := False;
+              Exit;
+            end;
+          end;
+
+          // next step (download the whole image)
+          totalBytesDownloaded := 0;
+          repeat
+            ms.Clear;
+            actualReadSize := Min(size-totalBytesDownloaded, 1018);
+            TSystemCommandBuilder.DownloadProgram(totalBytesDownloaded, actualReadSize, aStream, ms);
+            id := NextSequenceID;
+            if Transport.SendStream(id, ms) = ms.Size then
+            begin
+              retries := 0;
+              newID := Transport.ReceiveMessage(rspData, 500, id);
+              while (newID < id) and (retries <= 30) do
+              begin
+                newID := Transport.ReceiveMessage(rspData, 500, id);
+                inc(retries);
+              end;
+            end;
+
+            // 16095 steps
+            inc(cur);
+            DoDownloadStatus(cur, K_STEPS, bStop);
+            if bStop then begin
+              Result := False;
+              Exit;
+            end;
+
+            inc(totalBytesDownloaded, actualReadSize);
+          until (totalBytesDownloaded >= size);
+
+          // next step
+          ms.Clear;
+          TSystemCommandBuilder.StartApplication(ms);
+          id := NextSequenceID;
+          if Transport.SendStream(id, ms) = ms.Size then
+          begin
+            // after sending this message we need to close and reopen the
+            // right transport
+            // 45 steps
+            for i := 0 to 44 do
+            begin
+              SysUtils.Sleep(K_SEC);
+              inc(cur, 60);
+              DoDownloadStatus(cur, K_STEPS, bStop);
+              if bStop then begin
+                Result := False;
+                Exit;
+              end;
+            end;
+
+            if CloseAndReopenTheTransport and not Transport.IsFirmwareDownload then
+            begin
+              Close;
+              SysUtils.Sleep(K_SEC*2); // two more second before reopening
+              Open;
+
+              if cur < K_STEPS then
+                DoDownloadStatus(K_STEPS, K_STEPS, bStop);
+
+              Result := True;
+            end;
+          end;
+        end;
+      end;
+    finally
+      ms.Free;
+    end;
   end;
 end;
 
+function TEv3Spirit.DownloadFirmware(aFile: string; bFast : Boolean;
+  bComp : Boolean; bUnlock : boolean): boolean;
+var
+  ms : TMemoryStream;
+begin
+  if not IsOpen then
+    Open;
+
+  // only allow this command when connected via USB
+  Result := not fUseBT;
+  if not Result then Exit;
+
+  Result := FileExists(aFile);
+  if not Result then Exit;
+
+  // put the EV3 into firmware download mode first and wait a few seconds
+  MS := TMemoryStream.Create;
+  try
+    MS.LoadFromFile(aFile);
+    DoDownloadStart;
+    Result := TransferFirmware(MS);
+    DoDownloadDone;
+  finally
+    MS.Free;
+  end;
+end;
+
+  // UpdateFirmware -> TSystemCommandBuilder.EnterFirmwareUpdate(ms)
+  //  Recover ->
+  //   BeginFlashDownloadWithErase -> TSystemCommandBuilder.BeginFlashDownloadWithErase(address, imageSize: integer; aStream : TStream)
+  //   DownloadProgram -> TSystemCommandBuilder.DownloadProgram(offset, length : integer; image, aStream: TStream)
+  //   StartApplication -> TSystemCommandBuilder.StartApplication(aStream: TStream)
+(*
 procedure TCasperDevice.StartApplication;
 var
   command : TPBrickGenericCommandObject;
@@ -1255,8 +1414,8 @@ end;
 		{
 			using (PBrickGenericCommandObject command = new PBrickGenericCommandObject())
 			{
-				command.Write(129);
-				command.Write(160);
+				command.Write(ctSystemNoReply);
+				command.Write(sycEnterFirmwareUpdate);
 				bool flag = false;
 				try
 				{
@@ -1288,7 +1447,7 @@ end;
 		}
 
 *)
-end;
+
 
 function TEv3Spirit.Ping: boolean;
 begin

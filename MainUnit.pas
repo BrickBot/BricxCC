@@ -2185,13 +2185,13 @@ begin
   actToolsNXTWatchList.Enabled   := bBALSF and (IsNXT or IsEV3);
   actToolsSyncMotors.Enabled     := bBALSF and IsNXT;
   actToolsSimpleTerm.Enabled     := bBALSF;
-  actToolsLiveSensors.Enabled    := bBALSF and (IsNXT or IsEV3);
+  actToolsLiveSensors.Enabled    := bBALSF and (IsEV3);
   actToolsImageEditor.Enabled    := True;
 
   actToolsFindBrick.Enabled      := not bBrickAlive;
   actToolsTurnBrickOff.Enabled   := bBALSF;
   actToolsCloseComm.Enabled      := bBrickAlive;
-  actToolsFirmware.Enabled       := {bBrickAlive and }(IsRCX or IsNXT);
+  actToolsFirmware.Enabled       := {bBrickAlive and }(IsRCX or IsNXT or IsEV3);
   actToolsUnlockFirm.Enabled     := bBALSF and IsRCX;
 
   mniProgramNumber.Enabled       := bBrickAlive and (IsRCX or IsSuperPro);
@@ -2509,9 +2509,10 @@ begin
     dlgOpen.FilterIndex      := Highlighters.IndexOf('Java')+1;
     dlgSave.FilterIndex      := dlgOpen.FilterIndex;
   end
-  else if LocalFirmwareType = ftLinux then
+  else if IsEV3 and (LocalFirmwareType in [ftStandard, ftLinux]) then
   begin
-    dlgOpenFirmware.FileName := 'ev3.rfw';
+    dlgOpenFirmware.FilterIndex := 6;
+    dlgOpenFirmware.FileName := 'ev3.bin';
     dlgOpen.FilterIndex      := Highlighters.IndexOf('C++')+1;
     dlgSave.FilterIndex      := dlgOpen.FilterIndex;
   end
