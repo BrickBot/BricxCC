@@ -539,7 +539,7 @@ begin
       ';': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}PointCommaProc;
       #13: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CRProc;
       'A'..'Z', 'a'..'z', '_': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IdentProc;
-      '$': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IntegerProc;
+//      '$': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}IntegerProc;
       #10: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}LFProc;
       #0: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NullProc;
       '0'..'9': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}NumberProc;

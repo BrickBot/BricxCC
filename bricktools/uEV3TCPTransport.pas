@@ -34,7 +34,7 @@ type
     function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
-    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
+    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Integer) : Word;
   end;
 
 procedure LoadEV3TCPTransports(List : TInterfaceList);
@@ -69,7 +69,7 @@ begin
   Result := False;
 end;
 
-function TEV3TCPTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Word): Word;
+function TEV3TCPTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Integer): Word;
 begin
   Result := 0;
   if not IsOpen then

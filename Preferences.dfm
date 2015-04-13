@@ -1184,7 +1184,7 @@ object PrefForm: TPrefForm
                   Height = 21
                   HelpContext = 11092
                   DropDownCount = 4
-                  ItemHeight = 0
+                  ItemHeight = 13
                   TabOrder = 4
                   OnExit = edtNQCIncludePathExit
                 end
@@ -1248,7 +1248,7 @@ object PrefForm: TPrefForm
                   Height = 21
                   HelpContext = 11101
                   DropDownCount = 4
-                  ItemHeight = 0
+                  ItemHeight = 13
                   TabOrder = 3
                   OnExit = edtLCCIncludePathExit
                 end
@@ -1668,7 +1668,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end

@@ -1,0 +1,12 @@
+# NXT brick 
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0002", SYMLINK+="legonxt-%k", GROUP="legonxt", MODE="0666"
+
+# NXT brick in firmware update mode (Atmel SAM-BA mode)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", SYMLINK+="legonxt-%k", GROUP="legonxt", MODE="0666"
+
+# EV3 brick 
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0005", SYMLINK+="legoev3-%k", GROUP="legonxt", MODE="0666"
+
+# EV3 brick in firmware update mode
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0006", SYMLINK+="legoev3-%k", GROUP="legonxt", MODE="0666"
+

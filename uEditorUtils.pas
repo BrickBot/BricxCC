@@ -569,7 +569,7 @@ begin
   MainSource := ExtractFileName(aPath);
   ext := ExtractFileExt(MainSource);
   if EV3UseSharedLib then
-    dobjects := ''
+    dobjects := '-lev3'
   else
     dobjects := GetProjectFiles(aPath, '.o');
   H := GetActiveEditorHighlighter;
@@ -607,9 +607,9 @@ begin
       mfStr := StringReplace(mfStr, '%EXT%', ext, [rfReplaceAll]);
     end;
     mfStr := StringReplace(mfStr, '%MAINSRC%', MainSource, [rfReplaceAll]);
-//    mfStr := StringReplace(mfStr, '%PW%', EV3RootPassword, [rfReplaceAll]);
-//    mfStr := StringReplace(mfStr, '%IPADDR%', EV3IPAddress, [rfReplaceAll]);
-//    mfStr := StringReplace(mfStr, '%FOLDER%', EV3Folder, [rfReplaceAll]);
+    mfStr := StringReplace(mfStr, '%PW%', EV3RootPassword, [rfReplaceAll]);
+    mfStr := StringReplace(mfStr, '%IPADDR%', EV3IPAddress, [rfReplaceAll]);
+    mfStr := StringReplace(mfStr, '%FOLDER%', EV3Folder, [rfReplaceAll]);
     SL.Text := mfStr;
     SL.SaveToFile(ChangeFileExt(aPath, '.mak'));
   finally

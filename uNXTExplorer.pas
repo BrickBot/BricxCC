@@ -356,7 +356,7 @@ begin
         LI := NXTFiles.Items.Add;
         LI.Caption := SL.Names[i];
         ft := NXTNameToPBRFileType(LI.Caption);
-        if ft = nftOther then
+        if (ft = nftOther) and IsEV3 then
           ft := EV3NameToPBRFileType(LI.Caption);
         sizeStr := SL.Values[LI.Caption];
         if sizeStr = '-1' then
@@ -365,7 +365,7 @@ begin
           ft := nftFolder;
         end;
         if (ft = nftOther) and
-           (LocalFirmwareType = ftLinux) and
+           (LocalFirmwareType = ftLinux) and IsEV3 and 
            (ExtractFileExt(Li.Caption) = '') then
           ft := nftProgram;
         LI.SubItems.Add(sizeStr);
@@ -666,10 +666,7 @@ begin
   item := NXTFiles.Selected;
   if not Assigned(item) then
     Exit;
-  name := item.Caption;
-  Result := (IsNXT and (NXTNameToPBRFileType(name) = nftProgram) or
-                       (LowerCase(ExtractFileExt(name)) = '.rpg')) or
-            (IsEV3 and (EV3NameToPBRFileType(name) = nftProgram));
+  Result := TPBRFileType(item.ImageIndex) = nftProgram;
 end;
 
 function TfrmNXTExplorer.SelectedFileIsSound: boolean;
@@ -681,9 +678,7 @@ begin
   item := NXTFiles.Selected;
   if not Assigned(item) then
     Exit;
-  name := item.Caption;
-  Result := (IsNXT and (NXTNameToPBRFileType(name) = nftSound)) or
-            (IsEV3 and (EV3NameToPBRFileType(name) = nftSound));
+  Result := TPBRFileType(item.ImageIndex) = nftSound;
 end;
 
 procedure TfrmNXTExplorer.actFileStopExecute(Sender: TObject);

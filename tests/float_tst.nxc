@@ -1,0 +1,13 @@
+float x = 0;
+float y;
+task main()
+{
+     do
+     {
+           y = x;
+           int i=1;
+           
+     }
+     until(1);
+}
+
