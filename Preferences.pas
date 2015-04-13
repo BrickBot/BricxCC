@@ -1632,15 +1632,15 @@ begin
     ConsoleUSBICTimeout     := Reg_ReadInteger(reg, 'ConsoleUSBICTimeout', 0);
     ConsoleUSBWriteTimeout  := Reg_ReadInteger(reg, 'ConsoleUSBWriteTimeout', 0);
     // EV3 makefile settings
-    EV3MakefileTemplate     := Reg_ReadString(reg, 'EV3MakefileTemplate', EV3MakefileTemplate);
-    EV3FPCFlags             := Reg_ReadString(reg, 'EV3FPCFlags', EV3FPCFlags);
-    EV3FPCPrefix            := Reg_ReadString(reg, 'EV3FPCPrefix', EV3FPCPrefix);
-    EV3GCCFlags             := Reg_ReadString(reg, 'EV3GCCFlags', EV3GCCFlags);
-    EV3GCCPrefix            := Reg_ReadString(reg, 'EV3GCCPrefix', EV3GCCPrefix);
-    EV3RootPassword         := Reg_ReadString(reg, 'EV3RootPassword', EV3RootPassword);
-    EV3IPAddress            := Reg_ReadString(reg, 'EV3IPAddress', EV3IPAddress);
-    EV3Folder               := Reg_ReadString(reg, 'EV3Folder', EV3Folder);
-    EV3UseSharedLib         := Reg_ReadBool(reg, 'EV3UseSharedLib', EV3UseSharedLib);
+    EV3MakefileTemplate     := Reg_ReadString(reg, 'EV3MakefileTemplate', K_EV3_MAKE_TEMPLATE);
+    EV3FPCFlags             := Reg_ReadString(reg, 'EV3FPCFlags', K_EV3_FPC_FLAGS);
+    EV3FPCPrefix            := Reg_ReadString(reg, 'EV3FPCPrefix', '');
+    EV3GCCFlags             := Reg_ReadString(reg, 'EV3GCCFlags', '');
+    EV3GCCPrefix            := Reg_ReadString(reg, 'EV3GCCPrefix', K_EV3_GCC_PREFIX);
+    EV3RootPassword         := Reg_ReadString(reg, 'EV3RootPassword', '');
+    EV3IPAddress            := Reg_ReadString(reg, 'EV3IPAddress', '192.168.2.128');
+    EV3Folder               := Reg_ReadString(reg, 'EV3Folder', '/media/card');
+    EV3UseSharedLib         := Reg_ReadBool(reg, 'EV3UseSharedLib', false);
   finally
     reg.CloseKey;
   end;

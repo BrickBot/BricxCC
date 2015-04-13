@@ -35,7 +35,7 @@ type
     function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
-    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
+    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Integer) : Word;
 
     property MaxMessageSize : integer read GetMaxMessageSize;
     property SerialNumber : string read GetSerialNumber;
@@ -54,7 +54,7 @@ type
     function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
-    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
+    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Integer) : Word;
   end;
 
 implementation
@@ -84,7 +84,7 @@ begin
   Result := False;
 end;
 
-function TEV3NullTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Word): Word;
+function TEV3NullTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Integer): Word;
 begin
   Result := 0;
   if not IsOpen then

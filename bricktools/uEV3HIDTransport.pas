@@ -43,7 +43,7 @@ type
     function IsFirmwareDownload : boolean;
     function SendMessage(SequenceId : Word; var Buffer : TEV3Data) : integer;
     function SendStream(SequenceId : Word; aStream : TStream) : integer;
-    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Word) : Word;
+    function ReceiveMessage(var Buffer : TEV3Data; Timeout : Word; Id : Integer) : Word;
   end;
 
 procedure LoadEV3HIDTransports(List : TInterfaceList);
@@ -133,7 +133,7 @@ begin
   Result := fFirmwareDownload;
 end;
 
-function TEV3HIDTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Word): Word;
+function TEV3HIDTransport.ReceiveMessage(var Buffer: TEV3Data; Timeout: Word; Id : Integer): Word;
 var
   bytesRead : integer;
   buf, p : PByte;
@@ -178,7 +178,7 @@ begin
     finally
       FreeMem(buf);
     end;
-  until (Result = Id);
+  until (id < 0) or (Result = Id);
 end;
 
 function TEV3HIDTransport.SendMessage(SequenceId: Word; var Buffer: TEV3Data): integer;

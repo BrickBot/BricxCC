@@ -1,0 +1,29 @@
+byte addresses[] = {
+  0x02,
+  0x04,
+  0x06,
+  0x10,
+  0x12,
+  0x18,
+  0x48,
+  0xB0,
+  0xB4
+};
+
+task main()
+{
+  SetSensorLowspeed(S1);
+  while (true) {
+    ClearLine(LCD_LINE1);
+    string devId = "";
+    for (int i=0; i<ArrayLen(addresses); i++)
+    {
+      byte addr = addresses[i];
+      devId = I2CDeviceId(S1, addr);
+      if (devId != "") break;
+      Wait(MS_100);
+    }
+    TextOut(0, LCD_LINE1, devId);
+    Wait(SEC_1);
+  }
+}

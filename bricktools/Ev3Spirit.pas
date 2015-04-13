@@ -330,6 +330,8 @@ const
   SNAPSHOT_DISABLED = 'DISABLED';
   MIN_RAMDISK_SNAPSHOT = 332;
 
+  TIMEOUT_SHORT = 500;
+
 
 procedure DoBeep(aFreq, aDur : cardinal);
 begin
@@ -423,7 +425,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -452,6 +454,7 @@ function TEv3Spirit.ControlMotors(aMotorList : Byte; Power: ShortInt;
   dir: TMotorDirection; state: TMotorState): boolean;
 var
   ms : TMemoryStream;
+  rspData : TEV3Data;
   id : Word;
   layer : byte;
   i : integer;
@@ -732,7 +735,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -769,7 +772,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -832,7 +835,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -1165,10 +1168,10 @@ begin
             if Transport.SendStream(id, ms) = ms.Size then
             begin
               retries := 0;
-              newID := Transport.ReceiveMessage(rspData, 500, id);
+              newID := Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id);
               while (newID < id) and (retries <= 30) do
               begin
-                newID := Transport.ReceiveMessage(rspData, 500, id);
+                newID := Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id);
                 inc(retries);
               end;
             end;
@@ -1537,7 +1540,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -1734,7 +1737,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -1799,7 +1802,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -1983,7 +1986,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         Result := (rspData[0] = SYSTEM_REPLY_OK) or
@@ -2092,7 +2095,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if chkResponse and (id = Transport.ReceiveMessage(rspData, 50, id)) then
+      if chkResponse and (id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id)) then
       begin
         DebugLog(rspData);
         Result := rspData[0] = DIRECT_REPLY_OK;
@@ -2143,7 +2146,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -2188,7 +2191,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if chkResponse and (id = Transport.ReceiveMessage(rspData, 500, id)) then
+      if chkResponse and (id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id)) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -2491,7 +2494,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -2816,7 +2819,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 2500, id) then
+      if id = Transport.ReceiveMessage(rspData, 5000, id) then
       begin
         if (rspData[0] = DIRECT_REPLY_OK) then
         begin
@@ -3262,7 +3265,7 @@ begin
         id := NextSequenceID;
         if Transport.SendStream(id, ms) = ms.Size then
         begin
-          if id = Transport.ReceiveMessage(rspData, 500, id) then
+          if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
           begin
             DebugLog(rspData);
             if (rspData[0] = DIRECT_REPLY_OK) then
@@ -3292,7 +3295,7 @@ begin
         id := NextSequenceID;
         if Transport.SendStream(id, ms) = ms.Size then
         begin
-          if id = Transport.ReceiveMessage(rspData, 500, id) then
+          if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
           begin
             DebugLog(rspData);
             if (rspData[0] = DIRECT_REPLY_OK) then
@@ -3333,7 +3336,7 @@ begin
         id := NextSequenceID;
         if Transport.SendStream(id, ms) = ms.Size then
         begin
-          if id = Transport.ReceiveMessage(rspData, 500, id) then
+          if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
           begin
             DebugLog(rspData);
             if (rspData[0] = DIRECT_REPLY_OK) then
@@ -3370,7 +3373,7 @@ begin
         id := NextSequenceID;
         if Transport.SendStream(id, ms) = ms.Size then
         begin
-          if id = Transport.ReceiveMessage(rspData, 500, id) then
+          if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
           begin
             DebugLog(rspData);
             if (rspData[0] = DIRECT_REPLY_OK) then
@@ -3407,7 +3410,7 @@ begin
         id := NextSequenceID;
         if Transport.SendStream(id, ms) = ms.Size then
         begin
-          if id = Transport.ReceiveMessage(rspData, 50, id) then
+          if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
           begin
             DebugLog(rspData);
             if (rspData[0] = DIRECT_REPLY_OK) then
@@ -3608,7 +3611,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         Result := '';
         for i := 0 to Length(rspData) - 1 do
@@ -3848,7 +3851,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then
@@ -3933,22 +3936,6 @@ begin
   finally
     ms.Free;
   end;
-(*
-		public override void CopyFile(FileStorageLocation sourceStorageLocation, string sourcePath, FileStorageLocation destinationStorageLocation, string destinationPath)
-		{
-			string soruceFilePath = PBrickDevice.PrettyPathToBrickPath(sourcePath, sourceStorageLocation);
-			string destinationFilePath = PBrickDevice.PrettyPathToBrickPath(destinationPath, destinationStorageLocation);
-			byte[] command = DirectCommandBuilder.BuildCommand(CommandType.DirectWithReply, 0, 0, new byte[][]
-			{
-				DirectCommandBuilder.CopyFile(soruceFilePath, destinationFilePath)
-			});
-			lock (this.CasperDevice)
-			{
-				byte[] reply;
-				this.CasperDevice.SendMessage(command, true).TryReceiveMessage(out reply);
-			}
-		}
-*)
 end;
 
 function TEv3Spirit.GetFullPortName: string;
@@ -3978,7 +3965,7 @@ var
 begin
   if IsOpen then
   begin
-    Transport.ReceiveMessage(rspData, 500, 0);
+    Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, 0);
   end;
 end;
 
@@ -3995,7 +3982,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 50, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
       end;
@@ -4147,7 +4134,7 @@ begin
     id := NextSequenceID;
     if Transport.SendStream(id, ms) = ms.Size then
     begin
-      if id = Transport.ReceiveMessage(rspData, 500, id) then
+      if id = Transport.ReceiveMessage(rspData, TIMEOUT_SHORT, id) then
       begin
         DebugLog(rspData);
         if (rspData[0] = DIRECT_REPLY_OK) then

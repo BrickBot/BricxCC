@@ -192,6 +192,8 @@ const
     #13#10 +
     'download:: all' + #13#10 +
     #13#10 +
+    '#pscp -scp -pw "%PW%" %PROGRAM% root@%IPADDR%:%FOLDER%' + #13#10 +
+    #13#10 +
     'clean::' + #13#10 +
     #9'rm -f *.o *.ppu *.rst' + #13#10 +
     #13#10 +
@@ -199,21 +201,21 @@ const
     #9'rm -f $(PROGRAM)' + #13#10 +
     #13#10 +
     'FLAGS=%FLAGS%' + #13#10 +
+    'LDFLAGS=-Wl,-R/media/card/lib' + #13#10 +
     #13#10 +
     'CC=$(TOOLPREFIX)%CCNAME%' + #13#10 +
     #13#10 +
     '# how to link executable' + #13#10 +
     '%PROGRAM%: %MAINSRC%' + #13#10 +
-    #9'$(CC) $(FLAGS) $< -o$@ %LINKOBJS%' + #13#10 +
+    #9'$(CC) $(FLAGS) $(LDFLAGS) $< -o$@ %LINKOBJS%' + #13#10 +
     #13#10 +
     '# how to compile source' + #13#10 +
     '%.o: %%EXT%' + #13#10 +
     #9'$(CC) $(FLAGS) %LINKONLY% $< -o$@' + #13#10 +
     #13#10;
   K_EV3_FPC_FLAGS = '-Tlinux -Parm -XX -Xs -dRELEASE -Fu. ';
-  K_EV3_GCC_PREXIX = 'arm-none-linux-gnueabi-';
+  K_EV3_GCC_PREFIX = 'arm-none-linux-gnueabi-';
 
-//    #9'pscp -scp -pw "%PW%" %PROGRAM% root@%IPADDR%:%FOLDER%' + #13#10 +
 
 var
   CurrentProgramSlot : Integer = 0;
@@ -251,7 +253,7 @@ var
   EV3FPCFlags : string = K_EV3_FPC_FLAGS;
   EV3FPCPrefix : string = '';
   EV3GCCFlags : string = '';
-  EV3GCCPrefix : string = K_EV3_GCC_PREXIX;
+  EV3GCCPrefix : string = K_EV3_GCC_PREFIX;
   EV3RootPassword : string = '';
   EV3IPAddress : string = '192.168.2.128';
   EV3Folder : string = '/media/card';
